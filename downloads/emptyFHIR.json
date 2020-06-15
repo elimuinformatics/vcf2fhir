@@ -1,0 +1,121 @@
+{
+    "resourceType": "DiagnosticReport",
+    "id": "dr-b19fd7a084d94",
+    "meta": {
+        "profile": [
+            "http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/diagnosticreport"
+        ]
+    },
+    "contained": [
+        {
+            "id": "rs-21a7af2437db4",
+            "meta": {
+                "profile": [
+                    "http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/obs-region-studied"
+                ]
+            },
+            "category": [
+                {
+                    "coding": [
+                        {
+                            "code": "laboratory",
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category"
+                        }
+                    ]
+                }
+            ],
+            "code": {
+                "coding": [
+                    {
+                        "code": "53041-0",
+                        "display": "DNA region of interest panel",
+                        "system": "http://loinc.org"
+                    }
+                ]
+            },
+            "component": [
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "code": "51959-5",
+                                "display": "Range(s) of DNA sequence examined",
+                                "system": "http://loinc.org"
+                            }
+                        ]
+                    },
+                    "valueRange": {
+                        "high": {
+                            "value": 2
+                        },
+                        "low": {
+                            "value": 1
+                        }
+                    }
+                },
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "code": "tbd-coordinate system",
+                                "display": "Genomic coordinate system",
+                                "system": "http://loinc.org"
+                            }
+                        ]
+                    },
+                    "valueCodeableConcept": {
+                        "coding": [
+                            {
+                                "code": "1",
+                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/genetic-coordinate-system"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "code": "48013-7",
+                                "display": "Genomic reference sequence ID",
+                                "system": "http://loinc.org"
+                            }
+                        ]
+                    },
+                    "valueCodeableConcept": {
+                        "coding": [
+                            {
+                                "code": "NC_000001.10",
+                                "system": "http://www.ncbi.nlm.nih.gov/nuccore"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "status": "final",
+            "subject": {
+                "reference": "Patient/HG00406"
+            },
+            "resourceType": "Observation"
+        }
+    ],
+    "status": "final",
+    "code": {
+        "coding": [
+            {
+                "code": "53041-0",
+                "display": "DNA region of interest panel",
+                "system": "http://loinc.org"
+            }
+        ]
+    },
+    "subject": {
+        "reference": "Patient/HG00406"
+    },
+    "issued": "2020-04-14T12:44:28+00:00",
+    "result": [
+        {
+            "reference": "#rs-21a7af2437db4"
+        }
+    ]
+}
