@@ -7,7 +7,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s - %(levelname)s -%(message)s', datefmt='%d-%b-%y %H:%M')
 
 
-def getSequenceRelation(phasedRecMap, ):
+def _getSequenceRelation(phasedRecMap):
     RelationTable= pd.DataFrame(columns=['POS1','POS2','Relation'])
     for key in phasedRecMap:
         prev_record = None
@@ -25,7 +25,7 @@ def getSequenceRelation(phasedRecMap, ):
             prev_record = record
     return RelationTable 
 
-def addPhaseRecords(f, phasedRecMap):
+def _addPhaseRecords(f, phasedRecMap):
     if(f.samples[0].phased == False):
         return 
     sampleData = f.samples[0].data

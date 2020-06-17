@@ -11,7 +11,7 @@ XML_TO_JSON_JAR = os.path.join(os.getcwd() ,'xmltojson.jar')
 FHIR_XML_RESULT = os.path.join(os.getcwd() ,'fhir.xml')
 FHIR_JSON_RESULT = os.path.join(os. getcwd() +'/downloads/','json/')
 
-class Utilities(object):
+class _Utilities(object):
 
     """
      * generates current date into fhir format 

@@ -9,13 +9,14 @@ import fhirclient.models.fhirreference as reference
 import fhirclient.models.fhirdate as date
 import fhirclient.models.range as valRange
 import fhirclient.models.medicationstatement as medication
-from .allelicstate import getAllelicState
-from .phaseswapsort import getSequenceRelation, addPhaseRecords
+from .allelicstate import _getAllelicState
+from .phaseswapsort import _getSequenceRelation, _addPhaseRecords
+from .geneRefSeq import _getRefSeqByChrom
 from collections import OrderedDict
 from uuid import uuid4
-from .filereader import *
+from .filereader import _getNoCallableData
 import logging
-from .common import *
+from .common import _Utilities, NO_CALL_FILE, QUERY_RANGE_FILE, FHIR_JSON_RESULT
 
 logging.basicConfig(level=logging.DEBUG,format='%(asctime)s - %(levelname)s -%(message)s', datefmt='%d-%b-%y %H:%M')
 
@@ -32,9 +33,9 @@ def _validRecord(record):
         return False
     return True
 
-def getEmptyFhirJSON(patientID,start,end,refSeq,nocall=False):
+def _getEmptyFhirJSON(patientID,start,end,refSeq,nocall=False):
     logging.info("[FHIR: Converting XML to JSON]")
-    noCallRegion,queryRange = getNoCallableData(NO_CALL_FILE,QUERY_RANGE_FILE)
+    noCallRegion,queryRange = _getNoCallableData(NO_CALL_FILE,QUERY_RANGE_FILE)
     nocallRows = len(noCallRegion.index)
     start = queryRange.at[0,"START"]
     end = queryRange.at[0,"END"]
@@ -58,7 +59,7 @@ def getEmptyFhirJSON(patientID,start,end,refSeq,nocall=False):
     report.code = concept.CodeableConcept({"coding":[{"system":"http://loinc.org","code":"53041-0","display":"DNA region of interest panel"}]})
     report.status = "final"
     report.subject = patient_reference
-    report.issued = date.FHIRDate(Utilities.getFhirDate())
+    report.issued = date.FHIRDate(_Utilities.getFhirDate())
     report.result = [variant_reference]
 
     observation_rs = observation.Observation()
@@ -122,12 +123,12 @@ def getEmptyFhirJSON(patientID,start,end,refSeq,nocall=False):
    
     return FHIR_JSON_RESULT
 
-def getFhirJSON(cleanVcf, patientID,refSeq,noCall=False,gender="M", output_filename='fhir.json'):
-    
+def _getFhirJSON(vcf_reader, patientID, ref_build, noCall=False,gender="M", output_filename='fhir.json'):
+    refSeq = ''
     dvuids = {}
     siduids = []
     
-    noCallRegion,queryRange = getNoCallableData(NO_CALL_FILE,QUERY_RANGE_FILE)
+    noCallRegion,queryRange = _getNoCallableData(NO_CALL_FILE,QUERY_RANGE_FILE)
     nocallRows = len(noCallRegion.index)
     start = queryRange.at[0,"START"]
     end = queryRange.at[0,"END"]
@@ -151,7 +152,7 @@ def getFhirJSON(cleanVcf, patientID,refSeq,noCall=False,gender="M", output_filen
     report.status = "final"
     report.code = concept.CodeableConcept({"coding":[{"system":"http://loinc.org","code":"81247-9","display":"Master HL7 genetic variant reporting panel"}]})
     report.subject = patient_reference
-    report.issued = date.FHIRDate(Utilities.getFhirDate())
+    report.issued = date.FHIRDate(_Utilities.getFhirDate())
 
     observation_rs = observation.Observation()
     contained_rs = observation_rs
@@ -193,12 +194,13 @@ def getFhirJSON(cleanVcf, patientID,refSeq,noCall=False,gender="M", output_filen
     # Observation structure : described-variants
     obsContained = [contained_rs]
     phasedRecMap = {}
-    for record in cleanVcf:
+    for record in vcf_reader:
         if(_validRecord(record) == False):
             continue
-        alleles = getAllelicState(record, gender)
+        alleles = _getAllelicState(record, gender)
         # collect all the record with similar position values
-        addPhaseRecords(record, phasedRecMap)
+        _addPhaseRecords(record, phasedRecMap)
+        refSeq = _getRefSeqByChrom(ref_build, record.CHROM)
         dvuid = uuid4().hex[:13]
         dvuids.update({ str(record.POS) : dvuid})
 
@@ -245,7 +247,7 @@ def getFhirJSON(cleanVcf, patientID,refSeq,noCall=False,gender="M", output_filen
 
     # Obesrvation structure: sequence-phase relatons
     siduids = []    
-    sequenceRels = getSequenceRelation(phasedRecMap)
+    sequenceRels = _getSequenceRelation(phasedRecMap)
     for index in sequenceRels.index:
         dvRef1 = dvuids.get(str(sequenceRels.at[index,'POS1']))
         dvRef2 = dvuids.get(str(sequenceRels.at[index,'POS2']))
@@ -391,7 +393,7 @@ def getFhirJSON(cleanVcf, patientID,refSeq,noCall=False,gender="M", output_filen
             odSID["derivedFrom"] = i['derivedFrom']
             od['contained'][k] = odSID
     
-    with open(FHIR_JSON_RESULT+ output_filename, 'w') as fp:
+    with open(output_filename, 'w') as fp:
         json.dump(od, fp,indent=4)
 
     return FHIR_JSON_RESULT
