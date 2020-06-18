@@ -1,11 +1,14 @@
-.DS_Store
-env/
-bin/python-config
+vcf2fhir_openelimu.egg-info/
+build
+dist
 *.pyc
-__pycache__/
-
-# Setuptools distribution folder.
-/dist/
-
-# Python egg metadata, regenerated from source files by setuptools.
-/*.egg-info
+docs/_build
+.ropeproject
+1kg.prof
+.noseids
+.tox
+.DS_Store
+vcf/cparse.c
+vcf/cparse.so
+.coverage
+.vscode/

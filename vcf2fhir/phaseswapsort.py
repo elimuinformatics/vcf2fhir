@@ -25,9 +25,3 @@ def _getSequenceRelation(phasedRecMap):
             prev_record = record
     return RelationTable 
 
-def _addPhaseRecords(f, phasedRecMap):
-    if(f.samples[0].phased == False):
-        return 
-    sampleData = f.samples[0].data
-    if(sampleData.GT != None and len(sampleData.GT.split('|')) >= 2 and sampleData.PS != None):
-        phasedRecMap.setdefault(sampleData.PS, []).append(f)

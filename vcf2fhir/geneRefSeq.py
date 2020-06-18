@@ -56,8 +56,8 @@ b38 = {
 
 
 def _getRefSeqByChrom(build, chrom):
-    if build in ["b37","B37"]:
+    if build in ["GRCh37"]:
         return(b37[chrom])
 
-    elif build in ["b38","B38"]:
+    elif build in ["GRCh38"]:
         return(b38[chrom])
