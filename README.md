@@ -8,9 +8,16 @@ Conceptually, the utility takes a VCF as input and outputs a FHIR Genomics repor
 
 ![image](https://user-images.githubusercontent.com/46577791/80811245-5665bb00-8b7a-11ea-9b4e-4dc5c10cdce9.png)
 
+```
+>>> import vcf2fhir
+>>> oVcf2Fhir = vcf2fhir.Converter('sample.vcf', 'GRCh37')
+>>> oVcf2Fhir.convert()
+```
+
 ### License and Limitations
 
 Software is available for use under an [Apache 2.0 license](https://opensource.org/licenses/Apache-2.0), and is intended solely for experimental use, to help further Genomics-EHR integration exploration. Software is expressly not ready to be used with identifiable patient data or in delivering care to patients. Code issues should be tracked here. Comments and questions can also be directed to info@elimu.io.
+
 
 ### VCF Requirements
 
@@ -46,23 +53,25 @@ Variant observations:
 - Use a 1-based coordinate system, so that the variant position in the FHIR Genomics report is the same as VCF POS. 
 - Male sex is assumed if not provided (e.g. for determining allelic state of chrX variants)
 
-## Steps to run the converter on you local machine
-
-Install the package
+## Installations
 ```
 python -m pip install --ignore-installed --extra-index-url https://test.pypi.org/simple/ vcf2fhir-openelimu==0.0.3
 ```
 
-Import the dependency in a script and use as below.
-```
-import vcf2fhir
-oVcf2Fhir = vcf2fhir.Converter('HG00628.b37.UROD.M.vcf', 'HG00628', 'b37', 'M')
-oVcf2Fhir.convert(format='json', output_filename='fhir1.json')
-```
-Note: At this moment you also need to copy the downloads folder from the repository in the same folder as ur script because of dependency on nocall.csv
+## Development  
+  
+Please use the VCF-2-FHIR repository. Pull requests gladly accepted. Issues should be reported at the github issue tracker.
 
-## Run the tests
+* Fork the repository from [GitHub](https://github.com/openelimu/VCF-2-FHIR)
+* Run all the tests and confirm they all pass on your system. If they don’t, you’ll need to investigate why they fail. If you’re unable to diagnose this yourself, raise it as a bug report.
+* Add your changes allong with the tests validating the change.
+* Run all the tests again and confirm they pass.
+* Raise a GitHub Pull Request to the main repository's master branch.
 
+
+## Running tests  
+  
+Please check the tests by running them with:
 ```
 python setup.py test
 ```

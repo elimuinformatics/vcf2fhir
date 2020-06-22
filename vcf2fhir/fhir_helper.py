@@ -9,11 +9,8 @@ import fhirclient.models.fhirreference as reference
 import fhirclient.models.fhirdate as date
 import fhirclient.models.range as valRange
 import fhirclient.models.medicationstatement as medication
-from .allelicstate import _getAllelicState
-from .phaseswapsort import _getSequenceRelation
 from collections import OrderedDict
 from uuid import uuid4
-from .filereader import _getNoCallableData
 from .geneRefSeq import _getRefSeqByChrom
 from .common import _Utilities
 
@@ -29,7 +26,7 @@ class _Fhir_Helper:
     def _get_no_call_components(self, no_call_filename, conv_region_filename):
         no_call_exist = False     
         if (no_call_filename and conv_region_filename):
-            noCallRegion,queryRange = _getNoCallableData(no_call_filename, conv_region_filename)
+            noCallRegion,queryRange = _Utilities.getNoCallableData(no_call_filename, conv_region_filename)
             nocallRows = len(noCallRegion.index)
             start = queryRange.at[0,"START"]
             end = queryRange.at[0,"END"]
@@ -86,11 +83,6 @@ class _Fhir_Helper:
         observation_rs.category = [concept.CodeableConcept({"coding":[{"system": "http://terminology.hl7.org/CodeSystem/observation-category","code": "laboratory"}]})]
         observation_rs.subject = patient_reference
 
-        # Region Studied Observation Components
-        # observation_rs_component1 = observation.ObservationComponent()
-        # observation_rs_component1.code = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": "51959-5","display": "Range(s) of DNA sequence examined"}]})
-        # observation_rs_component1.valueRange = valRange.Range({"low": {"value": int(start)},"high": {"value": int(end)}})
-
         observation_rs_component2 = observation.ObservationComponent()
         observation_rs_component2.code = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": "92822-6","display": "Genomic coord system"}]})
         observation_rs_component2.valueCodeableConcept = concept.CodeableConcept({"coding":[{"system":"http://loinc.org","code":"LA30102-0","display": "1-based character counting"}]})
@@ -109,7 +101,7 @@ class _Fhir_Helper:
         # to utilized later in phased sequence relationship
         self._addPhaseRecords(record)
         patient_reference = reference.FHIRReference({"reference":"Patient/"+patientID})
-        alleles = _getAllelicState(record, gender)
+        alleles = _Utilities.getAllelicState(record)
         refSeq = _getRefSeqByChrom(ref_build, record.CHROM)
         dvuid = uuid4().hex[:13]
         self.map_variant_ids.update({ str(record.POS) : dvuid})
@@ -157,7 +149,7 @@ class _Fhir_Helper:
 
     def add_phased_relationship_obv(self, patientID):
         patient_reference = reference.FHIRReference({"reference":"Patient/"+patientID})
-        self.sequenceRels = _getSequenceRelation(self.phasedRecMap)
+        self.sequenceRels = _Utilities.getSequenceRelation(self.phasedRecMap)
         for index in self.sequenceRels.index:
             dvRef1 = self.map_variant_ids.get(str(self.sequenceRels.at[index,'POS1']))
             dvRef2 = self.map_variant_ids.get(str(self.sequenceRels.at[index,'POS2']))
@@ -178,7 +170,7 @@ class _Fhir_Helper:
     def add_report_result(self):
         reportResult = []
         for uid in self.region_ids:
-            reportResult.append(reference.FHIRReference({"reference": "#sid-"+uid}))
+            reportResult.append(reference.FHIRReference({"reference": "#rs-"+uid}))
         for pos,uid in self.map_variant_ids.items():
             reportResult.append(reference.FHIRReference({"reference": "#dv-"+uid}))
         for uid in self.seq_ids:

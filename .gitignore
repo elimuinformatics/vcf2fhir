@@ -12,3 +12,5 @@ vcf/cparse.c
 vcf/cparse.so
 .coverage
 .vscode/
+env/
+.eggs/
