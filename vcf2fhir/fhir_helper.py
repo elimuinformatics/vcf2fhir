@@ -96,7 +96,7 @@ class _Fhir_Helper:
         # Observation structure : described-variants
         self.report.contained.append(contained_rs)
 
-    def add_variant_obv(self, record, ref_build, gender, patientID):        
+    def add_variant_obv(self, record, ref_build, patientID):        
         # collect all the record with similar position values,
         # to utilized later in phased sequence relationship
         self._addPhaseRecords(record)

@@ -16,7 +16,7 @@ def _validRecord(record):
         return False
     return True  
 
-def _getFhirJSON(vcf_reader, ref_build, patientID, gender, output_filename, no_call_filename, conv_region_filename):
+def _getFhirJSON(vcf_reader, ref_build, patientID, output_filename, no_call_filename, conv_region_filename):
     phasedRecMap = {}
     fhir_helper = _Fhir_Helper()
     fhir_helper.initalizeReport(patientID)  
@@ -27,7 +27,7 @@ def _getFhirJSON(vcf_reader, ref_build, patientID, gender, output_filename, no_c
     # Add Variant Observations
     for record in vcf_reader:
         if(_validRecord(record) == True):
-            fhir_helper.add_variant_obv(record,ref_build, gender, patientID)
+            fhir_helper.add_variant_obv(record,ref_build, patientID)
 
     # Add phased relationship observations
     fhir_helper.add_phased_relationship_obv(patientID)
