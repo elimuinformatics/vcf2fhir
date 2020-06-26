@@ -39,7 +39,7 @@ class _Utilities(object):
         # Using  the first sample
         sample = record.samples[0]
         alleles = sample.gt_alleles
-        if record.CHROM != 'MT':
+        if record.CHROM != 'M':
             if len(alleles) >= 2 and sample.gt_type == 1:
                 allelicState = 'heterozygous'
                 allelicCode = 'LA6706-1'
@@ -52,14 +52,21 @@ class _Utilities(object):
             else:
                 allelicState = None
                 allelicCode = None
-
-
-
+        else:
+            if sample.gt_type != None and len(alleles) == 1 and alleles[0] == '1':
+                if hasattr(sample.data, 'AD') and hasattr(sample.data, 'DP'):
+                    try:
+                        ratio = sample.data.AD/sample.data.DP
+                        if ratio > 0.99:
+                            allelicState = "homoplasmic"
+                            allelicCode = "LA6704-6"
+                        else: 
+                            allelicState = "heteroplasmic"
+                            allelicCode = "LA6703-8"
+                    except:
+                        pass
+                else:
+                    allelicState = ""
+                    allelicCode = ""
         return {'ALLELE': allelicState, 'CODE' : allelicCode}
-
-    def getNoCallableData(NO_CALL_FILE,QUERY_RANGE_FILE):
-        rawNoCallData = pd.read_csv(NO_CALL_FILE,sep='\t',names=["CHROM","START","END","COVERAGE"])
-        queryRange = pd.read_csv(QUERY_RANGE_FILE,sep='\t',names=["CHROM","START","END"])
-
-        return rawNoCallData,queryRange
         

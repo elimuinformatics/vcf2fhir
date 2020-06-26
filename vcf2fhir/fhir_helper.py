@@ -9,45 +9,27 @@ import fhirclient.models.fhirreference as reference
 import fhirclient.models.fhirdate as date
 import fhirclient.models.range as valRange
 import fhirclient.models.medicationstatement as medication
+import numpy as np
 from collections import OrderedDict
 from uuid import uuid4
-from .geneRefSeq import _getRefSeqByChrom
 from .common import _Utilities
 
 class _Fhir_Helper:
     def __init__(self, *args, **kwargs):
         self.report = dr.DiagnosticReport()
         self.phasedRecMap = {}   
-        self.region_ids = []
+        self.result_ids = []
         self.map_variant_ids = {}
-        self.seq_ids = []
         self.obsContained = []
 
-    def _get_no_call_components(self, no_call_filename, conv_region_filename):
-        no_call_exist = False     
-        if (no_call_filename and conv_region_filename):
-            noCallRegion,queryRange = _Utilities.getNoCallableData(no_call_filename, conv_region_filename)
-            nocallRows = len(noCallRegion.index)
-            start = queryRange.at[0,"START"]
-            end = queryRange.at[0,"END"]
-            if not noCallRegion.empty:
-                if noCallRegion['START'].iloc[0] <= queryRange['START'].iloc[0]:
-                    noCallRegion['START'].iloc[0] = queryRange['START'].iloc[0]
-
-                if noCallRegion['END'].iloc[-1] >= queryRange['END'].iloc[0]:
-                    noCallRegion['END'].iloc[-1] = queryRange['END'].iloc[0]
-                no_call_exist = True
-        
-        #component Region-studied (No call region)
-        nocallComponents = []
+    def _get_conv_region_comp(self, record, query_regions):        
         observation_rs_components = []
-        if no_call_exist:   
-            for i in range (nocallRows):
-                nocallComponents.append('observation_rs_component'+str(i+4))
-            for (index, i) in zip(noCallRegion.index, nocallComponents):
-                i = observation.ObservationComponent()
-                i.code = concept.CodeableConcept({"coding": [{ "system": "http://loinc.org","code": "TBD-noCallRegion","display": "No call region"}]})
-                observation_rs_components.append(i)
+        for k, v in query_regions[record.CHROM]:
+            for i in range(len(v)):
+                obv_comp = observation.ObservationComponent()
+                obv_comp.code = concept.CodeableConcept({"coding": [{ "system": "http://loinc.org","code": "TBD-ReportableQueryRegion","display": "Reportable query region"}]})
+                obv_comp.valueRange = valRange.Range({"low": {"value": np.float(v['Start'][i])},"high": {"value": np.float(v['End'][i])}})
+                observation_rs_components.append(obv_comp)        
         return observation_rs_components
 
     def _addPhaseRecords(self, record):
@@ -67,15 +49,14 @@ class _Fhir_Helper:
         self.report.issued = date.FHIRDate(_Utilities.getFhirDate())
         self.report.contained = []
 
-    def add_regionstudied_obv(self, no_call_filename, conv_region_filename, patientID):
-        refSeq = ''
+    def add_regionstudied_obv(self, patientID, ref_seq, record, query_regions):
         patient_reference = reference.FHIRReference({"reference":"Patient/"+patientID})
-        contained_uid = uuid4().hex[:13]
-        self.region_ids.append(contained_uid)
+        contained_uid = "rs-"+ uuid4().hex[:13]
+        self.result_ids.append(contained_uid)
         # Region Studied Obeservation
         observation_rs = observation.Observation()
         contained_rs = observation_rs
-        contained_rs.id = "rs-"+contained_uid
+        contained_rs.id = contained_uid
         observation_rs.resource_type = "Observation"
         contained_rs.meta = meta.Meta({"profile":["http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/region-studied"]})
         observation_rs.code = concept.CodeableConcept({"coding":[{"system":"http://loinc.org","code":"53041-0","display":"DNA region of interest panel"}]})
@@ -89,26 +70,25 @@ class _Fhir_Helper:
 
         observation_rs_component3 = observation.ObservationComponent()
         observation_rs_component3.code = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": "48013-7","display": "Genomic reference sequence ID"}]})
-        observation_rs_component3.valueCodeableConcept = concept.CodeableConcept({"coding":[{"system":"http://www.ncbi.nlm.nih.gov/nuccore","code":refSeq}]})
+        observation_rs_component3.valueCodeableConcept = concept.CodeableConcept({"coding":[{"system":"http://www.ncbi.nlm.nih.gov/nuccore","code":ref_seq}]})
         
-        observation_rs_components = self._get_no_call_components(no_call_filename, conv_region_filename)
+        observation_rs_components = self._get_conv_region_comp(record, query_regions)
         observation_rs.component = [observation_rs_component2,observation_rs_component3] + observation_rs_components
         # Observation structure : described-variants
         self.report.contained.append(contained_rs)
 
-    def add_variant_obv(self, record, ref_build, patientID):        
+    def add_variant_obv(self, record, ref_seq, patientID):        
         # collect all the record with similar position values,
         # to utilized later in phased sequence relationship
         self._addPhaseRecords(record)
         patient_reference = reference.FHIRReference({"reference":"Patient/"+patientID})
         alleles = _Utilities.getAllelicState(record)
-        refSeq = _getRefSeqByChrom(ref_build, record.CHROM)
-        dvuid = uuid4().hex[:13]
+        dvuid = "dv-"+ uuid4().hex[:13]
         self.map_variant_ids.update({ str(record.POS) : dvuid})
-
+        self.result_ids.append(dvuid)
         observation_dv = observation.Observation()
         observation_dv.resource_type = "Observation"
-        observation_dv.id = "dv-"+dvuid
+        observation_dv.id = dvuid
         observation_dv.meta = meta.Meta({"profile":["http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/variant"]})
         observation_dv.status = "final"
         observation_dv.category = [concept.CodeableConcept({"coding":[{"system": "http://terminology.hl7.org/CodeSystem/observation-category","code": "laboratory"}]})]
@@ -122,7 +102,7 @@ class _Fhir_Helper:
 
         observation_dv_component2 = observation.ObservationComponent()
         observation_dv_component2.code = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": "48013-7","display": "Genomic reference sequence ID"}]})
-        observation_dv_component2.valueCodeableConcept = concept.CodeableConcept({"coding": [{"system": "http://www.ncbi.nlm.nih.gov/nuccore","code": refSeq}]})
+        observation_dv_component2.valueCodeableConcept = concept.CodeableConcept({"coding": [{"system": "http://www.ncbi.nlm.nih.gov/nuccore","code": ref_seq}]})
 
         observation_dv_component3 = observation.ObservationComponent()
         observation_dv_component3.code = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": "53034-5","display": "Allelic state"}]})
@@ -153,12 +133,12 @@ class _Fhir_Helper:
         for index in self.sequenceRels.index:
             dvRef1 = self.map_variant_ids.get(str(self.sequenceRels.at[index,'POS1']))
             dvRef2 = self.map_variant_ids.get(str(self.sequenceRels.at[index,'POS2']))
-            siduid = uuid4().hex[:13]
-            self.seq_ids.append(siduid)
+            siduid = "sid-" + uuid4().hex[:13]
+            self.result_ids.append(siduid)
 
             observation_sid = observation.Observation()
             observation_sid.resource_type = "Observation"
-            observation_sid.id = "sid-"+siduid
+            observation_sid.id = siduid
             observation_sid.meta = meta.Meta({"profile":["http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/sequence-phase-relationship"]})
             observation_sid.status = "final"
             observation_sid.category = [concept.CodeableConcept({"coding":[{"system": "http://terminology.hl7.org/CodeSystem/observation-category","code": "laboratory"}]})]
@@ -169,12 +149,8 @@ class _Fhir_Helper:
 
     def add_report_result(self):
         reportResult = []
-        for uid in self.region_ids:
-            reportResult.append(reference.FHIRReference({"reference": "#rs-"+uid}))
-        for pos,uid in self.map_variant_ids.items():
-            reportResult.append(reference.FHIRReference({"reference": "#dv-"+uid}))
-        for uid in self.seq_ids:
-            reportResult.append(reference.FHIRReference({"reference": "#sid-"+uid}))
+        for uid in self.result_ids:
+            reportResult.append(reference.FHIRReference({"reference": f"#{uid}"}))
         self.report.result = reportResult
     
     def generate_final_json(self):
@@ -208,8 +184,8 @@ class _Fhir_Helper:
             if (fhirReport['id'].startswith('sid-')):
                 derivedFromDV1 = {}
                 derivedFromDV2 = {}
-                derivedFromDV1['reference'] = "#dv-"+dvRef1
-                derivedFromDV2['reference'] = "#dv-"+dvRef2
+                derivedFromDV1['reference'] = f"#{dvRef1}"
+                derivedFromDV2['reference'] = f"#{dvRef2}"
                 derivedFrom = [derivedFromDV1,derivedFromDV2]
                 fhirReport['derivedFrom']= derivedFrom
 

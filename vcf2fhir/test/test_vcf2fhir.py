@@ -63,7 +63,9 @@ class TestVcf2FhirInputs(unittest.TestCase):
 class TestTranslation(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        self.TEST_RESULT_DIR = os.path.join(os.path.dirname(__file__),'output')
+        self.TEST_RESULT_DIR = os.path.join(os.path.dirname(__file__),'output')        
+        if os.path.exists(self.TEST_RESULT_DIR):
+            shutil.rmtree(self.TEST_RESULT_DIR)
         os.mkdir(self.TEST_RESULT_DIR)
 
     @classmethod
@@ -73,15 +75,14 @@ class TestTranslation(unittest.TestCase):
     def test_wo_patient_id(self):
         self.maxDiff = None
         oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__),'vcf_example1.vcf'), 'GRCh37')
-        outfult_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR,'fhir1_wo_patient.json')
-        expected_outfult_filename = os.path.join(os.path.dirname(__file__),'fhir1_wo_patient_expected.json')
-        print(outfult_filename)
+        outfult_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR,'fhir_wo_patient_example1.json')
+        expected_outfult_filename = os.path.join(os.path.dirname(__file__),'expected_example1_wo_patient.json')
         bDone = oVcf2Fhir.convert(outfult_filename)
         # check if translation was completed
         self.assertEqual(bDone, True)
         actual_fhir_json = json.load(open(outfult_filename))
         # Validate the pased sequence relationship
-        self.assertEqual(_validate_phase_rel(actual_fhir_json, {8 : [5, 6]}), True)
+        self.assertEqual(_validate_phase_rel(actual_fhir_json, {7 : [4, 5]}), True)
         # Validate: list of observation uids and list of result uids same.
         # Also set the uids to '' to avoid guid comparison in next step
         map_ids = _get_uids_map(actual_fhir_json)
@@ -90,18 +91,18 @@ class TestTranslation(unittest.TestCase):
         # Finally, check if the acutal json after removing all uids is same as exppected json
         expected_fhir_json = json.load(open(expected_outfult_filename))
         self.assertEqual(actual_fhir_json, expected_fhir_json)
-    
+
     def test_with_patient_id(self):
         self.maxDiff = None
         oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example1.vcf'), 'GRCh37', 'HG00628')        
-        outfult_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir1_with_patient.json')
-        expected_outfult_filename = os.path.join(os.path.dirname(__file__),'fhir1_with_patient_expected.json')
+        outfult_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir_with_patient_example1.json')
+        expected_outfult_filename = os.path.join(os.path.dirname(__file__),'expected_example1_with_patient.json')
         bDone = oVcf2Fhir.convert(outfult_filename)
         # check if translation was completed
         self.assertEqual(bDone, True)
         actual_fhir_json = json.load(open(outfult_filename))
         # Validate the pased sequence relationship
-        self.assertEqual(_validate_phase_rel(actual_fhir_json, {8 : [5, 6]}), True)
+        self.assertEqual(_validate_phase_rel(actual_fhir_json, {7 : [4, 5]}), True)
         # Validate: list of observation uids and list of result uids same.
         # Also set the uids to '' to avoid guid comparison in next step
         map_ids = _get_uids_map(actual_fhir_json)
@@ -116,6 +117,29 @@ class TestTranslation(unittest.TestCase):
         oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example2.vcf'), 'GRCh37', 'HG00628')
         bDone = oVcf2Fhir.convert(output_filename=os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR,'fhir2.json'))
         self.assertEqual(bDone, True)
+
+    def test_region_studied(self):
+        self.maxDiff = None
+        region_studied_filename = os.path.join(os.path.dirname(__file__),'RegionsStudied.bed')
+        region_conv_filename = os.path.join(os.path.dirname(__file__),'RegionsToConvert.bed')
+        nocall_filename = os.path.join(os.path.dirname(__file__),'NoncallableRegions.bed')               
+        outfult_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir_example3.json')
+        expected_outfult_filename = os.path.join(os.path.dirname(__file__),'expected_example3.json')
+        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh38', 'HG00628', region_conv_filename, region_studied_filename, nocall_filename)
+        bDone = oVcf2Fhir.convert(outfult_filename)
+        # check if translation was completed
+        self.assertEqual(bDone, True)
+        actual_fhir_json = json.load(open(outfult_filename))
+        # Validate the pased sequence relationship
+        self.assertEqual(_validate_phase_rel(actual_fhir_json, {11: [2, 3], 12 : [3, 4], 13 : [9,10]}), True)
+        # Validate: list of observation uids and list of result uids same.
+        # Also set the uids to '' to avoid guid comparison in next step
+        map_ids = _get_uids_map(actual_fhir_json)
+        self.assertEqual(map_ids['obv_ids'], map_ids['result_ids'])
+        actual_fhir_json['issued'] = ''
+        # Finally, check if the acutal json after removing all uids is same as exppected json        
+        expected_fhir_json = json.load(open(expected_outfult_filename))
+        self.assertEqual(actual_fhir_json, expected_fhir_json)
 
 suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestVcf2FhirInputs))
 suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestTranslation))

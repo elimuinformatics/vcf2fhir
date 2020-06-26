@@ -1,3 +1,4 @@
+##fileformat=VCFv4.1
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	TEST001
 1	15	.	.	G	.	.	.	GT:PS	0/1:.
 1	16	.	A,T	G	.	.	.	GT:PS	0/1:.
