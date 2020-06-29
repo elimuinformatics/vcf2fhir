@@ -2,7 +2,8 @@ import logging
 from .geneRefSeq import _getRefSeqByChrom
 from .fhir_helper import _Fhir_Helper
 
-logging.basicConfig(level=logging.DEBUG,format='%(asctime)s - %(levelname)s -%(message)s', datefmt='%d-%b-%y %H:%M')
+invalid_record_logger = logging.getLogger("vcf2fhir.invalidrecord")
+general_logger = logging.getLogger("vcf2fhir.general")
 
 def _validRecord(record, query_regions):
     if(record.is_sv == True):
@@ -15,6 +16,8 @@ def _validRecord(record, query_regions):
         return False
     if(len(record.ALT) != 1 or record.ALT[0].type != 'SNV'):
         return False
+    if record.CHROM == "M" and len(record.samples[0].gt_alleles) == 1 and record.samples[0].gt_alleles[0] == "0":
+        return False
     return True  
 
 def _getFhirJSON(vcf_reader, ref_build, patientID, output_filename, conversion_region, region_studied, nocall_region):
@@ -24,27 +27,39 @@ def _getFhirJSON(vcf_reader, ref_build, patientID, output_filename, conversion_r
     prev_var_chrom = ""
     fhir_helper = _Fhir_Helper()
     fhir_helper.initalizeReport(patientID)
-    if nocall_region and conversion_region and region_studied:
-        query_regions = region_studied.subtract(nocall_region).intersect(conversion_region)
-    # Add Variant Observations
-    for record in vcf_reader:
-        if prev_var_chrom != record.CHROM:
-            ref_seq = _getRefSeqByChrom(ref_build, record.CHROM)
-            if query_regions is not None:
-                # add RegionStudied Observation
-                fhir_helper.add_regionstudied_obv(patientID, ref_seq, record, query_regions)
-            prev_var_chrom = record.CHROM
+    general_logger.debug("Finished Initializing empty report")
+    if conversion_region:
+        if region_studied:
+            query_regions = region_studied.subtract(nocall_region).intersect(conversion_region)
+        else:
+            query_regions = conversion_region
+        general_logger.debug("Final Conmputed Reportable Query Regions: %s", query_regions)
+    general_logger.info("Start adding Region studied observation followed by Variant observation corresponding to that region")
+    for record in vcf_reader:        
         if(_validRecord(record, query_regions) == True):
-            fhir_helper.add_variant_obv(record, ref_seq, patientID)
+            if prev_var_chrom != record.CHROM:
+                ref_seq = _getRefSeqByChrom(ref_build, record.CHROM)
+                general_logger.debug(f"Reference sequence for CHROM %s is %s", {record.CHROM}, ref_seq)
+                if query_regions:
+                    general_logger.info("Adding region Studied observation for %s", record.CHROM)
+                    fhir_helper.add_regionstudied_obv(patientID, ref_seq, record, query_regions)
+                prev_var_chrom = record.CHROM
+            if not query_regions or query_regions[record.CHROM, record.POS -1: record.POS].empty == False:
+                fhir_helper.add_variant_obv(record, ref_seq, patientID)
+            else:
+                general_logger.debug("Record not in Reportable Query Region %s ,with considered sample: %s", record, record.samples[0].data)
+        else:
+            invalid_record_logger.debug("Record: %s, considered sample: %s", record, record.samples[0].data)
 
-    # Add phased relationship observations
+    general_logger.info("Adding all the phased sequence relationship found")
     fhir_helper.add_phased_relationship_obv(patientID)
 
-    # Add All Observation unique IDs in report result.
+    general_logger.info("Adding all the observation Ids to result block")
     fhir_helper.add_report_result()
 
     fhir_helper.generate_final_json()
-
+    general_logger.info(f"Export the FHIR object to the file {output_filename}")
     fhir_helper.export_fhir_json(output_filename)
+    general_logger.info("Completed conversion")
 
 

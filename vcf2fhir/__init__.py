@@ -1,1 +1,1 @@
-from vcf2fhir.translator import Converter
+from vcf2fhir.converter import Converter

@@ -68,6 +68,28 @@ Please use the VCF-2-FHIR repository. Pull requests gladly accepted. Issues shou
 * Run all the tests again and confirm they pass.
 * Raise a GitHub Pull Request to the main repository's master branch.
 
+### Enable logging
+
+There are two logger being setup for the library ('vcf2fhir.general') and ('vcf2fhir.invalidrecord'). Application using the library needs to configure this logger.
+* vcf2fhir.general: provides the general logs of all the the steps 
+* vcf2fhir.invalidrecord: logs all the records from vcf file which are ignored during conversion
+
+```python
+>> import logging
+# create logger
+>> logger = logging.getLogger('vcf2fhir.general')
+>> logger.setLevel(logging.DEBUG)
+# create console handler and set level to debug
+>> ch = logging.StreamHandler()
+>> ch.setLevel(logging.DEBUG)
+# create formatter
+>> formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# add formatter to ch
+>> ch.setFormatter(formatter)
+# add ch to logger
+>> logger.addHandler(ch)
+```
+
 
 ## Running tests  
   

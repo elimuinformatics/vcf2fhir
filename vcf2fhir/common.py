@@ -2,6 +2,10 @@ import os
 import datetime
 import pandas as pd
 import pytz
+import logging
+
+
+general_logger = logging.getLogger("vcf2fhir.general")
 
 class _Utilities(object):
 
@@ -50,13 +54,14 @@ class _Utilities(object):
                 allelicState = 'hemizygous'
                 allelicCode = 'LA6707-9'
             else:
-                allelicState = None
-                allelicCode = None
-        else:
-            if sample.gt_type != None and len(alleles) == 1 and alleles[0] == '1':
+                _Utilities._error_log_allelicstate(record)
+        elif sample.gt_type != None and len(alleles) == 1 and alleles[0] == '1':
                 if hasattr(sample.data, 'AD') and hasattr(sample.data, 'DP'):
                     try:
-                        ratio = sample.data.AD/sample.data.DP
+                        if(type(sample.data.AD) == "list" and len(sample.data.AD) > 0):
+                            ratio = sample.data.AD[0]/sample.data.DP
+                        else:
+                            ratio = sample.data.AD/sample.data.DP
                         if ratio > 0.99:
                             allelicState = "homoplasmic"
                             allelicCode = "LA6704-6"
@@ -64,9 +69,15 @@ class _Utilities(object):
                             allelicState = "heteroplasmic"
                             allelicCode = "LA6703-8"
                     except:
+                        _Utilities._error_log_allelicstate(record)
                         pass
                 else:
-                    allelicState = ""
-                    allelicCode = ""
+                    _Utilities._error_log_allelicstate(record)
+        else:            
+            _Utilities._error_log_allelicstate(record)
         return {'ALLELE': allelicState, 'CODE' : allelicCode}
+
+    def _error_log_allelicstate(record):
+            general_logger.error("Cannot Determine AllelicState for: %s , considered sample: %s", record, record.samples[0].data)
+
         
