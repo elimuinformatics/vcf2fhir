@@ -6,6 +6,7 @@ import json
 from os.path import join, dirname
 import shutil
 import logging
+from ..common import _Utilities
 
 suite = doctest.DocTestSuite(vcf2fhir)
 
@@ -14,20 +15,20 @@ def _get_uids_map(fhir_json):
     result_ids = []
     for index, obv in enumerate(fhir_json['contained']):
         id = obv['id']
-        obv_ids.append(f"#{id}")
-        fhir_json['contained'][index]['id'] = ""
+        obv_ids.append(f'#{id}')
+        fhir_json['contained'][index]['id'] = ''
 
     for index, result in enumerate(fhir_json['result']):
         result_ids.append(result['reference'])
-        fhir_json['result'][index]['reference'] = ""
-    fhir_json['id'] = ""
+        fhir_json['result'][index]['reference'] = ''
+    fhir_json['id'] = ''
     return {'obv_ids' : obv_ids, 'result_ids' : result_ids}
 
 def _validate_phase_rel(fhir_json, map_variant_index):
     for index_seq, list_index_var in map_variant_index.items():
         for index, ref in enumerate(fhir_json['contained'][index_seq]['derivedFrom']):
             variant_id = fhir_json['contained'][list_index_var[index]]['id']
-            if not ref['reference'] == f"#{variant_id}":
+            if not ref['reference'] == f'#{variant_id}':
                 return False
             fhir_json['contained'][index_seq]['derivedFrom'][index]['reference'] = ''
     return True
@@ -46,12 +47,12 @@ class TestVcf2FhirInputs(unittest.TestCase):
     def test_required_ref_build(self):
         with self.assertRaises(Exception) as context:
             vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example1.vcf'))
-        self.assertTrue('You must provide build number ("GRCh37" or "GRCh38)' in str(context.exception))
+        self.assertTrue('You must provide build number ("GRCh37" or "GRCh38")' in str(context.exception))
 
     def test_invalid_ref_build(self):
         with self.assertRaises(Exception) as context:
             vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example1.vcf'), 'b38')
-        self.assertTrue('You must provide build number ("GRCh37" or "GRCh38)' in str(context.exception))
+        self.assertTrue('You must provide build number ("GRCh37" or "GRCh38")' in str(context.exception))
     
     def test_valid_ref_build_37(self):
         oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example1.vcf'), 'GRCh37')
@@ -60,6 +61,36 @@ class TestVcf2FhirInputs(unittest.TestCase):
     def test_valid_ref_build_38(self):
         oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example1.vcf'), 'GRCh38')
         self.assertEqual(type(oVcf2Fhir), vcf2fhir.Converter)
+
+    def test_conv_region_only(self):
+        region_conv_filename = os.path.join(os.path.dirname(__file__),'RegionsToConvert_example3.bed')
+        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', region_conv_filename)
+        self.assertEqual(type(oVcf2Fhir), vcf2fhir.Converter)
+
+    def test_conv_region_region_studied(self):        
+        region_studied_filename = os.path.join(os.path.dirname(__file__),'RegionsStudied_example3.bed')
+        region_conv_filename = os.path.join(os.path.dirname(__file__),'RegionsToConvert_example3.bed')
+        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', region_conv_filename, region_studied_filename)
+        self.assertEqual(type(oVcf2Fhir), vcf2fhir.Converter)
+
+    def test_conv_region_nocall(self):        
+        region_conv_filename = os.path.join(os.path.dirname(__file__),'RegionsToConvert_example3.bed')     
+        nocall_filename = os.path.join(os.path.dirname(__file__),'NoncallableRegions_example3.bed')    
+        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', region_conv_filename, nocall_filename=nocall_filename)
+        self.assertEqual(type(oVcf2Fhir), vcf2fhir.Converter)
+
+    def test_no_conv_region_region_studied(self):        
+        region_studied_filename = os.path.join(os.path.dirname(__file__),'RegionsStudied_example3.bed')        
+        with self.assertRaises(Exception) as context:
+            oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', region_studied_filename = region_studied_filename)
+        self.assertTrue('Please provdie the conv_region_filename' in str(context.exception))
+
+    def test_no_conv_region_nocall(self):
+        nocall_filename = os.path.join(os.path.dirname(__file__),'NoncallableRegions_example3.bed') 
+        with self.assertRaises(Exception) as context:
+            oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', nocall_filename = nocall_filename)
+        self.assertTrue('Please provdie the conv_region_filename' in str(context.exception))
+        
 
 class TestTranslation(unittest.TestCase):
     @classmethod
@@ -180,7 +211,7 @@ class TestLogger(unittest.TestCase):
         output_filename = os.path.join(os.path.dirname(__file__), self.LOG_DIR, 'logging_fhir.json')
         # create logger               
         general_logger = logging.getLogger('vcf2fhir.general')
-        invalid_record_logger = logging.getLogger("vcf2fhir.invalidrecord") 
+        invalid_record_logger = logging.getLogger('vcf2fhir.invalidrecord') 
         general_logger.setLevel(logging.DEBUG)
         invalid_record_logger.setLevel(logging.DEBUG)
         # add ch to logger        
@@ -191,11 +222,40 @@ class TestLogger(unittest.TestCase):
         self.assertEqual(os.path.exists(self.log_general_filename), True)
         self.assertEqual(os.path.exists(self.log_invalid_record_filename), True)
 
+class TestChromIdentifier(unittest.TestCase):
+    def test_chrom_1_22(self):
+        actual_chrom = ['chr1', '1', 'CHR1', '22', 'CHR22', 'chr22']
+        expected_chrom = ['1', '1', '1', '22', '22', '22']
+        i = 0
+        for chrom in actual_chrom:
+            self.assertEqual(_Utilities.extract_chrom_identifier(chrom), expected_chrom[i])
+            i += 1
+    
+    def test_chrom_X_Y(self):
+        actual_chrom = ['chrX', 'X', 'x', 'CHRX', 'chrY', 'Y', 'Y', 'CHRY']
+        expected_chrom = ['X', 'X', 'X', 'X', 'Y', 'Y', 'Y', 'Y']
+        i = 0
+        for chrom in actual_chrom:
+            self.assertEqual(_Utilities.extract_chrom_identifier(chrom), expected_chrom[i])
+            i += 1
+
+    def test_chrom_M(self):
+        actual_chrom = ['MT', 'm', 'M', 'mt', 'chrm', 'chrM', 'chrmt', 'chrMT' ]
+        expected_chrom = ['M', 'M', 'M', 'M', 'M', 'M', 'M', 'M']
+        i = 0
+        for chrom in actual_chrom:
+            self.assertEqual(_Utilities.extract_chrom_identifier(chrom), expected_chrom[i])
+            i += 1
+
+
+
+
         
 
 suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestVcf2FhirInputs))
 suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestTranslation))
 suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestLogger))
+suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestChromIdentifier))
 
 if __name__ == '__main__':
     unittest.main()

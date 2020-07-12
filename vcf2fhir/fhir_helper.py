@@ -95,36 +95,45 @@ class _Fhir_Helper:
         observation_dv.code = concept.CodeableConcept({"coding":[{"system":"http://loinc.org","code":"69548-6","display":"Genetic variant assessment"}]})
         observation_dv.subject = patient_reference
         observation_dv.valueCodeableConcept = concept.CodeableConcept({"coding":[{"system":"http://loinc.org","code":"LA9633-4","display":"present"}]})
+        observation_dv.component = []
 
         observation_dv_component1 = observation.ObservationComponent()
         observation_dv_component1.code = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": "62374-4","display": "Human reference sequence assembly version"}]})
         observation_dv_component1.valueCodeableConcept = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": "LA14029-5","display": "GRCh37"}]})
+        observation_dv.component.append(observation_dv_component1)
 
         observation_dv_component2 = observation.ObservationComponent()
         observation_dv_component2.code = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": "48013-7","display": "Genomic reference sequence ID"}]})
         observation_dv_component2.valueCodeableConcept = concept.CodeableConcept({"coding": [{"system": "http://www.ncbi.nlm.nih.gov/nuccore","code": ref_seq}]})
+        observation_dv.component.append(observation_dv_component2)
 
-        observation_dv_component3 = observation.ObservationComponent()
-        observation_dv_component3.code = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": "53034-5","display": "Allelic state"}]})
-        observation_dv_component3.valueCodeableConcept = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": alleles['CODE'],"display": alleles['ALLELE']}]})        
+        if alleles['CODE'] != "" or alleles['ALLELE'] != "":
+            observation_dv_component3 = observation.ObservationComponent()
+            observation_dv_component3.code = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": "53034-5","display": "Allelic state"}]})
+            observation_dv_component3.valueCodeableConcept = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": alleles['CODE'],"display": alleles['ALLELE']}]})
+            observation_dv.component.append(observation_dv_component3)
+
 
         observation_dv_component4 = observation.ObservationComponent()
         observation_dv_component4.code = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": "69547-8","display": "Genomic Ref allele [ID]"}]})
         observation_dv_component4.valueString = record.REF
+        observation_dv.component.append(observation_dv_component4)
 
         observation_dv_component5 = observation.ObservationComponent()
         observation_dv_component5.code = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": "69551-0","display": "Genomic Alt allele [ID]"}]})
         observation_dv_component5.valueString = record.ALT[0].sequence
+        observation_dv.component.append(observation_dv_component5)
 
         observation_dv_component6 = observation.ObservationComponent()
         observation_dv_component6.code = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": "92822-6","display": "Genomic coord system"}]})
         observation_dv_component6.valueCodeableConcept = concept.CodeableConcept({"coding":[{"system":"http://loinc.org","code":"LA30102-0","display":"1-based character counting"}]})
+        observation_dv.component.append(observation_dv_component6)
 
         observation_dv_component7 = observation.ObservationComponent()
         observation_dv_component7.code = concept.CodeableConcept({"coding": [{"system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes","code": "exact-start-end","display": "Variant exact start and end"}]})
         observation_dv_component7.valueRange = valRange.Range({"low": {"value": int(record.POS)}})
-
-        observation_dv.component =  [observation_dv_component1,observation_dv_component2,observation_dv_component3,observation_dv_component4,observation_dv_component5,observation_dv_component6,observation_dv_component7]
+        observation_dv.component.append(observation_dv_component7)
+        
         self.report.contained.append(observation_dv)
 
     def add_phased_relationship_obv(self, patientID):

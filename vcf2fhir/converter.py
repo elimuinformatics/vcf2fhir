@@ -9,11 +9,9 @@ class Converter(object):
         if not (vcf_filename):
             raise Exception('You must provide vcf_filename')
         if not ref_build or ref_build not in ["GRCh37", "GRCh38"]:
-            raise Exception('You must provide build number ("GRCh37" or "GRCh38)')
+            raise Exception('You must provide build number ("GRCh37" or "GRCh38")')
         if (nocall_filename or region_studied_filename) and not conv_region_filename:
-            raise Exception ("Please provdie the conv_region_filename or conv_region_list")
-        if (nocall_filename and not region_studied_filename) or (not nocall_filename and region_studied_filename):
-            raise Exception("Please provide nocall_filename and region_studied_filename or neither of them")
+            raise Exception ("Please provdie the conv_region_filename")
         self.vcf_filename = vcf_filename
         self._vcf_reader = vcf.Reader(open(vcf_filename, 'r'))
         if not patient_id:
@@ -21,7 +19,7 @@ class Converter(object):
         if nocall_filename:
             self.nocall_region = pyranges.read_bed(nocall_filename)
         else:
-            self.nocall_region = None
+            self.nocall_region = pyranges.PyRanges()
         if conv_region_filename:
             self.conversion_region = pyranges.read_bed(conv_region_filename)
         else:
@@ -29,7 +27,7 @@ class Converter(object):
         if region_studied_filename:
             self.region_studied = pyranges.read_bed(region_studied_filename)
         else:
-            self.region_studied = None
+            self.region_studied = pyranges.PyRanges()
         self.patient_id = patient_id
         self.ref_build = ref_build
         self.nocall_filename = nocall_filename

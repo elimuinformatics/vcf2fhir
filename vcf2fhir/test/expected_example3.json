@@ -809,8 +809,8 @@
                         "coding": [
                             {
                                 "system": "http://loinc.org",
-                                "code": "",
-                                "display": ""
+                                "code": "LA6703-8",
+                                "display": "heteroplasmic"
                             }
                         ]
                     }
@@ -953,26 +953,6 @@
                             {
                                 "system": "http://www.ncbi.nlm.nih.gov/nuccore",
                                 "code": "NC_012920.1"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "code": {
-                        "coding": [
-                            {
-                                "system": "http://loinc.org",
-                                "code": "53034-5",
-                                "display": "Allelic state"
-                            }
-                        ]
-                    },
-                    "valueCodeableConcept": {
-                        "coding": [
-                            {
-                                "system": "http://loinc.org",
-                                "code": "",
-                                "display": ""
                             }
                         ]
                     }

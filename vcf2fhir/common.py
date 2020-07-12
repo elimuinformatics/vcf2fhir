@@ -58,17 +58,18 @@ class _Utilities(object):
         elif sample.gt_type != None and len(alleles) == 1 and alleles[0] == '1':
                 if hasattr(sample.data, 'AD') and hasattr(sample.data, 'DP'):
                     try:
-                        if(type(sample.data.AD) == "list" and len(sample.data.AD) > 0):
-                            ratio = sample.data.AD[0]/sample.data.DP
+                        if(isinstance(sample.data.AD, list) and len(sample.data.AD) > 0):
+                            ratio = float(sample.data.AD[0])/float(sample.data.DP)
                         else:
-                            ratio = sample.data.AD/sample.data.DP
+                            ratio = float(sample.data.AD)/float(sample.data.DP)
                         if ratio > 0.99:
                             allelicState = "homoplasmic"
                             allelicCode = "LA6704-6"
                         else: 
                             allelicState = "heteroplasmic"
                             allelicCode = "LA6703-8"
-                    except:
+                    except Exception as e:
+                        general_logger.debug(e)
                         _Utilities._error_log_allelicstate(record)
                         pass
                 else:
@@ -76,6 +77,12 @@ class _Utilities(object):
         else:            
             _Utilities._error_log_allelicstate(record)
         return {'ALLELE': allelicState, 'CODE' : allelicCode}
+
+    def extract_chrom_identifier(chrom):
+        chrom = chrom.upper().replace("CHR", "")
+        if chrom == "MT":
+            chrom = "M"
+        return chrom
 
     def _error_log_allelicstate(record):
             general_logger.error("Cannot Determine AllelicState for: %s , considered sample: %s", record, record.samples[0].data)
