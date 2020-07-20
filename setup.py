@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="vcf2fhir-openelimu",
-    version="0.0.6",
+    version="0.0.7",
     author="",
     test_suite='vcf2fhir.test.test_vcf2fhir.suite',
     author_email="info@elimu.io",

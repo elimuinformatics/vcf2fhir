@@ -90,10 +90,10 @@
                     },
                     "valueRange": {
                         "high": {
-                            "value": 52000.0
+                            "value": 52001.0
                         },
                         "low": {
-                            "value": 50000.0
+                            "value": 50001.0
                         }
                     }
                 },
@@ -109,10 +109,10 @@
                     },
                     "valueRange": {
                         "high": {
-                            "value": 60000.0
+                            "value": 60001.0
                         },
                         "low": {
-                            "value": 55000.0
+                            "value": 55001.0
                         }
                     }
                 },
@@ -128,10 +128,10 @@
                     },
                     "valueRange": {
                         "high": {
-                            "value": 60600.0
+                            "value": 60601.0
                         },
                         "low": {
-                            "value": 60500.0
+                            "value": 60501.0
                         }
                     }
                 }
@@ -706,10 +706,10 @@
                     },
                     "valueRange": {
                         "high": {
-                            "value": 60025.0
+                            "value": 60026.0
                         },
                         "low": {
-                            "value": 50000.0
+                            "value": 50001.0
                         }
                     }
                 }

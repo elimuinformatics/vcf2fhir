@@ -67,10 +67,19 @@ class TestVcf2FhirInputs(unittest.TestCase):
         oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', region_conv_filename)
         self.assertEqual(type(oVcf2Fhir), vcf2fhir.Converter)
 
+    def test_conv_region_dict(self):
+        conv_region_dict =  {
+            "Chromosome": ["X", "X", "M"],
+            "Start": [50001, 55001, 50001],
+            "End": [52001, 60601, 60026]
+        }
+        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', conv_region_dict=conv_region_dict)
+        self.assertEqual(type(oVcf2Fhir), vcf2fhir.Converter)
+
     def test_conv_region_region_studied(self):        
         region_studied_filename = os.path.join(os.path.dirname(__file__),'RegionsStudied_example3.bed')
         region_conv_filename = os.path.join(os.path.dirname(__file__),'RegionsToConvert_example3.bed')
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', region_conv_filename, region_studied_filename)
+        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', region_conv_filename, region_studied_filename=region_studied_filename)
         self.assertEqual(type(oVcf2Fhir), vcf2fhir.Converter)
 
     def test_conv_region_nocall(self):        
@@ -83,13 +92,13 @@ class TestVcf2FhirInputs(unittest.TestCase):
         region_studied_filename = os.path.join(os.path.dirname(__file__),'RegionsStudied_example3.bed')        
         with self.assertRaises(Exception) as context:
             oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', region_studied_filename = region_studied_filename)
-        self.assertTrue('Please provdie the conv_region_filename' in str(context.exception))
+        self.assertTrue('Please provdie the conv_region_filename or conv_region_dict' in str(context.exception))
 
     def test_no_conv_region_nocall(self):
         nocall_filename = os.path.join(os.path.dirname(__file__),'NoncallableRegions_example3.bed') 
         with self.assertRaises(Exception) as context:
             oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', nocall_filename = nocall_filename)
-        self.assertTrue('Please provdie the conv_region_filename' in str(context.exception))
+        self.assertTrue('Please provdie the conv_region_filename or conv_region_dict' in str(context.exception))
         
 
 class TestTranslation(unittest.TestCase):
@@ -157,7 +166,34 @@ class TestTranslation(unittest.TestCase):
         nocall_filename = os.path.join(os.path.dirname(__file__),'NoncallableRegions_example3.bed')               
         output_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir_example3.json')
         expected_outfult_filename = os.path.join(os.path.dirname(__file__),'expected_example3.json')
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh38', 'HG00628', region_conv_filename, region_studied_filename, nocall_filename)
+        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh38', 'HG00628', region_conv_filename, region_studied_filename=region_studied_filename, nocall_filename=nocall_filename)
+        bDone = oVcf2Fhir.convert(output_filename)
+        # check if translation was completed
+        self.assertEqual(bDone, True)
+        actual_fhir_json = json.load(open(output_filename))
+        # Validate the pased sequence relationship
+        self.assertEqual(_validate_phase_rel(actual_fhir_json, {7: [1, 2], 8 : [2, 3]}), True)
+        # Validate: list of observation uids and list of result uids same.
+        # Also set the uids to '' to avoid guid comparison in next step
+        map_ids = _get_uids_map(actual_fhir_json)
+        self.assertEqual(map_ids['obv_ids'], map_ids['result_ids'])
+        actual_fhir_json['issued'] = ''
+        # Finally, check if the acutal json after removing all uids is same as exppected json        
+        expected_fhir_json = json.load(open(expected_outfult_filename))
+        self.assertEqual(actual_fhir_json, expected_fhir_json)
+
+    def test_region_studied_dict(self):        
+        conv_region_dict =  {
+            "Chromosome": ["X", "X", "M"],
+            "Start": [50001, 55001, 50001],
+            "End": [52001, 60601, 60026]
+        }
+        self.maxDiff = None
+        region_studied_filename = os.path.join(os.path.dirname(__file__),'RegionsStudied_example3.bed')
+        nocall_filename = os.path.join(os.path.dirname(__file__),'NoncallableRegions_example3.bed')               
+        output_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir_example3_dict.json')
+        expected_outfult_filename = os.path.join(os.path.dirname(__file__),'expected_example3.json')
+        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh38', 'HG00628', conv_region_dict= conv_region_dict, region_studied_filename=region_studied_filename, nocall_filename=nocall_filename)
         bDone = oVcf2Fhir.convert(output_filename)
         # check if translation was completed
         self.assertEqual(bDone, True)

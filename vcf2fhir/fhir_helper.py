@@ -28,8 +28,8 @@ class _Fhir_Helper:
             for i in range(len(v)):
                 obv_comp = observation.ObservationComponent()
                 obv_comp.code = concept.CodeableConcept({"coding": [{ "system": "http://loinc.org","code": "TBD-ReportableQueryRegion","display": "Reportable query region"}]})
-                obv_comp.valueRange = valRange.Range({"low": {"value": np.float(v['Start'][i])},"high": {"value": np.float(v['End'][i])}})
-                observation_rs_components.append(obv_comp)        
+                obv_comp.valueRange = valRange.Range({"low": {"value": np.float(v['Start'][i]) + 1},"high": {"value": np.float(v['End'][i]) + 1}})
+                observation_rs_components.append(obv_comp)
         return observation_rs_components
 
     def _addPhaseRecords(self, record):

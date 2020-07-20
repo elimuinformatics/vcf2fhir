@@ -8,17 +8,6 @@ Conceptually, the utility takes a VCF as input and outputs a FHIR Genomics repor
 
 ![image](https://user-images.githubusercontent.com/46577791/80811245-5665bb00-8b7a-11ea-9b4e-4dc5c10cdce9.png)
 
-```
->>> import vcf2fhir
->>> oVcf2Fhir = vcf2fhir.Converter('sample.vcf', 'GRCh37')
->>> oVcf2Fhir.convert()
-```
-
-### License and Limitations
-
-Software is available for use under an [Apache 2.0 license](https://opensource.org/licenses/Apache-2.0), and is intended solely for experimental use, to help further Genomics-EHR integration exploration. Software is expressly not ready to be used with identifiable patient data or in delivering care to patients. Code issues should be tracked here. Comments and questions can also be directed to info@elimu.io.
-
-
 ### VCF Requirements
 
 - File must conform to VCF Version 4.1 or later.
@@ -35,6 +24,23 @@ Software is available for use under an [Apache 2.0 license](https://opensource.o
     - Patient0123.b38.TPMT.M.File012345.vcf
     - Patient0123.b38.TPMT.File012345.vcf
 - Submitted VCF files should contain just that slice intended to be converted. While the VCF file may contain variants from multiple chromosomes, or from regions that extend beyond the stated Gene's boundaries, only variants on the same chromosome as the Gene will be converted. 
+
+### Release
+
+Vcf2Fhir is in beta stage unitll we have completed verifying the conversion. If you come across a problem or unexpected behaviour please create an issue.
+
+### Install
+```
+pip install vcf2fhir
+```
+
+### Quick Examples
+
+```
+>>> import vcf2fhir
+>>> oVcf2Fhir = vcf2fhir.Converter('sample.vcf', 'GRCh37')
+>>> oVcf2Fhir.convert()
+```
 
 ### Conversion logic
 
@@ -53,47 +59,12 @@ Variant observations:
 - Use a 1-based coordinate system, so that the variant position in the FHIR Genomics report is the same as VCF POS. 
 - Male sex is assumed if not provided (e.g. for determining allelic state of chrX variants)
 
-## Installations
-```
-python -m pip install --ignore-installed --extra-index-url https://test.pypi.org/simple/ vcf2fhir-openelimu==0.0.3
-```
+### TODO  
 
-## Development  
-  
-Please use the VCF-2-FHIR repository. Pull requests gladly accepted. Issues should be reported at the github issue tracker.
+* Support for structural variants.
+* More test cases.
+* Performance benchmarking.
 
-* Fork the repository from [GitHub](https://github.com/openelimu/VCF-2-FHIR)
-* Run all the tests and confirm they all pass on your system. If they don’t, you’ll need to investigate why they fail. If you’re unable to diagnose this yourself, raise it as a bug report.
-* Add your changes allong with the tests validating the change.
-* Run all the tests again and confirm they pass.
-* Raise a GitHub Pull Request to the main repository's master branch.
+### License and Limitations
 
-### Enable logging
-
-There are two logger being setup for the library ('vcf2fhir.general') and ('vcf2fhir.invalidrecord'). Application using the library needs to configure this logger.
-* vcf2fhir.general: provides the general logs of all the the steps 
-* vcf2fhir.invalidrecord: logs all the records from vcf file which are ignored during conversion
-
-```python
->> import logging
-# create logger
->> logger = logging.getLogger('vcf2fhir.general')
->> logger.setLevel(logging.DEBUG)
-# create console handler and set level to debug
->> ch = logging.StreamHandler()
->> ch.setLevel(logging.DEBUG)
-# create formatter
->> formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# add formatter to ch
->> ch.setFormatter(formatter)
-# add ch to logger
->> logger.addHandler(ch)
-```
-
-
-## Running tests  
-  
-Please check the tests by running them with:
-```
-python setup.py test
-```
+Software is available for use under an [Apache 2.0 license](https://opensource.org/licenses/Apache-2.0), and is intended solely for experimental use, to help further Genomics-EHR integration exploration. Software is expressly not ready to be used with identifiable patient data or in delivering care to patients. Code issues should be tracked here. Comments and questions can also be directed to info@elimu.io.

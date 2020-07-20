@@ -11,7 +11,8 @@ def _modify_chrom_series(df):
     return df
 
 def _fix_region_chrom(regions):
-    return regions.apply(_modify_chrom_series)
+    # return regions.apply(_modify_chrom_series)
+    return regions
 
 def _validRecord(record, query_regions):
     if(record.is_sv == True):
