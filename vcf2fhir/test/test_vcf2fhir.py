@@ -6,7 +6,7 @@ import json
 from os.path import join, dirname
 import shutil
 import logging
-from ..common import _Utilities
+from vcf2fhir.common import _Utilities
 
 suite = doctest.DocTestSuite(vcf2fhir)
 
@@ -47,12 +47,12 @@ class TestVcf2FhirInputs(unittest.TestCase):
     def test_required_ref_build(self):
         with self.assertRaises(Exception) as context:
             vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example1.vcf'))
-        self.assertTrue('You must provide build number ("GRCh37" or "GRCh38")' in str(context.exception))
+        self.assertEqual('You must provide build number ("GRCh37" or "GRCh38")', str(context.exception))
 
     def test_invalid_ref_build(self):
         with self.assertRaises(Exception) as context:
             vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example1.vcf'), 'b38')
-        self.assertTrue('You must provide build number ("GRCh37" or "GRCh38")' in str(context.exception))
+        self.assertEqual('You must provide build number ("GRCh37" or "GRCh38")', str(context.exception))
     
     def test_valid_ref_build_37(self):
         oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example1.vcf'), 'GRCh37')
@@ -85,20 +85,20 @@ class TestVcf2FhirInputs(unittest.TestCase):
     def test_conv_region_nocall(self):        
         region_conv_filename = os.path.join(os.path.dirname(__file__),'RegionsToConvert_example3.bed')     
         nocall_filename = os.path.join(os.path.dirname(__file__),'NoncallableRegions_example3.bed')    
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', region_conv_filename, nocall_filename=nocall_filename)
-        self.assertEqual(type(oVcf2Fhir), vcf2fhir.Converter)
+        with self.assertRaises(Exception) as context:
+            oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', region_conv_filename, nocall_filename=nocall_filename)
+        self.assertEqual('Please also provide region_studied_filename when nocall_filename is provided',str(context.exception))
 
     def test_no_conv_region_region_studied(self):        
         region_studied_filename = os.path.join(os.path.dirname(__file__),'RegionsStudied_example3.bed')        
-        with self.assertRaises(Exception) as context:
-            oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', region_studied_filename = region_studied_filename)
-        self.assertTrue('Please provdie the conv_region_filename or conv_region_dict' in str(context.exception))
+        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', region_studied_filename = region_studied_filename)
+        self.assertEqual(type(oVcf2Fhir), vcf2fhir.Converter)
 
     def test_no_conv_region_nocall(self):
         nocall_filename = os.path.join(os.path.dirname(__file__),'NoncallableRegions_example3.bed') 
         with self.assertRaises(Exception) as context:
             oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', nocall_filename = nocall_filename)
-        self.assertTrue('Please provdie the conv_region_filename or conv_region_dict' in str(context.exception))
+        self.assertEqual('Please also provide region_studied_filename when nocall_filename is provided',str(context.exception))
         
 
 class TestTranslation(unittest.TestCase):
@@ -111,7 +111,8 @@ class TestTranslation(unittest.TestCase):
 
     @classmethod
     def tearDownClass(self):
-        shutil.rmtree(self.TEST_RESULT_DIR)
+        print("Hello")
+        # shutil.rmtree(self.TEST_RESULT_DIR)
 
     def test_wo_patient_id(self):
         self.maxDiff = None
@@ -259,6 +260,7 @@ class TestLogger(unittest.TestCase):
         self.assertEqual(os.path.exists(self.log_invalid_record_filename), True)
 
 class TestChromIdentifier(unittest.TestCase):
+    
     def test_chrom_1_22(self):
         actual_chrom = ['chr1', '1', 'CHR1', '22', 'CHR22', 'chr22']
         expected_chrom = ['1', '1', '1', '22', '22', '22']

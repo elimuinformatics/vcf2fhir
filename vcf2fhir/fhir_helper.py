@@ -15,21 +15,26 @@ from uuid import uuid4
 from .common import _Utilities
 
 class _Fhir_Helper:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, patientID):
         self.report = dr.DiagnosticReport()
         self.phasedRecMap = {}   
         self.result_ids = []
         self.map_variant_ids = {}
         self.obsContained = []
-
-    def _get_conv_region_comp(self, record, query_regions):        
+        self.patientID = patientID
+        
+    def _get_region_studied_component(self, reportable_query_regions_df, nocall_regions_df):        
         observation_rs_components = []
-        for k, v in query_regions[record.CHROM]:
-            for i in range(len(v)):
-                obv_comp = observation.ObservationComponent()
-                obv_comp.code = concept.CodeableConcept({"coding": [{ "system": "http://loinc.org","code": "TBD-ReportableQueryRegion","display": "Reportable query region"}]})
-                obv_comp.valueRange = valRange.Range({"low": {"value": np.float(v['Start'][i]) + 1},"high": {"value": np.float(v['End'][i]) + 1}})
-                observation_rs_components.append(obv_comp)
+        for index, row in reportable_query_regions_df:
+            obv_comp = observation.ObservationComponent()
+            obv_comp.code = concept.CodeableConcept({"coding": [{ "system": "http://loinc.org","code": "TBD-RangerExamined","display": "Reportable query region"}]})
+            obv_comp.valueRange = valRange.Range({"low": {"value": np.float(row['Start']) + 1},"high": {"value": np.float(row['End']) + 1}})
+            observation_rs_components.append(obv_comp)
+        for index, row in nocall_regions_df:
+            obv_comp = observation.ObservationComponent()
+            obv_comp.code = concept.CodeableConcept({"coding": [{ "system": "http://loinc.org","code": "TBD-UncallableRegions","display": "Uncallable region"}]})
+            obv_comp.valueRange = valRange.Range({"low": {"value": np.float(row['Start']) + 1},"high": {"value": np.float(row['End']) + 1}})
+            observation_rs_components.append(obv_comp)
         return observation_rs_components
 
     def _addPhaseRecords(self, record):
@@ -39,8 +44,8 @@ class _Fhir_Helper:
         if(sampleData.GT != None and len(sampleData.GT.split('|')) >= 2 and sampleData.PS != None):
             self.phasedRecMap.setdefault(sampleData.PS, []).append(record)  
 
-    def initalizeReport(self, patientID):
-        patient_reference = reference.FHIRReference({"reference":"Patient/"+patientID})
+    def initalizeReport(self):
+        patient_reference = reference.FHIRReference({"reference":"Patient/"+self.patientID})
         self.report.id = "dr-"+uuid4().hex[:13]
         self.report.meta = meta.Meta({"profile":["http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/genomics-report"]})
         self.report.status = "final"
@@ -49,8 +54,10 @@ class _Fhir_Helper:
         self.report.issued = date.FHIRDate(_Utilities.getFhirDate())
         self.report.contained = []
 
-    def add_regionstudied_obv(self, patientID, ref_seq, record, query_regions):
-        patient_reference = reference.FHIRReference({"reference":"Patient/"+patientID})
+    def add_regionstudied_obv(self, ref_seq, reportable_query_regions, nocall_regions):
+        if reportable_query_regions.is_empty() and nocall_regions.is_empty():
+            return
+        patient_reference = reference.FHIRReference({"reference":"Patient/"+self.patientID})
         contained_uid = "rs-"+ uuid4().hex[:13]
         self.result_ids.append(contained_uid)
         # Region Studied Obeservation
@@ -63,25 +70,22 @@ class _Fhir_Helper:
         observation_rs.status = "final"
         observation_rs.category = [concept.CodeableConcept({"coding":[{"system": "http://terminology.hl7.org/CodeSystem/observation-category","code": "laboratory"}]})]
         observation_rs.subject = patient_reference
-
         observation_rs_component2 = observation.ObservationComponent()
         observation_rs_component2.code = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": "92822-6","display": "Genomic coord system"}]})
         observation_rs_component2.valueCodeableConcept = concept.CodeableConcept({"coding":[{"system":"http://loinc.org","code":"LA30102-0","display": "1-based character counting"}]})
-
         observation_rs_component3 = observation.ObservationComponent()
         observation_rs_component3.code = concept.CodeableConcept({"coding": [{"system": "http://loinc.org","code": "48013-7","display": "Genomic reference sequence ID"}]})
         observation_rs_component3.valueCodeableConcept = concept.CodeableConcept({"coding":[{"system":"http://www.ncbi.nlm.nih.gov/nuccore","code":ref_seq}]})
-        
-        observation_rs_components = self._get_conv_region_comp(record, query_regions)
+        observation_rs_components = self._get_region_studied_component(reportable_query_regions, nocall_regions)
         observation_rs.component = [observation_rs_component2,observation_rs_component3] + observation_rs_components
         # Observation structure : described-variants
         self.report.contained.append(contained_rs)
 
-    def add_variant_obv(self, record, ref_seq, patientID):        
+    def add_variant_obv(self, record, ref_seq):        
         # collect all the record with similar position values,
         # to utilized later in phased sequence relationship
         self._addPhaseRecords(record)
-        patient_reference = reference.FHIRReference({"reference":"Patient/"+patientID})
+        patient_reference = reference.FHIRReference({"reference":"Patient/"+self.patientID})
         alleles = _Utilities.getAllelicState(record)
         dvuid = "dv-"+ uuid4().hex[:13]
         self.map_variant_ids.update({ str(record.POS) : dvuid})
@@ -136,8 +140,8 @@ class _Fhir_Helper:
         
         self.report.contained.append(observation_dv)
 
-    def add_phased_relationship_obv(self, patientID):
-        patient_reference = reference.FHIRReference({"reference":"Patient/"+patientID})
+    def add_phased_relationship_obv(self):
+        patient_reference = reference.FHIRReference({"reference":"Patient/"+self.patientID})
         self.sequenceRels = _Utilities.getSequenceRelation(self.phasedRecMap)
         for index in self.sequenceRels.index:
             dvRef1 = self.map_variant_ids.get(str(self.sequenceRels.at[index,'POS1']))

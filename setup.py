@@ -24,6 +24,7 @@ setuptools.setup(
         'pandas==0.24.2',
         'pytz==2019.3',
         'pyVCF==0.6.8',
+        'pysam==0.16.0',
         'pyranges==0.0.79'
     ],
     python_requires='>=3.6',

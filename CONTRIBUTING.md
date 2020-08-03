@@ -74,5 +74,5 @@ There are two logger being setup for the library ('vcf2fhir.general') and ('vcf2
   
 Please check the tests by running them with:
 ```
-python setup.py test
+python -m unittest
 ```

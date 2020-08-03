@@ -12,34 +12,39 @@ class Converter(object):
 
         Parameters
         ----------
-        vcf_filename : str
-            Path to vcf file
-        ref_build : str
-            Genomic reference build number, expected values are ("GRCh37" or "GRCh38")
-        patient_id : (str, Default sample name)
-            A string representing patiend id.
-        conv_region_filename : str
-            Path to conversion region bed file.
-        conv_region_dict: dict
+        vcf_filename : str (Required)
+            Path to vcf file containing variants to be converted into FHIR format. Valid path and filename without whitespace
+        ref_build : str (Required)
+            Genome Reference Consortium genome assembly to which variants in the VCF were called. Must be one of 'GRCh37' or 'GRCh38'.
+        patient_id : str (Optional)
+            Patient who's VCF file is being processed. Alphanumeric string without whitespace. Default value is first sample name.
+        conv_region_filename : str (Optional)
+            Path to conversion region bed file. Subset of the VCF file to be converted into FHIR. If absent, the entire VCF file is converted. Must be a valid BED file
+        conv_region_dict: dict (Optional)
             Conversion region can also be provided using dict.
             Format:  {"Chromosome": ["chr1", "chr2"], "Start": [100, 200], "End": [150, 201]}
-        region_studied_filename : str
-            Path to region studied bed file
-        nocall_filename : str
-            Path to non callable region bed file
+        region_studied_filename : str (Optional)
+            Path to region studied bed file. Subset of patient's genome that was studied in the generation of the VCF file. If present, only studied regions are converted. Must be a valid BED file, with first 3 columns: <chr> <start> <stop>.
+        nocall_filename : str (Optional)
+            Path to no call bed file. Subset of studied region that is deemed noncallable. If present, only studied regions minus noncallable regions are converted. Must be a valid BED file, with first 3 columns: <chr> <start> <stop>.
 
         Returns
         -------
         Object
         An Instance of Conveter that helps to convert vcf file.
+
+        Examples
+        --------
+
+        >>> 
         """
         super(Converter, self).__init__()
         if not (vcf_filename):
             raise Exception('You must provide vcf_filename')
         if not ref_build or ref_build not in ["GRCh37", "GRCh38"]:
             raise Exception('You must provide build number ("GRCh37" or "GRCh38")')
-        if (nocall_filename or region_studied_filename) and not (conv_region_filename or conv_region_dict):
-            raise Exception ("Please provdie the conv_region_filename or conv_region_dict")
+        if nocall_filename and not region_studied_filename:
+            raise Exception ("Please also provide region_studied_filename when nocall_filename is provided")
         self.vcf_filename = vcf_filename
         self._vcf_reader = vcf.Reader(open(vcf_filename, 'r'))
         if not patient_id:
@@ -47,7 +52,7 @@ class Converter(object):
         if nocall_filename:
             self.nocall_region = pyranges.read_bed(nocall_filename)
         else:
-            self.nocall_region = pyranges.PyRanges()
+            self.nocall_region = None
         if conv_region_filename:
             self.conversion_region = pyranges.read_bed(conv_region_filename)
         elif conv_region_dict:
@@ -58,13 +63,25 @@ class Converter(object):
         if region_studied_filename:
             self.region_studied = pyranges.read_bed(region_studied_filename)
         else:
-            self.region_studied = pyranges.PyRanges()
+            self.region_studied = None
         self.patient_id = patient_id
         self.ref_build = ref_build
         self.nocall_filename = nocall_filename
         self.conv_region_filename = conv_region_filename
         general_logger.info("Converter class instantiated successfully")
     def convert(self, output_filename='fhir.json'):
+        """ Returns True on success
+
+        Parameters
+        ----------
+        output_filename : str, default fhir.json
+            Path to output fhir json.
+
+        Returns
+        ----------
+        bool True on successful conversion
+
+        """
         try:
             general_logger.info("Starting VCF to FHIR Conversion")
             _getFhirJSON(self._vcf_reader, self.ref_build, self.patient_id, output_filename, self.conversion_region, self.region_studied, self.nocall_region)
