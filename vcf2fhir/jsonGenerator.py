@@ -31,6 +31,11 @@ def _get_chrom(chrom_index):
         return "M"
     return str(chrom_index)
 
+def _fix_regions_chrom(region):
+    if region:
+        region.Chromosome = region.Chromosome.apply(_Utilities.extract_chrom_identifier)
+
+
 def _add_record_variants(record, ref_seq, patientID, fhir_helper):
     if(_validRecord(record) == True):
         fhir_helper.add_variant_obv(record, ref_seq)
@@ -39,13 +44,19 @@ def _add_record_variants(record, ref_seq, patientID, fhir_helper):
 
 def _add_region_studied(region_studied, nocall_region, fhir_helper, chrom, ref_seq, patientID):
     if((region_studied and not region_studied[chrom].empty) or (nocall_region and not nocall_region[chrom].empty)):
+        general_logger.info("Adding region Studied observation for %s", chrom)
+        general_logger.debug("Region Examined %s", region_studied[chrom])
+        general_logger.debug("Region Uncallable %s", nocall_region[chrom])
         fhir_helper.add_regionstudied_obv(ref_seq, region_studied[chrom], nocall_region[chrom])
 
 
-def _getFhirJSON(vcf_reader, ref_build, patientID, output_filename, conversion_region, region_studied, nocall_region):
+def _getFhirJSON(vcf_reader, ref_build, patientID, has_tabix, conversion_region, region_studied, nocall_region, output_filename):
     fhir_helper = _Fhir_Helper(patientID)
     fhir_helper.initalizeReport()
     general_logger.debug("Finished Initializing empty report")
+    _fix_regions_chrom(conversion_region)
+    _fix_regions_chrom(region_studied)
+    _fix_regions_chrom(nocall_region)
     if conversion_region:
         if region_studied:
             region_studied = region_studied.intersect(conversion_region)
@@ -54,19 +65,38 @@ def _getFhirJSON(vcf_reader, ref_build, patientID, output_filename, conversion_r
             nocall_region = nocall_region.intersect(conversion_region)
             general_logger.debug("Final Conmputed NoCall Query Regions: %s", nocall_region)
     general_logger.info("Start adding Region studied observation followed by Variant observation corresponding to that region")
-    
-    for chrom_index in range(1, 26):
-        chrom = _get_chrom(chrom_index)
-        ref_seq = _getRefSeqByChrom(ref_build , _Utilities.extract_chrom_identifier(chrom))
-        if conversion_region and not conversion_region[chrom].empty:
-            _add_region_studied(region_studied, nocall_region, fhir_helper, chrom, ref_seq, patientID)
-            for index, row in conversion_region[chrom].df.iterrows():
-                for record in vcf_reader.fetch(chrom, row['Start'], row['End']):
+    if has_tabix == True:
+        for chrom_index in range(1, 26):
+            chrom = _get_chrom(chrom_index)
+            ref_seq = _getRefSeqByChrom(ref_build , _Utilities.extract_chrom_identifier(chrom))
+            if conversion_region and not conversion_region[chrom].empty:
+                _add_region_studied(region_studied, nocall_region, fhir_helper, chrom, ref_seq, patientID)
+                for index, row in conversion_region[chrom].df.iterrows():
+                    for record in vcf_reader.fetch(chrom, row['Start'], row['End']):
+                        record.CHROM = _Utilities.extract_chrom_identifier(record.CHROM)
+                        _add_record_variants(record, ref_seq, patientID, fhir_helper)
+            else:
+                _add_region_studied(region_studied, nocall_region, fhir_helper, chrom, ref_seq, patientID)
+                for record in vcf_reader.fetch(chrom):
+                    record.CHROM = _Utilities.extract_chrom_identifier(record.CHROM)
                     _add_record_variants(record, ref_seq, patientID, fhir_helper)
-        else:
-            _add_region_studied(region_studied, nocall_region, fhir_helper, chrom, ref_seq, patientID)
-            for record in vcf_reader.fetch(chrom):
-                _add_record_variants(record, ref_seq, patientID, fhir_helper)
+    else:
+        chrom_index = 1
+        prev_add_chrom = ""    
+        for record in vcf_reader:
+            record.CHROM = _Utilities.extract_chrom_identifier(record.CHROM)
+            if not (conversion_region and conversion_region[record.CHROM].empty):
+                if prev_add_chrom != record.CHROM and (region_studied or nocall_region):
+                    chrom = _get_chrom(chrom_index)
+                    while prev_add_chrom != record.CHROM:
+                        current_ref_seq = _getRefSeqByChrom(ref_build, chrom)
+                        _add_region_studied(region_studied, nocall_region, fhir_helper, chrom, current_ref_seq, patientID)
+                        prev_add_chrom = chrom
+                        chrom_index += 1
+                        chrom = _get_chrom(chrom_index)
+                ref_seq = _getRefSeqByChrom(ref_build, record.CHROM)
+                if not conversion_region or conversion_region[record.CHROM, record.POS -1: record.POS].empty == False:       
+                    _add_record_variants(record, ref_seq, patientID, fhir_helper)
 
     general_logger.info("Adding all the phased sequence relationship found")
     fhir_helper.add_phased_relationship_obv()

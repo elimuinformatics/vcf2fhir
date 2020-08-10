@@ -23,14 +23,14 @@ class _Fhir_Helper:
         self.obsContained = []
         self.patientID = patientID
         
-    def _get_region_studied_component(self, reportable_query_regions_df, nocall_regions_df):        
+    def _get_region_studied_component(self, reportable_query_regions, nocall_regions):        
         observation_rs_components = []
-        for index, row in reportable_query_regions_df:
+        for index, row in reportable_query_regions.df.iterrows():
             obv_comp = observation.ObservationComponent()
             obv_comp.code = concept.CodeableConcept({"coding": [{ "system": "http://loinc.org","code": "TBD-RangerExamined","display": "Reportable query region"}]})
             obv_comp.valueRange = valRange.Range({"low": {"value": np.float(row['Start']) + 1},"high": {"value": np.float(row['End']) + 1}})
             observation_rs_components.append(obv_comp)
-        for index, row in nocall_regions_df:
+        for index, row in nocall_regions.df.iterrows():
             obv_comp = observation.ObservationComponent()
             obv_comp.code = concept.CodeableConcept({"coding": [{ "system": "http://loinc.org","code": "TBD-UncallableRegions","display": "Uncallable region"}]})
             obv_comp.valueRange = valRange.Range({"low": {"value": np.float(row['Start']) + 1},"high": {"value": np.float(row['End']) + 1}})
@@ -55,7 +55,7 @@ class _Fhir_Helper:
         self.report.contained = []
 
     def add_regionstudied_obv(self, ref_seq, reportable_query_regions, nocall_regions):
-        if reportable_query_regions.is_empty() and nocall_regions.is_empty():
+        if reportable_query_regions.empty and nocall_regions.empty:
             return
         patient_reference = reference.FHIRReference({"reference":"Patient/"+self.patientID})
         contained_uid = "rs-"+ uuid4().hex[:13]

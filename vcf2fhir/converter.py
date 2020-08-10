@@ -6,7 +6,7 @@ general_logger = logging.getLogger('vcf2fhir.general')
 
 class Converter(object):
     """Converter for a VCF v >4.1 file."""
-    def __init__(self, vcf_filename=None, ref_build=None, patient_id = None, conv_region_filename=None, conv_region_dict = None, region_studied_filename= None, nocall_filename = None):
+    def __init__(self, vcf_filename=None, ref_build=None, patient_id = None, has_tabix=False, conv_region_filename=None, conv_region_dict = None, region_studied_filename= None, nocall_filename = None):
         """ 
         Create a new Converter Object to convert a VCF file.
 
@@ -18,6 +18,8 @@ class Converter(object):
             Genome Reference Consortium genome assembly to which variants in the VCF were called. Must be one of 'GRCh37' or 'GRCh38'.
         patient_id : str (Optional)
             Patient who's VCF file is being processed. Alphanumeric string without whitespace. Default value is first sample name.
+        has_tabix : bool (Optional)
+            If tabix file exist for the vcf than set it to true. Tabix file should have the same name and location as vcf file. Default value is False.
         conv_region_filename : str (Optional)
             Path to conversion region bed file. Subset of the VCF file to be converted into FHIR. If absent, the entire VCF file is converted. Must be a valid BED file
         conv_region_dict: dict (Optional)
@@ -36,7 +38,6 @@ class Converter(object):
         Examples
         --------
 
-        >>> 
         """
         super(Converter, self).__init__()
         if not (vcf_filename):
@@ -64,6 +65,7 @@ class Converter(object):
             self.region_studied = pyranges.read_bed(region_studied_filename)
         else:
             self.region_studied = None
+        self.has_tabix = has_tabix
         self.patient_id = patient_id
         self.ref_build = ref_build
         self.nocall_filename = nocall_filename
@@ -84,7 +86,7 @@ class Converter(object):
         """
         try:
             general_logger.info("Starting VCF to FHIR Conversion")
-            _getFhirJSON(self._vcf_reader, self.ref_build, self.patient_id, output_filename, self.conversion_region, self.region_studied, self.nocall_region)
+            _getFhirJSON(self._vcf_reader, self.ref_build, self.patient_id, self.has_tabix, self.conversion_region, self.region_studied, self.nocall_region, output_filename)
         except Exception as e:
             general_logger.error("Exception occurred", exc_info=True)
             return False
