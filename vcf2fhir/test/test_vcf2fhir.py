@@ -233,6 +233,45 @@ class TestTranslation(unittest.TestCase):
         expected_fhir_json = json.load(open(expected_outfult_filename))
         self.assertEqual(actual_fhir_json, expected_fhir_json)
 
+    def test_region_studied_only(self):
+        region_studied_filename = os.path.join(os.path.dirname(__file__),'RegionsStudied_example4.bed')             
+        output_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir_example4_test.json')
+        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example4.vcf'), 'GRCh38', 'HG00628', region_studied_filename=region_studied_filename)
+        bDone = oVcf2Fhir.convert(output_filename)
+        # check if translation was completed
+        self.assertEqual(bDone, True)
+
+    def test_empty_fhir_json(self):
+        conv_region_filename = os.path.join(os.path.dirname(__file__),'RegionsToConvert_empty_example4.bed')             
+        output_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir_example4_test.json')
+        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example4.vcf'), 'GRCh38', 'HG00628', conv_region_filename=conv_region_filename)
+        bDone = oVcf2Fhir.convert(output_filename)
+        # check if translation was completed
+        self.assertEqual(bDone, True)
+
+    def test_tabix(self):
+        self.maxDiff = None
+        region_studied_filename = os.path.join(os.path.dirname(__file__),'RegionsStudied_example4.bed')
+        conv_region_filename = os.path.join(os.path.dirname(__file__),'RegionsToConvert_example4.bed')
+        nocall_filename = os.path.join(os.path.dirname(__file__),'NoncallableRegions_example4.bed')         
+        output_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir_example4_tabix.json')
+        expected_outfult_filename = os.path.join(os.path.dirname(__file__),'expected_example4.json')
+        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example4.vcf.gz'), 'GRCh38', 'HG00628', has_tabix= True, conv_region_filename =conv_region_filename, region_studied_filename=region_studied_filename, nocall_filename=nocall_filename)
+        bDone = oVcf2Fhir.convert(output_filename)
+        # check if translation was completed
+        self.assertEqual(bDone, True)
+        actual_fhir_json = json.load(open(output_filename))
+        # Validate the pased sequence relationship
+        self.assertEqual(_validate_phase_rel(actual_fhir_json, {31: [24, 25], 32 : [25, 26]}), True)
+        # Validate: list of observation uids and list of result uids same.
+        # Also set the uids to '' to avoid guid comparison in next step
+        map_ids = _get_uids_map(actual_fhir_json)
+        self.assertEqual(map_ids['obv_ids'], map_ids['result_ids'])
+        actual_fhir_json['issued'] = ''
+        # Finally, check if the acutal json after removing all uids is same as exppected json        
+        expected_fhir_json = json.load(open(expected_outfult_filename))
+        self.assertEqual(actual_fhir_json, expected_fhir_json)
+
 class TestLogger(unittest.TestCase):
     def setUp(self):
         # create file handler and set level to debug   

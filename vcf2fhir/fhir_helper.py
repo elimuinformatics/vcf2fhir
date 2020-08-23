@@ -172,13 +172,18 @@ class _Fhir_Helper:
         od["resourceType"] = response['resourceType']
         od["id"] = response['id']
         od["meta"] = response['meta']
-        od["contained"] = response['contained']
+        if 'contained' in response:
+            od["contained"] = response['contained']
+        else:
+            od["contained"] = []
         od["status"] = response['status']
         od["code"] = response['code']
         od["subject"] = response['subject']
         od["issued"] = response['issued']
-        od["result"] = response['result']
-
+        if 'result' in response:
+            od["result"] = response['result']
+        else:
+            od["result"] = []
         odCodeCoding = OrderedDict()
         odCodeCoding["system"] = od["code"]["coding"][0]["system"]
         odCodeCoding["code"] = od["code"]["coding"][0]["code"]

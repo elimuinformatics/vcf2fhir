@@ -72,14 +72,26 @@ def _getFhirJSON(vcf_reader, ref_build, patientID, has_tabix, conversion_region,
             if conversion_region and not conversion_region[chrom].empty:
                 _add_region_studied(region_studied, nocall_region, fhir_helper, chrom, ref_seq, patientID)
                 for index, row in conversion_region[chrom].df.iterrows():
-                    for record in vcf_reader.fetch(chrom, row['Start'], row['End']):
-                        record.CHROM = _Utilities.extract_chrom_identifier(record.CHROM)
-                        _add_record_variants(record, ref_seq, patientID, fhir_helper)
+                    vcf_iterator = None
+                    try:
+                        vcf_iterator = vcf_reader.fetch(chrom, int(row['Start']), int(row['End']))
+                    except ValueError:
+                        pass
+                    if vcf_iterator:
+                        for record in vcf_iterator:
+                            record.CHROM = _Utilities.extract_chrom_identifier(record.CHROM)
+                            _add_record_variants(record, ref_seq, patientID, fhir_helper)
             else:
                 _add_region_studied(region_studied, nocall_region, fhir_helper, chrom, ref_seq, patientID)
-                for record in vcf_reader.fetch(chrom):
-                    record.CHROM = _Utilities.extract_chrom_identifier(record.CHROM)
-                    _add_record_variants(record, ref_seq, patientID, fhir_helper)
+                vcf_iterator = None
+                try:
+                    vcf_iterator = vcf_reader.fetch(chrom)
+                except ValueError:
+                    pass
+                if vcf_iterator:
+                    for record in vcf_iterator:
+                        record.CHROM = _Utilities.extract_chrom_identifier(record.CHROM)
+                        _add_record_variants(record, ref_seq, patientID, fhir_helper)
     else:
         chrom_index = 1
         prev_add_chrom = ""    

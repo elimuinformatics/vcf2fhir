@@ -47,22 +47,47 @@ class Converter(object):
         if nocall_filename and not region_studied_filename:
             raise Exception ("Please also provide region_studied_filename when nocall_filename is provided")
         self.vcf_filename = vcf_filename
-        self._vcf_reader = vcf.Reader(open(vcf_filename, 'r'))
+        try:
+            self._vcf_reader = vcf.Reader(filename=vcf_filename)
+        except FileNotFoundError:
+            raise
+        except :
+            self._generate_exception("Please provide valid  'vcf_filename'")
         if not patient_id:
             patient_id = self._vcf_reader.samples[0]
         if nocall_filename:
-            self.nocall_region = pyranges.read_bed(nocall_filename)
+            try:
+                self.nocall_region = pyranges.read_bed(nocall_filename)
+            except FileNotFoundError:
+                raise
+            except:
+                self._generate_exception("Please provide valid  'nocall_filename'")
         else:
-            self.nocall_region = None
+            self.nocall_region = pyranges.PyRanges()
         if conv_region_filename:
-            self.conversion_region = pyranges.read_bed(conv_region_filename)
-        elif conv_region_dict:
-            self._fix_conv_region(conv_region_dict)
-            self.conversion_region = pyranges.from_dict(conv_region_dict)
+            try:
+                self.conversion_region = pyranges.read_bed(conv_region_filename)
+            except FileNotFoundError:
+                raise
+            except:
+                self._generate_exception( "Please provide valid 'conv_region_filename'")
+        elif conv_region_dict:      
+            try:
+                self._fix_conv_region_zero_based(conv_region_dict)
+                self.conversion_region = pyranges.from_dict(conv_region_dict)
+            except FileNotFoundError:
+                raise
+            except:
+                self._generate_exception("Please provide valid 'conv_region_dict'")
         else:
             self.conversion_region = None         
         if region_studied_filename:
-            self.region_studied = pyranges.read_bed(region_studied_filename)
+            try:
+                self.region_studied = pyranges.read_bed(region_studied_filename)
+            except FileNotFoundError:
+                raise
+            except:
+                self._generate_exception("Please provide valid 'region_studied_filename'")
         else:
             self.region_studied = None
         self.has_tabix = has_tabix
@@ -87,12 +112,12 @@ class Converter(object):
         try:
             general_logger.info("Starting VCF to FHIR Conversion")
             _getFhirJSON(self._vcf_reader, self.ref_build, self.patient_id, self.has_tabix, self.conversion_region, self.region_studied, self.nocall_region, output_filename)
-        except Exception as e:
-            general_logger.error("Exception occurred", exc_info=True)
+        except:
+            general_logger.error("Error in converting vcf file", exc_info=True)
             return False
         return True
 
-    def _fix_conv_region(self, conv_region_dict):
+    def _fix_conv_region_zero_based(self, conv_region_dict):
         i = 0
         for start in conv_region_dict["Start"]:
             conv_region_dict["Start"][i] = start - 1
@@ -101,4 +126,8 @@ class Converter(object):
         for end in conv_region_dict["End"]:
             conv_region_dict["End"][i] = end - 1
             i += 1
+
+    def _generate_exception(self, msg):
+        general_logger.error(msg, exc_info=True)
+        raise Exception (msg, sys.exc_info)
 
