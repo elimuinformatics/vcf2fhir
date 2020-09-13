@@ -1,7 +1,8 @@
 import vcf
 import pyranges
-from .jsonGenerator import _getFhirJSON
+from .json_generator import _get_fhir_json
 import logging
+import sys
 general_logger = logging.getLogger('vcf2fhir.general')
 
 class Converter(object):
@@ -111,7 +112,7 @@ class Converter(object):
         """
         try:
             general_logger.info("Starting VCF to FHIR Conversion")
-            _getFhirJSON(self._vcf_reader, self.ref_build, self.patient_id, self.has_tabix, self.conversion_region, self.region_studied, self.nocall_region, output_filename)
+            _get_fhir_json(self._vcf_reader, self.ref_build, self.patient_id, self.has_tabix, self.conversion_region, self.region_studied, self.nocall_region, output_filename)
         except:
             general_logger.error("Error in converting vcf file", exc_info=True)
             return False

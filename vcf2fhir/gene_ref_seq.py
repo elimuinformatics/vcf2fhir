@@ -55,7 +55,7 @@ b38 = {
 }
 
 
-def _getRefSeqByChrom(build, chrom):
+def _get_ref_seq_by_chrom(build, chrom):
     if build in ["GRCh37"]:
         return(b37[chrom])
 

@@ -17,20 +17,20 @@ from .common import _Utilities
 class _Fhir_Helper:
     def __init__(self, patientID):
         self.report = dr.DiagnosticReport()
-        self.phasedRecMap = {}   
+        self.phased_rec_map = {}   
         self.result_ids = []
-        self.map_variant_ids = {}
-        self.obsContained = []
+        self.fhir_report = {}
+        self.obs_contained = []
         self.patientID = patientID
         
     def _get_region_studied_component(self, reportable_query_regions, nocall_regions):        
         observation_rs_components = []
-        for index, row in reportable_query_regions.df.iterrows():
+        for _, row in reportable_query_regions.df.iterrows():
             obv_comp = observation.ObservationComponent()
-            obv_comp.code = concept.CodeableConcept({"coding": [{ "system": "http://loinc.org","code": "TBD-RangerExamined","display": "Reportable query region"}]})
+            obv_comp.code = concept.CodeableConcept({"coding": [{ "system": "http://loinc.org","code": "LOINC 51959-5","display": "Ranges-examined component"}]})
             obv_comp.valueRange = valRange.Range({"low": {"value": np.float(row['Start']) + 1},"high": {"value": np.float(row['End']) + 1}})
             observation_rs_components.append(obv_comp)
-        for index, row in nocall_regions.df.iterrows():
+        for _, row in nocall_regions.df.iterrows():
             obv_comp = observation.ObservationComponent()
             obv_comp.code = concept.CodeableConcept({"coding": [{ "system": "http://loinc.org","code": "TBD-UncallableRegions","display": "Uncallable region"}]})
             obv_comp.valueRange = valRange.Range({"low": {"value": np.float(row['Start']) + 1},"high": {"value": np.float(row['End']) + 1}})
@@ -40,9 +40,9 @@ class _Fhir_Helper:
     def _addPhaseRecords(self, record):
         if(record.samples[0].phased == False):
            return 
-        sampleData = record.samples[0].data
-        if(sampleData.GT != None and len(sampleData.GT.split('|')) >= 2 and sampleData.PS != None):
-            self.phasedRecMap.setdefault(sampleData.PS, []).append(record)  
+        sample_data = record.samples[0].data
+        if(sample_data.GT != None and len(sample_data.GT.split('|')) >= 2 and sample_data.PS != None):
+            self.phased_rec_map.setdefault(sample_data.PS, []).append(record)  
 
     def initalizeReport(self):
         patient_reference = reference.FHIRReference({"reference":"Patient/"+self.patientID})
@@ -88,7 +88,7 @@ class _Fhir_Helper:
         patient_reference = reference.FHIRReference({"reference":"Patient/"+self.patientID})
         alleles = _Utilities.getAllelicState(record)
         dvuid = "dv-"+ uuid4().hex[:13]
-        self.map_variant_ids.update({ str(record.POS) : dvuid})
+        self.fhir_report.update({ str(record.POS) : dvuid})
         self.result_ids.append(dvuid)
         observation_dv = observation.Observation()
         observation_dv.resource_type = "Observation"
@@ -142,10 +142,8 @@ class _Fhir_Helper:
 
     def add_phased_relationship_obv(self):
         patient_reference = reference.FHIRReference({"reference":"Patient/"+self.patientID})
-        self.sequenceRels = _Utilities.getSequenceRelation(self.phasedRecMap)
+        self.sequenceRels = _Utilities.getSequenceRelation(self.phased_rec_map)
         for index in self.sequenceRels.index:
-            dvRef1 = self.map_variant_ids.get(str(self.sequenceRels.at[index,'POS1']))
-            dvRef2 = self.map_variant_ids.get(str(self.sequenceRels.at[index,'POS2']))
             siduid = "sid-" + uuid4().hex[:13]
             self.result_ids.append(siduid)
 
@@ -196,9 +194,9 @@ class _Fhir_Helper:
                 sidIndex = index
                 break
 
-        for index,(sequenceRel, fhirReport) in enumerate(zip(self.sequenceRels.index, od['contained'][sidIndex:])):
-            dvRef1 = self.map_variant_ids.get(str(self.sequenceRels.at[index,'POS1']))
-            dvRef2 = self.map_variant_ids.get(str(self.sequenceRels.at[index,'POS2']))
+        for index,(_, fhirReport) in enumerate(zip(self.sequenceRels.index, od['contained'][sidIndex:])):
+            dvRef1 = self.fhir_report.get(str(self.sequenceRels.at[index,'POS1']))
+            dvRef2 = self.fhir_report.get(str(self.sequenceRels.at[index,'POS2']))
             if (fhirReport['id'].startswith('sid-')):
                 derivedFromDV1 = {}
                 derivedFromDV2 = {}

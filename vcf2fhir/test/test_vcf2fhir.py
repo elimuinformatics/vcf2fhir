@@ -86,7 +86,7 @@ class TestVcf2FhirInputs(unittest.TestCase):
         conv_region_filename = os.path.join(os.path.dirname(__file__),'RegionsToConvert_example3.bed')     
         nocall_filename = os.path.join(os.path.dirname(__file__),'NoncallableRegions_example3.bed')    
         with self.assertRaises(Exception) as context:
-            oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc',  conv_region_filename =conv_region_filename, nocall_filename=nocall_filename)
+            vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc',  conv_region_filename =conv_region_filename, nocall_filename=nocall_filename)
         self.assertEqual('Please also provide region_studied_filename when nocall_filename is provided',str(context.exception))
 
     def test_no_conv_region_region_studied(self):        
@@ -97,7 +97,7 @@ class TestVcf2FhirInputs(unittest.TestCase):
     def test_no_conv_region_nocall(self):
         nocall_filename = os.path.join(os.path.dirname(__file__),'NoncallableRegions_example3.bed') 
         with self.assertRaises(Exception) as context:
-            oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', nocall_filename = nocall_filename)
+            vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', nocall_filename = nocall_filename)
         self.assertEqual('Please also provide region_studied_filename when nocall_filename is provided',str(context.exception))
         
 
@@ -123,7 +123,7 @@ class TestTranslation(unittest.TestCase):
         self.assertEqual(bDone, True)
         actual_fhir_json = json.load(open(output_filename))
         # Validate the pased sequence relationship
-        self.assertEqual(_validate_phase_rel(actual_fhir_json, {7 : [4, 5]}), True)
+        self.assertEqual(_validate_phase_rel(actual_fhir_json, {8 : [5, 6]}), True)
         # Validate: list of observation uids and list of result uids same.
         # Also set the uids to '' to avoid guid comparison in next step
         map_ids = _get_uids_map(actual_fhir_json)
@@ -143,7 +143,7 @@ class TestTranslation(unittest.TestCase):
         self.assertEqual(bDone, True)
         actual_fhir_json = json.load(open(output_filename))
         # Validate the pased sequence relationship
-        self.assertEqual(_validate_phase_rel(actual_fhir_json, {7 : [4, 5]}), True)
+        self.assertEqual(_validate_phase_rel(actual_fhir_json, {8 : [5, 6]}), True)
         # Validate: list of observation uids and list of result uids same.
         # Also set the uids to '' to avoid guid comparison in next step
         map_ids = _get_uids_map(actual_fhir_json)
@@ -172,7 +172,7 @@ class TestTranslation(unittest.TestCase):
         self.assertEqual(bDone, True)
         actual_fhir_json = json.load(open(output_filename))
         # Validate the pased sequence relationship
-        self.assertEqual(_validate_phase_rel(actual_fhir_json, {8: [2, 3], 9 : [3, 4]}), True)
+        self.assertEqual(_validate_phase_rel(actual_fhir_json, {7: [2, 3], 8 : [3, 4]}), True)
         # Validate: list of observation uids and list of result uids same.
         # Also set the uids to '' to avoid guid comparison in next step
         map_ids = _get_uids_map(actual_fhir_json)
@@ -199,7 +199,7 @@ class TestTranslation(unittest.TestCase):
         self.assertEqual(bDone, True)
         actual_fhir_json = json.load(open(output_filename))
         # Validate the pased sequence relationship
-        self.assertEqual(_validate_phase_rel(actual_fhir_json, {8: [2, 3], 9 : [3, 4]}), True)
+        self.assertEqual(_validate_phase_rel(actual_fhir_json, {7: [2, 3], 8 : [3, 4]}), True)
         # Validate: list of observation uids and list of result uids same.
         # Also set the uids to '' to avoid guid comparison in next step
         map_ids = _get_uids_map(actual_fhir_json)
