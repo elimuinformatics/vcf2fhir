@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="vcf2fhir-openelimu",
-    version="0.0.9",
+    version="0.0.10",
     author="",
     test_suite='vcf2fhir.test.test_vcf2fhir.suite',
     author_email="info@elimu.io",
@@ -19,13 +19,15 @@ setuptools.setup(
         "Operating System :: OS Independent",
         "License :: OSI Approved :: Apache Software License"
     ],
+    tests_require = [
+    'unittest',
+    ],
     install_requires=[
         'fhirclient==3.2.0',
-        'pandas==0.24.2',
-        'pytz==2019.3',
-        'pyVCF==0.6.8',
-        'pysam==0.16.0',
-        'pyranges==0.0.79'
+        'pandas',
+        'pytz >= 2019.3',
+        'pyVCF >=0.6.8',
+        'pyranges >= 0.0.79'
     ],
     python_requires='>=3.6',
 )
