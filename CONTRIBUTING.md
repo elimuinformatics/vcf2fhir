@@ -45,29 +45,7 @@ As our projects, by default, use the default GitHub issues is a great place to s
 Please use the VCF-2-FHIR repository.
 
 * Fork the repository from [GitHub](https://github.com/openelimu/VCF-2-FHIR)
-* Run all the tests and confirm they all pass on your system. If they don’t, you’ll need to investigate why they fail. If you’re unable to diagnose this yourself, raise it as a bug report.
-
-### Enable logging
-
-There are two logger being setup for the library ('vcf2fhir.general') and ('vcf2fhir.invalidrecord'). Application using the library needs to configure this logger.
-* vcf2fhir.general: provides the general logs of all the the steps 
-* vcf2fhir.invalidrecord: logs all the records from vcf file which are ignored during conversion
-
-```python
->> import logging
-# create logger
->> logger = logging.getLogger('vcf2fhir.general')
->> logger.setLevel(logging.DEBUG)
-# create console handler and set level to debug
->> ch = logging.StreamHandler()
->> ch.setLevel(logging.DEBUG)
-# create formatter
->> formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-# add formatter to ch
->> ch.setFormatter(formatter)
-# add ch to logger
->> logger.addHandler(ch)
-```
+* Run all the tests and confirm they all pass on your system. If they don’t, you’ll need to investigate why they fail. If you’re unable to diagnose this yourself, raise it as a bug report
 
 
 ### Running tests  
