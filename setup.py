@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="vcf2fhir-openelimu",
+    name="vcf2fhir",
     version="0.0.10",
     author="",
     test_suite='vcf2fhir.test.test_vcf2fhir.suite',
@@ -24,6 +24,7 @@ setuptools.setup(
     ],
     install_requires=[
         'fhirclient==3.2.0',
+        'pysam'
         'pandas',
         'pytz >= 2019.3',
         'pyVCF >=0.6.8',

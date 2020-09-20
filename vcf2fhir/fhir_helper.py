@@ -27,7 +27,7 @@ class _Fhir_Helper:
         observation_rs_components = []
         for _, row in reportable_query_regions.df.iterrows():
             obv_comp = observation.ObservationComponent()
-            obv_comp.code = concept.CodeableConcept({"coding": [{ "system": "http://loinc.org","code": "LOINC 51959-5","display": "Ranges-examined component"}]})
+            obv_comp.code = concept.CodeableConcept({"coding": [{ "system": "http://loinc.org","code": "51959-5","display": "Ranges-examined component"}]})
             obv_comp.valueRange = valRange.Range({"low": {"value": np.float(row['Start']) + 1},"high": {"value": np.float(row['End']) + 1}})
             observation_rs_components.append(obv_comp)
         for _, row in nocall_regions.df.iterrows():
