@@ -24,7 +24,7 @@ setuptools.setup(
     ],
     install_requires=[
         'fhirclient==3.2.0',
-        'pysam'
+        'pysam',
         'pandas',
         'pytz >= 2019.3',
         'pyVCF >=0.6.8',

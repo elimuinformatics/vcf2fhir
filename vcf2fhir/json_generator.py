@@ -70,8 +70,8 @@ def _get_fhir_json(vcf_reader, ref_build, patientID, has_tabix, conversion_regio
         for chrom_index in range(1, 26):
             chrom = _get_chrom(chrom_index)
             ref_seq = _get_ref_seq_by_chrom(ref_build , _Utilities.extract_chrom_identifier(chrom))
+            _add_region_studied(region_studied, nocall_region, fhir_helper, chrom, ref_seq, patientID)
             if conversion_region and not conversion_region[chrom].empty:
-                _add_region_studied(region_studied, nocall_region, fhir_helper, chrom, ref_seq, patientID)
                 for _, row in conversion_region[chrom].df.iterrows():
                     vcf_iterator = None
                     try:
@@ -82,8 +82,7 @@ def _get_fhir_json(vcf_reader, ref_build, patientID, has_tabix, conversion_regio
                         for record in vcf_iterator:
                             record.CHROM = _Utilities.extract_chrom_identifier(record.CHROM)
                             _add_record_variants(record, ref_seq, patientID, fhir_helper)
-            else:
-                _add_region_studied(region_studied, nocall_region, fhir_helper, chrom, ref_seq, patientID)
+            elif not conversion_region:
                 vcf_iterator = None
                 try:
                     vcf_iterator = vcf_reader.fetch(chrom)
