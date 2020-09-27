@@ -14,17 +14,21 @@ class Converter(object):
         Parameters
         ----------
         vcf_filename : str (Required)
-            Path to vcf file containing variants to be converted into FHIR format. Valid path and filename without whitespace
+            Path to text-based or bgzipped VCF file containing variants to be converted into FHIR format.
+            Valid path and filename without whitespace. VCF file must conform to VCF Version 4.1 or later. 
+            FORMAT.GT must be present. Multi-sample VCFs are allowed, but only the first sample will be converted.
         ref_build : str (Required)
             Genome Reference Consortium genome assembly to which variants in the VCF were called. Must be one of 'GRCh37' or 'GRCh38'.
         patient_id : str (Optional)
             Patient who's VCF file is being processed. Alphanumeric string without whitespace. Default value is first sample name.
         has_tabix : bool (Optional)
-            If tabix file exist for the vcf than set it to true. Tabix file should have the same name and location as vcf file. Default value is False.
+            If tabix file exist for the vcf than set it to True. Tabix file should have the same name as vcf file, with a '.tbi' extension,
+            and must be in the same folder. Default value is False.
         conv_region_filename : str (Optional)
             Path to conversion region bed file. Subset of the VCF file to be converted into FHIR. If absent, the entire VCF file is converted. Must be a valid BED file
         conv_region_dict: dict (Optional)
-            Conversion region can also be provided using dict.
+            Conversion region can also be provided using dict. If 'conv_region_filename' is provided
+            it will be ignored. 
             Format:  {"Chromosome": ["chr1", "chr2"], "Start": [100, 200], "End": [150, 201]}
         region_studied_filename : str (Optional)
             Path to region studied bed file. Subset of patient's genome that was studied in the generation of the VCF file. If present, only studied regions are converted. Must be a valid BED file, with first 3 columns: <chr> <start> <stop>.
