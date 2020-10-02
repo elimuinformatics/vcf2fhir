@@ -195,11 +195,11 @@ asserted in VCF.
 
                 -   Examples
 
-                    -   Heterozygous variants are TRANS:
+                    -   Heterozygous variants are TRANS:\
                          6 18142205 . C T . . . GT:PS 1\|0:18142205\
                          6 18142422 . A C . . . GT:PS 0\|1:18142205
 
-                    -   Heterozygous variants are CIS:
+                    -   Heterozygous variants are CIS:\
                         6 18142289 . A G . . . GT:PS 1\|0:18142289\
                         6 18142308 . A G . . . GT:PS 1\|0:18142289
 
@@ -302,15 +302,14 @@ in magenta).
 
        ![](image3.png)
 
-
-| Conversion Region(s)      | Studied Region(s) | Uncallable Region(s)     |  Region-Studied Observation     |
-| :--- :       |    :----:   |          :---: |  :---       |
-| 10000-90000     |10000-90000 (WGS)      | 30000-36000;<br/> 65000-72000   | <ul><li>Convert all variants in Conversion Region</li><li>FHIR report contains a region-studied observation with components:</li><ul><li>ranges-examined: 10000-90000</li><li>uncallable-region: 30000-36000; 65000-72000</li></ul></ul>            |
-| 10000-90000      | 18000-37000; <br/>46000-58000; <br/>71000-83000 (WES)      | 30000-36000   | <ul><li>Convert all variants in conversion region</li><li>FHIR report contains a region-studied observation with components:</li<ul><li>ranges-examined: 18000-37000; 46000-58000; 71000-83000</li><li>uncallable-region: 30000-36000</li></ul></ul>|
-| 10000-12000;<br/> 20000-22000;<br/> 41000-43000;<br/> 68000-73000; <br/>75000-80000      | 18000-37000;<br/> 46000-58000;<br/> 30000-36000;<br/> 71500-72000  | 30000-36000   | <ul><li>Convert all variants in conversion region</li><li>FHIR report contains a region-studied observation with components:</li<ul><li>ranges-examined: 20000-22000; 71000-73000; 75000-80000 </li><li>uncallable-region: 71500-72000</li></ul></ul>            |
+| Conversion region(s) | Studied region(s) | Uncallable region(s)     | Region-studied observation                       |
+| :---: | :---: | :---: | :--- |
+| 10000-90000          | 10000-90000 (WGS) | 30000-36000;<br/> 65000-72000 | <ul><li>Convert all variants in Conversion Region</li><li>FHIR report contains a region-studied observation with components:<ul><li>ranges-examined: 10000-90000</li><li>uncallable-region: 30000-36000; 65000-72000</li></ul></li></ul> |
+| 10000-90000          | 18000-37000; <br/>46000-58000; <br/>71000-83000 (WES)  | 30000-36000 | <ul><li>Convert all variants in conversion region</li><li>FHIR report contains a region-studied observation with components:<ul><li>ranges-examined: 18000-37000; 46000-58000; 71000-83000</li><li>uncallable-region: 30000-36000</li></ul></li></ul> |
+| 10000-12000;<br/> 20000-22000;<br/> 41000-43000;<br/> 68000-73000; <br/>75000-80000      | 18000-37000;<br/> 46000-58000;<br/> 30000-36000;<br/> 71500-72000  | 30000-36000   | <ul><li>Convert all variants in conversion region</li><li>FHIR report contains a region-studied observation with components:<ul><li>ranges-examined: 20000-22000; 71000-73000; 75000-80000 </li><li>uncallable-region: 71500-72000</li></ul></li></ul>            |
 | 10000-12000      | 118000-37000;<br/> 46000-58000; <br/>71000-83000 (WES)  | 71500-72000 |<ul><li>Convert all variants in conversion region</li><li>FHIR report contains no region-studied observation  |
-| 10000-90000    | Not supplied | Not supplied  |<ul><li>Convert all variants in conversion region</li><li>FHIR report contains no region-studied observation  |
-| 10000-12000;<br/> 20000-22000; <br/>41000-43000;<br/> 68000-76000;<br/> 75000-80000    |  18000-37000; 46000-58000; 71000-83000 (WES)   | 71500-72000  | <ul><li>Convert all variants in conversion region</li><li>FHIR report contains a region-studied observation with components:</li<ul><li>ranges-examined: 20000-22000; 71000-80000</li><li>uncallable-region: 71500-72000</li></ul></ul>|
+| 10000-90000    | Not supplied | Not supplied  |<ul><li>Convert all variants in conversion region</li><li>FHIR report contains no region-studied observation</li></ul>  |
+| 10000-12000;<br/> 20000-22000; <br/>41000-43000;<br/> 68000-76000;<br/> 75000-80000    |  18000-37000; 46000-58000; 71000-83000 (WES)   | 71500-72000  | <ul><li>Convert all variants in conversion region</li><li>FHIR report contains a region-studied observation with components:<ul><li>ranges-examined: 20000-22000; 71000-80000</li><li>uncallable-region: 71500-72000</li></ul></li></ul>|
 
 Conversion Example
 =================
