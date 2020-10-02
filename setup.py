@@ -23,6 +23,7 @@ setuptools.setup(
     'unittest',
     ],
     install_requires=[
+        'Cython >=0.29.21',
         'fhirclient==3.2.0',
         'pysam',
         'pandas',
