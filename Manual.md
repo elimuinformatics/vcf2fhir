@@ -311,9 +311,41 @@ in magenta).
 | 10000-90000    | Not supplied | Not supplied  |<ul><li>Convert all variants in conversion region</li><li>FHIR report contains no region-studied observation</li></ul>  |
 | 10000-12000;<br/> 20000-22000; <br/>41000-43000;<br/> 68000-76000;<br/> 75000-80000    |  18000-37000; 46000-58000; 71000-83000 (WES)   | 71500-72000  | <ul><li>Convert all variants in conversion region</li><li>FHIR report contains a region-studied observation with components:<ul><li>ranges-examined: 20000-22000; 71000-80000</li><li>uncallable-region: 71500-72000</li></ul></li></ul>|
 
-Conversion Example
-=================
-
-...
-
-
+Conversion Examples
+===================
+- Converts all variants in VCF. FHIR report contains no region-studied observation. 
+```
+vcf2fhir.Converter('vcftests.vcf','GRCh37', 'aabc')
+```
+- Submitting only noncallable region without other regions generates an error. 
+```
+vcf2fhir.Converter('vcftests.vcf','GRCh37', 'babc', nocall_filename='WGS_b37_region_noncallable.bed')
+```
+- Converts all variants in VCF. FHIR report contains one region-studied observation per studied chromosome.
+```
+vcf2fhir.Converter('vcftests.vcf','GRCh37', 'cabc', region_studied_filename='WGS_b37_region_studied.bed')
+```
+- Converts all variants in VCF. FHIR report contains one region-studied observation per studied chromosome.
+```
+vcf2fhir.Converter('vcftests.vcf','GRCh37', 'dabc', region_studied_filename='WGS_b37_region_studied.bed', nocall_filename='WGS_b37_region_noncallable.bed')
+```
+- Converts all variants in conversion region. FHIR report contains no region-studied observation.
+```
+vcf2fhir.Converter('vcftests.vcf','GRCh37', 'eabc', conv_region_filename='WGS_b37_convert_everything.bed')
+```
+- Submitting only noncallable region without other regions generates an error. 
+```
+vcf2fhir.Converter('vcftests.vcf','GRCh37', 'fabc', conv_region_filename='WGS_b37_convert_everything.bed', nocall_filename='WGS_b37_region_noncallable.bed')
+```
+- Converts all variants in conversion region. FHIR report contains one region-studied observation per studied chromosome, intersected with conversion region.
+```
+vcf2fhir.Converter('vcftests.vcf','GRCh37', 'gabc', conv_region_filename='WGS_b37_convert_everything.bed', region_studied_filename='WGS_b37_region_studied.bed')
+```
+- Converts all variants in conversion region. FHIR report contains one region-studied observation per studied chromosome, intersected with conversion region.
+```
+vcf2fhir.Converter('vcftests.vcf','GRCh37', 'habc', conv_region_filename='WGS_b37_convert_everything.bed', region_studied_filename='WGS_b37_region_studied.bed', nocall_filename='WGS_b37_region_noncallable.bed')
+```
+- Conversion of a bgzipped VCF
+```
+k=vcf2fhir.Converter('vcf_example4.vcf.gz','GRCh37', 'kabc', has_tabix=True)
+```
