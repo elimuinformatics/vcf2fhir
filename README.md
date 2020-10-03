@@ -2,7 +2,7 @@
 
 ### Introduction
 
-VCF-formatted files are the lingua franca of next-generation sequencing, whereas [HL7 FHIR](https://www.hl7.org/fhir/) is emerging as a standard language for electronic health record interoperability. A growing number of clinical genomics applications are emerging, based on the [HL7 FHIR Genomics standard](http://hl7.org/fhir/uv/genomics-reporting/index.html). Here, we provide an open source utility for converting variants from VCF format into HL7 FHIR Genomics format.Details of the translation logic are on the [manual page](Manual.md). Conceptually, the utility takes a VCF as input and outputs a [FHIR Genomics report](http://hl7.org/fhir/uv/genomics-reporting/index.html). 
+VCF-formatted files are the lingua franca of next-generation sequencing, whereas [HL7 FHIR](https://www.hl7.org/fhir/) is emerging as a standard language for electronic health record interoperability. A growing number of clinical genomics applications are emerging, based on the [HL7 FHIR Genomics standard](http://hl7.org/fhir/uv/genomics-reporting/index.html). Here, we provide an open source utility for converting variants from VCF format into HL7 FHIR Genomics format.Details of the translation logic are on the [manual page](docs/Manual.md). Conceptually, the utility takes a VCF as input and outputs a [FHIR Genomics report](http://hl7.org/fhir/uv/genomics-reporting/index.html). 
 
 ### Install
 ```
@@ -53,3 +53,7 @@ Software converts simple variants (SNVs, Indels), along with zygosity and phase 
 ### License and Limitations
 
 Software is available for use under an [Apache 2.0 license](https://opensource.org/licenses/Apache-2.0), and is intended solely for experimental use, to help further Genomics-EHR integration exploration. Software is expressly not ready to be used with identifiable patient data or in delivering care to patients. Code issues should be tracked here. Comments and questions can also be directed to info@elimu.io or srikarchamala@gmail.com.
+
+### vcf2fhir Manual
+
+Continue on to [vcf2hir Manual](docs/Manual.md) for more details.
