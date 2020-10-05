@@ -34,7 +34,7 @@ You can use python standard [logging](https://docs.python.org/3/library/logging.
 * **vcf2fhir.general**: standard library logs. 
 * **vcf2fhir.invalidrecord**: logs all the records from vcf file which are in conversion region but are not converted to fhir format.
 
-```python
+
     >>> import logging
     # create logger
     >>> logger = logging.getLogger('vcf2fhir.invalidrecord')
@@ -48,7 +48,6 @@ You can use python standard [logging](https://docs.python.org/3/library/logging.
     >>> ch.setFormatter(formatter)
     # add ch to logger
     >>> logger.addHandler(ch)
-'''
 
 Errors and Exceptions
 ---------------------
