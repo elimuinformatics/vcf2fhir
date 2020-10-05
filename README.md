@@ -13,8 +13,8 @@ pip install vcf2fhir
 
 ```python
 >>> import vcf2fhir
->>> oVcf2Fhir = vcf2fhir.Converter('sample.vcf', 'GRCh37')
->>> oVcf2Fhir.convert()
+>>> Vcf_2_Fhir = vcf2fhir.Converter('sample.vcf', 'GRCh37')
+>>> Vcf_2_Fhir.convert()
 ```
 
 ### Logging
