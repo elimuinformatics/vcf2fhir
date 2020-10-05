@@ -54,6 +54,3 @@ Software converts simple variants (SNVs, Indels), along with zygosity and phase 
 
 Software is available for use under an [Apache 2.0 license](https://opensource.org/licenses/Apache-2.0), and is intended solely for experimental use, to help further Genomics-EHR integration exploration. Software is expressly not ready to be used with identifiable patient data or in delivering care to patients. Code issues should be tracked here. Comments and questions can also be directed to info@elimu.io or srikarchamala@gmail.com.
 
-### vcf2fhir Manual
-
-Continue on to [vcf2hir Manual](docs/Manual.md) for more details.
