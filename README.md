@@ -39,6 +39,11 @@ You can use python standard [logging](https://docs.python.org/3/library/logging.
 >>> logger.addHandler(ch)
 ```
 
+
+### ReadTheDocs
+
+You can find the detailed documantation of the package on the official website of [ReadTheDocs](https://vcf2fhir.readthedocs.io/en/latest/).
+
 ### Scope
 
 Software converts simple variants (SNVs, Indels), along with zygosity and phase relationships, for autosomes, sex chromosomes, and mitochondrial DNA.
