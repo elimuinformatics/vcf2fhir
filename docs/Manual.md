@@ -110,7 +110,7 @@ Conversion Region above. For each RegionStudied observation:
 
 -   RegionStudied.component LOINC 92822-6 \'Genomic coord system\' = LOINC LA30102-0 \'1-based character counting\';
 
--   RegionStudied.component LOINC 48013-7 \'Genomic reference sequence ID\' = NCBI chromosome-level (\'NC\_\') RefSeq, as determined from GENE and BUILD in filename;
+-   RegionStudied.component LOINC 48013-7 \'Genomic reference sequence ID\' = NCBI chromosome-level (\'NC\_\') RefSeq, as determined from BUILD in filename;
 
 -   Include RegionStudied.component LOINC 51959-5 \'Range(s) of DNA sequence examined\' as described in Conversion Region section above.
 
