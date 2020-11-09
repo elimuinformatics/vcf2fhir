@@ -11,6 +11,6 @@
 1	28	.	A	<CGA_CNVWIN>	.	.	.	GT:PS	0/1:.
 chr1	301	.	A	G	.	.	.	GT:PS	0/1:.
 1	400	.	A	G	.	.	.	GT:PS	1/1:.
-1	500	.	A	G	.	.	.	GT:PS	0|1:500
+1	500	.	A	G	.	PASS	.	GT:PS	0|1:500
 1	600	.	A	G	.	.	.	GT:PS	1|0:500
 1	700	.	A	G	.	.	.	GT:PS	0|1:700

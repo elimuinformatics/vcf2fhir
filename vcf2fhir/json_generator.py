@@ -11,7 +11,7 @@ def _valid_record(record):
     if(record.is_sv == True):
         invalid_record_logger.debug("Reason: VCF INFO.SVTYPE is present. (Structural variants are excluded), Record: %s, considered sample: %s", record, record.samples[0].data)
         return False
-    if(record.FILTER is not None and record.FILTER != 'PASS'):
+    if(record.FILTER is not None and len(record.FILTER) != 0):
         invalid_record_logger.debug("Reason: VCF FILTER does not equal 'PASS' or '.', Record: %s, considered sample: %s", record, record.samples[0].data)
         return False
     if(len(record.samples) == 0 or record.samples[0].gt_type is None):
