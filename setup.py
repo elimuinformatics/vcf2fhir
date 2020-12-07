@@ -5,14 +5,14 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="vcf2fhir",
-    version="0.0.11",
+    version="0.0.16",
     author="",
     test_suite='vcf2fhir.test.test_vcf2fhir.suite',
     author_email="info@elimu.io",
     description="Convert .vcf files to HL7 FHIR standard",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/openelimu/VCF-2-FHIR",
+    url="https://github.com/elimuinformatics/vcf2fhir",
     packages=['vcf2fhir', 'vcf2fhir.test'],
     classifiers=[
         "Programming Language :: Python :: 3",

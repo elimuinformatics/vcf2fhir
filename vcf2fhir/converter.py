@@ -102,25 +102,17 @@ class Converter(object):
         self.conv_region_filename = conv_region_filename
         general_logger.info("Converter class instantiated successfully")
     def convert(self, output_filename='fhir.json'):
-        """ Returns True on success
+        """ Generates HL7 FHIR Genomics format data as output_filename or fhir.json if it is not provided
 
         Parameters
         ----------
         output_filename : str, default fhir.json
             Path to output fhir json.
 
-        Returns
-        ----------
-        bool True on successful conversion
-
         """
-        try:
-            general_logger.info("Starting VCF to FHIR Conversion")
-            _get_fhir_json(self._vcf_reader, self.ref_build, self.patient_id, self.has_tabix, self.conversion_region, self.region_studied, self.nocall_region, output_filename)
-        except:
-            general_logger.error("Error in converting vcf file", exc_info=True)
-            return False
-        return True
+        general_logger.info("Starting VCF to FHIR Conversion")
+        _get_fhir_json(self._vcf_reader, self.ref_build, self.patient_id, self.has_tabix, self.conversion_region, self.region_studied, self.nocall_region, output_filename)
+        general_logger.info("Completed VCF to FHIR Conversion")
 
     def _fix_conv_region_zero_based(self, conv_region_dict):
         i = 0

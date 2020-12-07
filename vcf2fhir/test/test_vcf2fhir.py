@@ -118,9 +118,7 @@ class TestTranslation(unittest.TestCase):
         oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__),'vcf_example1.vcf'), 'GRCh37')
         output_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR,'fhir_wo_patient_example1.json')
         expected_outfult_filename = os.path.join(os.path.dirname(__file__),'expected_example1_wo_patient.json')
-        bDone = oVcf2Fhir.convert(output_filename)
-        # check if translation was completed
-        self.assertEqual(bDone, True)
+        oVcf2Fhir.convert(output_filename)
         actual_fhir_json = json.load(open(output_filename))
         # Validate the pased sequence relationship
         self.assertEqual(_validate_phase_rel(actual_fhir_json, {8 : [5, 6]}), True)
@@ -138,9 +136,7 @@ class TestTranslation(unittest.TestCase):
         oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example1.vcf'), 'GRCh37', 'HG00628')        
         output_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir_with_patient_example1.json')
         expected_outfult_filename = os.path.join(os.path.dirname(__file__),'expected_example1_with_patient.json')
-        bDone = oVcf2Fhir.convert(output_filename)
-        # check if translation was completed
-        self.assertEqual(bDone, True)
+        oVcf2Fhir.convert(output_filename)
         actual_fhir_json = json.load(open(output_filename))
         # Validate the pased sequence relationship
         self.assertEqual(_validate_phase_rel(actual_fhir_json, {8 : [5, 6]}), True)
@@ -156,8 +152,8 @@ class TestTranslation(unittest.TestCase):
     #FIXME: just a temporary test, later change it to a test that test particular variant
     def test_anotherfile(self):
         oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example2.vcf'), 'GRCh37', 'HG00628')
-        bDone = oVcf2Fhir.convert(output_filename=os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR,'fhir2.json'))
-        self.assertEqual(bDone, True)
+        oVcf2Fhir.convert(output_filename=os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR,'fhir2.json'))
+        
 
     def test_region_studied(self):
         self.maxDiff = None
@@ -167,9 +163,7 @@ class TestTranslation(unittest.TestCase):
         output_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir_example3.json')
         expected_outfult_filename = os.path.join(os.path.dirname(__file__),'expected_example3.json')
         oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh38', 'HG00628', conv_region_filename =conv_region_filename, region_studied_filename=region_studied_filename, nocall_filename=nocall_filename)
-        bDone = oVcf2Fhir.convert(output_filename)
-        # check if translation was completed
-        self.assertEqual(bDone, True)
+        oVcf2Fhir.convert(output_filename)
         actual_fhir_json = json.load(open(output_filename))
         # Validate the pased sequence relationship
         self.assertEqual(_validate_phase_rel(actual_fhir_json, {7: [2, 3], 8 : [3, 4]}), True)
@@ -194,9 +188,7 @@ class TestTranslation(unittest.TestCase):
         output_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir_example3_dict.json')
         expected_outfult_filename = os.path.join(os.path.dirname(__file__),'expected_example3.json')
         oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh38', 'HG00628', conv_region_dict= conv_region_dict, region_studied_filename=region_studied_filename, nocall_filename=nocall_filename)
-        bDone = oVcf2Fhir.convert(output_filename)
-        # check if translation was completed
-        self.assertEqual(bDone, True)
+        oVcf2Fhir.convert(output_filename)
         actual_fhir_json = json.load(open(output_filename))
         # Validate the pased sequence relationship
         self.assertEqual(_validate_phase_rel(actual_fhir_json, {7: [2, 3], 8 : [3, 4]}), True)
@@ -218,9 +210,7 @@ class TestTranslation(unittest.TestCase):
         output_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir_example4.json')
         expected_outfult_filename = os.path.join(os.path.dirname(__file__),'expected_example4.json')
         oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example4.vcf'), 'GRCh38', 'HG00628', conv_region_filename =conv_region_filename, region_studied_filename=region_studied_filename, nocall_filename=nocall_filename)
-        bDone = oVcf2Fhir.convert(output_filename)
-        # check if translation was completed
-        self.assertEqual(bDone, True)
+        oVcf2Fhir.convert(output_filename)
         actual_fhir_json = json.load(open(output_filename))
         # Validate the pased sequence relationship
         self.assertEqual(_validate_phase_rel(actual_fhir_json, {31: [24, 25], 32 : [25, 26]}), True)
@@ -237,17 +227,13 @@ class TestTranslation(unittest.TestCase):
         region_studied_filename = os.path.join(os.path.dirname(__file__),'RegionsStudied_example4.bed')             
         output_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir_example4_test.json')
         oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example4.vcf'), 'GRCh38', 'HG00628', region_studied_filename=region_studied_filename)
-        bDone = oVcf2Fhir.convert(output_filename)
-        # check if translation was completed
-        self.assertEqual(bDone, True)
+        oVcf2Fhir.convert(output_filename)
 
     def test_empty_fhir_json(self):
         conv_region_filename = os.path.join(os.path.dirname(__file__),'RegionsToConvert_empty_example4.bed')             
         output_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir_example4_test.json')
         oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example4.vcf'), 'GRCh38', 'HG00628', conv_region_filename=conv_region_filename)
-        bDone = oVcf2Fhir.convert(output_filename)
-        # check if translation was completed
-        self.assertEqual(bDone, True)
+        oVcf2Fhir.convert(output_filename)
 
     def test_tabix(self):
         self.maxDiff = None
@@ -257,9 +243,7 @@ class TestTranslation(unittest.TestCase):
         output_filename = os.path.join(os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir_example4_tabix.json')
         expected_outfult_filename = os.path.join(os.path.dirname(__file__),'expected_example4.json')
         oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example4.vcf.gz'), 'GRCh38', 'HG00628', has_tabix= True, conv_region_filename =conv_region_filename, region_studied_filename=region_studied_filename, nocall_filename=nocall_filename)
-        bDone = oVcf2Fhir.convert(output_filename)
-        # check if translation was completed
-        self.assertEqual(bDone, True)
+        oVcf2Fhir.convert(output_filename)
         actual_fhir_json = json.load(open(output_filename))
         # Validate the pased sequence relationship
         self.assertEqual(_validate_phase_rel(actual_fhir_json, {31: [24, 25], 32 : [25, 26]}), True)
