@@ -206,7 +206,7 @@ asserted in VCF.
 Sex chromosome conversion
 -------------------------
 
--   Software assumes that pseudoautosomal regions (PAR) of chrY are masked, as described by [1000 Genomes](ftp://ftp.ncbi.nih.gov/1000genomes/ftp/technical/reference/phase2_reference_assembly_sequence/README_human_reference_20110707). As a result, we expect to see in VCFs:
+-   Sex chromosome conversion translates chrX and chrY calls as they exist in the VCF. Many VCF calling pipelines mask the pseudoautosomal regions (PAR) of chrY, as described by [1000 Genomes](ftp://ftp.ncbi.nih.gov/1000genomes/ftp/technical/reference/phase2_reference_assembly_sequence/README_human_reference_20110707). As a result, we commonly see in VCFs:
 
     -   Males:
 
@@ -240,7 +240,6 @@ Sex chromosome conversion
 
     -   Allelic state is hemizygous
 
--   Software does not report errors if expected haploid/diploid patterns are violated based on a patient\'s sex.
 
 Mitochondrial DNA conversion
 ----------------------------
