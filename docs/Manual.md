@@ -260,7 +260,7 @@ Mitochondrial DNA conversion
 Parameters
 ==========
 
--   **vcf_filename** (required): Path to a text-based or bgzipped VCF file. Valid path and filename without whitespace must be provided. VCF file must conform to VCF Version 4.1 or later. FORMAT.GT must be present. Multi-sample VCFs are allowed, but only the first sample will be converted.
+-   **vcf_reader** (required): Path to a text-based or bgzipped VCF file. Valid path and filename without whitespace must be provided. VCF file must conform to VCF Version 4.1 or later. FORMAT.GT must be present. Multi-sample VCFs are allowed, but only the first sample will be converted.
 
 -   **has_tabix** (required if VCF file is bgzipped): Set to \'True\' if there is a tabix index. Tabix file must have the same name as the bgzipped VCF file, with a \'.tbi\' extension, and must be in the same folder.
 
