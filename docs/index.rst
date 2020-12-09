@@ -2,7 +2,7 @@
 Welcome to VCF to FHIR documentation!
 =======================================
 
-Release v 0.0.11
+Release v0.0.16
 
 
 .. image:: https://img.shields.io/pypi/l/requests.svg
@@ -19,34 +19,12 @@ Release v 0.0.11
 **Quick Examples**::
 
     >>> import vcf2fhir
-    >>> oVcf2Fhir = vcf2fhir.Converter('sample.vcf', 'GRCh37')
-    >>> oVcf2Fhir.convert()
+    >>> Vcf2Fhir = vcf2fhir.Converter('sample.vcf', 'GRCh37')
+    >>> Vcf2Fhir.convert()
 
 
 **vcf2fhir** 
-
-Beloved Features
-----------------
-
-vcf2fhir is ready for today's web.
-
-**Input:** 
-
-*VCF file (required): Path to a text-based or bgzipped VCF file.*
-*Tabix file (required if VCF file is bgzipped): Path to tabix index of VCF file.*
-*Genome build (required): Must be one of 'GRCh37' or 'GRCh38'.*
-*Patient ID (required): Supplied patient ID is inserted into generated FHIR output.*
-*Conversion region (optional): VCF region(s) to convert.*
-*Studied region (optional): Genomic regions that have been studied by the lab.*
-*Noncallable region (optional): Subset of studied region(s) that are deemed uncallable by the lab.*
-
-**Output:**
-
-*FHIR Genomics Diagnostic Report (in JSON format) that contains converted variants.*
-
-vcf2fhir officially supports Python 3.6+, and runs great on PyPI.
-
-
+===========
 The User Guide
 --------------
 
@@ -60,47 +38,133 @@ instructions for getting the most out of Requests.
    user/install
    user/quickstart
 
+Parameters
+---------
 
-The Community Guide
--------------------
+-  **vcf\_reader** (required): Path to a text-based or bgzipped VCF
+   file. Valid path and filename without whitespace must be provided.
+   VCF file must conform to VCF Version 4.1 or later. FORMAT.GT must be
+   present. Multi-sample VCFs are allowed, but only the first sample
+   will be converted.
 
-This part of the documentation, which is mostly prose, details the
-vcf2fhir ecosystem and community.
+-  **has\_tabix** (required if VCF file is bgzipped): Set to 'True' if
+   there is a tabix index. Tabix file must have the same name as the
+   bgzipped VCF file, with a '.tbi' extension, and must be in the same
+   folder.
 
-.. toctree::
-   :maxdepth: 2
+-  **ref\_build** (required): Genome Reference Consortium genome
+   assembly to which variants in the VCF were called. Must be one of
+   'GRCh37' or 'GRCh38'.
 
-   community/support
-   community/release-process
+-  **patient\_id** (required): Supplied patient ID is inserted into
+   generated FHIR output. Alphanumeric string without whitespace.
 
-.. toctree::
-   :maxdepth: 1
+-  **Conversion region** (optional): Subset of the VCF file to be
+   converted into FHIR. If absent, the entire VCF file is converted. Can
+   be supplied as either a parameter (conv\_region\_dict) or as a BED
+   file (conv\_region\_filename):
 
-   community/updates
+   -  **conv\_region\_dict**: Array of regions (e.g. '{"Chromosome":
+      ["X", "X", "M"],"Start": [50001, 55001, 50001],"End": [52001,
+      60601, 60026]}'). Values for Chromosome must align with values in
+      VCF #CHROM field. Ranges must be
+      `0-based <https://www.biostars.org/p/84686/>`__ (or 0-start,
+      half-open) and based on GRCh37 or GRCh38 reference sequences.
 
-The API Documentation / Guide
------------------------------
+   -  **conv\_region\_filename**: Valid path and filename without
+      whitespace must be provided. Must be a valid BED file with first 3
+      columns: <chr> <start> <stop>. Values in <chr> field must align
+      with values in VCF #CHROM field. Ranges must be based on GRCh37 or
+      GRCh38 reference sequences. Note that BED files are
+      `0-based <https://www.biostars.org/p/84686/>`__ (or 0-start,
+      half-open) whereas VCF files and FHIR output are 1-based (or
+      1-start, fully-closed).
 
-If you are looking for information on a specific function, class, or method,
-this part of the documentation is for you.
+-  **region\_studied\_filename** (optional): Subset of patient's genome
+   that was studied in the generation of the VCF file. Valid path and
+   filename without whitespace must be provided. Must be a valid BED
+   file, with first 3 columns: <chr> <start> <stop>. Values in <chr>
+   field must align with values in VCF #CHROM field. Ranges must be
+   based on GRCh37 or GRCh38 reference sequences. Note that BED files
+   are `0-based <https://www.biostars.org/p/84686/>`__ (or 0-start,
+   half-open) whereas VCF files and FHIR output are 1-based (or 1-start,
+   fully-closed).
 
-.. toctree::
-   :maxdepth: 2
+-  **nocall\_filename** (optional): Subset of studied region that is
+   deemed noncallable. Valid path and filename without whitespace must
+   be provided. Must be a valid BED file, with first 3 columns: <chr>
+   <start> <stop>. Values in <chr> field must align with values in VCF
+   #CHROM field. Ranges must be based on GRCh37 or GRCh38 reference
+   sequences. Note that BED files are
+   `0-based <https://www.biostars.org/p/84686/>`__ (or 0-start,
+   half-open) whereas VCF files and FHIR output are 1-based (or 1-start,
+   fully-closed).
 
-   api
 
+Conversion Examples
+------------------
 
-The Contributor Guide
----------------------
+-  Converts all variants in VCF. FHIR report contains no region-studied
+   observation.
 
-If you want to contribute to the project, this part of the documentation is for
-you.
+   ::
 
-.. toctree::
-   :maxdepth: 3
+       vcf2fhir.Converter('vcftests.vcf','GRCh37', 'aabc')
 
-   dev/contributing
-   dev/authors
+-  Submitting only noncallable region without other regions generates an
+   error.
 
-There are no more guides. You are now guideless.
-Good luck.
+   ::
+
+       vcf2fhir.Converter('vcftests.vcf','GRCh37', 'babc', nocall_filename='WGS_b37_region_noncallable.bed')
+
+-  Converts all variants in VCF. FHIR report contains one region-studied
+   observation per studied chromosome.
+
+   ::
+
+       vcf2fhir.Converter('vcftests.vcf','GRCh37', 'cabc', region_studied_filename='WGS_b37_region_studied.bed')
+
+-  Converts all variants in VCF. FHIR report contains one region-studied
+   observation per studied chromosome.
+
+   ::
+
+       vcf2fhir.Converter('vcftests.vcf','GRCh37', 'dabc', region_studied_filename='WGS_b37_region_studied.bed', nocall_filename='WGS_b37_region_noncallable.bed')
+
+-  Converts all variants in conversion region. FHIR report contains no
+   region-studied observation.
+
+   ::
+
+       vcf2fhir.Converter('vcftests.vcf','GRCh37', 'eabc', conv_region_filename='WGS_b37_convert_everything.bed')
+
+-  Submitting only noncallable region without other regions generates an
+   error.
+
+   ::
+
+       vcf2fhir.Converter('vcftests.vcf','GRCh37', 'fabc', conv_region_filename='WGS_b37_convert_everything.bed', nocall_filename='WGS_b37_region_noncallable.bed')
+
+-  Converts all variants in conversion region. FHIR report contains one
+   region-studied observation per studied chromosome, intersected with
+   conversion region.
+
+   ::
+
+       vcf2fhir.Converter('vcftests.vcf','GRCh37', 'gabc', conv_region_filename='WGS_b37_convert_everything.bed', region_studied_filename='WGS_b37_region_studied.bed')
+
+-  Converts all variants in conversion region. FHIR report contains one
+   region-studied observation per studied chromosome, intersected with
+   conversion region.
+
+   ::
+
+       vcf2fhir.Converter('vcftests.vcf','GRCh37', 'habc', conv_region_filename='WGS_b37_convert_everything.bed', region_studied_filename='WGS_b37_region_studied.bed', nocall_filename='WGS_b37_region_noncallable.bed')
+
+-  Conversion of a bgzipped VCF
+
+   ::
+
+       vcf2fhir.Converter('vcf_example4.vcf.gz','GRCh37', 'kabc', has_tabix=True)
+
