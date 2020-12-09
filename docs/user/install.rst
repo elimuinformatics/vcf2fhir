@@ -15,12 +15,9 @@ clone the repository.
 .. _virtualenv: http://pypi.python.org/pypi/virtualenv
 .. _Git: http://git-scm.com/
 
-Once you have these, create a virtual environment somewhere on your disk, then
-activate it::
+Before installing vcf2fhir you need to install cython and wheel::
 
-    virtualenv vcf2fhir
-    source vcf2fhir/bin/activate
-
+    pip install cython wheel
 
     pip install vcf2fhir
 
