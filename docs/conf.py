@@ -16,7 +16,7 @@ import sys, os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.append(os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -41,15 +41,16 @@ project = 'vcf2fhir'
 copyright = '2020, Shailesh Gothi<>\x1b[Dshaileshgothiece@gmail.com>'
 author = 'Shailesh Gothi<>\x1b[Dshaileshgothiece@gmail.com>'
 
-# The full version, including alpha/beta/rc tags
-release = '0.0.11'
 
 # The version info for the project you're documenting, acts as replacement for
 # The short X.Y version.
+import vcf2fhir
+version = vcf2fhir.VERSION
+# The full version, including alpha/beta/rc tags.
+release = vcf2fhir.VERSION
 
 # for source files.
 exclude_trees = []
-
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
