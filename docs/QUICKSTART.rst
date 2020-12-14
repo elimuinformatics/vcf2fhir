@@ -19,7 +19,7 @@ Installing vcf2fhir is pretty simple. Here is a step by step plan on how to do i
 
     pip install vcf2fhir
 
-- Or, For isolated installtion:
+- Or, For isolated installation:
 
 First, obtain Python_ and virtualenv_ if you do not already have them. Using a
 virtual environment will make the installation easier, and will help to avoid
