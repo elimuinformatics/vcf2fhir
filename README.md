@@ -18,8 +18,8 @@ pip install vcf2fhir
 
 ```python
 >>> import vcf2fhir
->>> Vcf_2_Fhir = vcf2fhir.Converter('sample.vcf', 'GRCh37')
->>> Vcf_2_Fhir.convert()
+>>> vcf_fhir_converter = vcf2fhir.Converter('sample.vcf', 'GRCh37')
+>>> vcf_fhir_converter.convert()
 ```
 
 ### Logging
@@ -45,9 +45,9 @@ You can use python standard [logging](https://docs.python.org/3/library/logging.
 ```
 
 
-### ReadTheDocs
+### Documentation
 
-You can find the detailed documantation of the package on the official website of [ReadTheDocs](https://vcf2fhir.readthedocs.io/en/latest/).
+You can find the detailed documantation of the package on the official website [here](https://vcf2fhir.readthedocs.io/en/latest/).
 
 ### Scope
 
