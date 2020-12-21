@@ -4,82 +4,79 @@ from .json_generator import _get_fhir_json
 import logging
 import sys
 general_logger = logging.getLogger('vcf2fhir.general')
-
+"""Converter for a VCF version >4.1 file."""
 class Converter(object):
-    """Converter for a VCF v >4.1 file."""
+    """Creates a new Converter Object to convert a VCF file.
+
+    Parameters
+    ----------
+
+    **vcf_filename** (required): Path to a text-based or bgzipped VCF
+    file. Valid path and filename without whitespace must be provided.
+    VCF file must conform to VCF Version 4.1 or later. FORMAT.GT must be
+    present. Multi-sample VCFs are allowed, but only the first sample
+    will be converted.
+    has_tabix (required if VCF file is bgzipped): Set to 'True' if
+    there is a tabix index. Tabix file must have the same name as the
+    bgzipped VCF file, with a '.tbi' extension, and must be in the same
+    folder.
+   
+    **ref_build** (required): Genome Reference Consortium genome
+    assembly to which variants in the VCF were called. Must be one of
+    'GRCh37' or 'GRCh38'.
+    
+    patient_id (optional): Supplied patient ID is inserted into
+    generated FHIR output. Alphanumeric string without whitespace. if not provided,
+    header of first sample column is used.
+    
+    Conversion region (optional): Subset of the VCF file to be
+    converted into FHIR. If absent, the entire VCF file is converted. Can
+    be supplied as either a parameter (conv_region_dict) or as a BED
+    file (conv_region_filename):
+    
+       **conv_region_dict** : Array of regions (e.g. '{"Chromosome":
+       ["X", "X", "M"],"Start": [50001, 55001, 50001],"End": [52001,
+       60601, 60026]}'). Values for Chromosome must align with values in
+       VCF #CHROM field. Ranges must be `0-based <https://www.biostars.org/p/84686/>`_
+       (or 0-start, half-open) and based on GRCh37 or GRCh38 reference sequences.
+       
+       **conv_region_filename**: Valid path and filename without
+       whitespace must be provided. Must be a valid BED file with first 3
+       columns: <chr> <start> <stop>. Values in <chr> field must align
+       with values in VCF #CHROM field. Ranges must be based on GRCh37 or
+       GRCh38 reference sequences. Note that BED files are
+       `0-based <https://www.biostars.org/p/84686/>`_ (or 0-start,
+       half-open) whereas VCF files and FHIR output are 1-based (or
+       1-start, fully-closed).
+    
+    **region_studied_filename** (optional): Subset of patient's genome
+    that was studied in the generation of the VCF file. Valid path and
+    filename without whitespace must be provided. Must be a valid BED
+    file, with first 3 columns: <chr> <start> <stop>. Values in <chr>
+    field must align with values in VCF #CHROM field. Ranges must be
+    based on GRCh37 or GRCh38 reference sequences. Note that BED files
+    are `0-based <https://www.biostars.org/p/84686/>`_ (or 0-start,
+    half-open) whereas VCF files and FHIR output are 1-based (or 1-start,
+    fully-closed).
+    
+    **nocall_filename** (optional): Subset of studied region that is
+    deemed noncallable. Valid path and filename without whitespace must
+    be provided. Must be a valid BED file, with first 3 columns: <chr>
+    <start> <stop>. Values in <chr> field must align with values in VCF
+    #CHROM field. Ranges must be based on GRCh37 or GRCh38 reference
+    sequences. Note that BED files are `0-based <https://www.biostars.org/p/84686/>`_
+    (or 0-start, half-open) whereas VCF files and FHIR output are 1-based (or 1-start,
+    fully-closed).
+    
+    Returns
+    -------
+
+    Object
+    An Instance of Conveter that helps to convert vcf file.
+
+    """
     def __init__(self, vcf_filename=None, ref_build=None, patient_id = None, has_tabix=False, conv_region_filename=None, conv_region_dict = None, region_studied_filename= None, nocall_filename = None):
-        """ 
-        Create a new Converter Object to convert a VCF file.
-
-        Parameters
-        ----------
-        vcf_filename (required): Path to a text-based or bgzipped VCF
-        file. Valid path and filename without whitespace must be provided.
-        VCF file must conform to VCF Version 4.1 or later. FORMAT.GT must be
-        present. Multi-sample VCFs are allowed, but only the first sample
-        will be converted.
-
-        has_tabix (required if VCF file is bgzipped): Set to 'True' if
-        there is a tabix index. Tabix file must have the same name as the
-        bgzipped VCF file, with a '.tbi' extension, and must be in the same
-        folder.
-
-        ref_build (required): Genome Reference Consortium genome
-        assembly to which variants in the VCF were called. Must be one of
-        'GRCh37' or 'GRCh38'.
-
-        patient_id (optional): Supplied patient ID is inserted into
-        generated FHIR output. Alphanumeric string without whitespace. if not provided,
-        header of first sample column is used.
-
-        Conversion region (optional): Subset of the VCF file to be
-        converted into FHIR. If absent, the entire VCF file is converted. Can
-        be supplied as either a parameter (conv_region_dict) or as a BED
-        file (conv_region_filename):
-
-           conv_region_dict : Array of regions (e.g. '{"Chromosome":
-           ["X", "X", "M"],"Start": [50001, 55001, 50001],"End": [52001,
-           60601, 60026]}'). Values for Chromosome must align with values in
-           VCF #CHROM field. Ranges must be `0-based <https://www.biostars.org/p/84686/>`
-           (or 0-start, half-open) and based on GRCh37 or GRCh38 reference sequences.
-
-           conv_region_filename: Valid path and filename without
-           whitespace must be provided. Must be a valid BED file with first 3
-           columns: <chr> <start> <stop>. Values in <chr> field must align
-           with values in VCF #CHROM field. Ranges must be based on GRCh37 or
-           GRCh38 reference sequences. Note that BED files are
-           `0-based <https://www.biostars.org/p/84686/>`__ (or 0-start,
-           half-open) whereas VCF files and FHIR output are 1-based (or
-           1-start, fully-closed).
-
-        region_studied_filename (optional): Subset of patient's genome
-        that was studied in the generation of the VCF file. Valid path and
-        filename without whitespace must be provided. Must be a valid BED
-        file, with first 3 columns: <chr> <start> <stop>. Values in <chr>
-        field must align with values in VCF #CHROM field. Ranges must be
-        based on GRCh37 or GRCh38 reference sequences. Note that BED files
-        are `0-based <https://www.biostars.org/p/84686/>`__ (or 0-start,
-        half-open) whereas VCF files and FHIR output are 1-based (or 1-start,
-        fully-closed).
-
-        nocall_filename (optional): Subset of studied region that is
-        deemed noncallable. Valid path and filename without whitespace must
-        be provided. Must be a valid BED file, with first 3 columns: <chr>
-        <start> <stop>. Values in <chr> field must align with values in VCF
-        #CHROM field. Ranges must be based on GRCh37 or GRCh38 reference
-        sequences. Note that BED files are `0-based <https://www.biostars.org/p/84686/>`
-        (or 0-start, half-open) whereas VCF files and FHIR output are 1-based (or 1-start,
-        fully-closed).
-
-        Returns
-        -------
-        Object
-        An Instance of Conveter that helps to convert vcf file.
-
-        Examples
-        --------
-
-        """
+ 
         super(Converter, self).__init__()
         if not (vcf_filename):
             raise Exception('You must provide vcf_filename')
@@ -143,7 +140,7 @@ class Converter(object):
 
         Parameters
         ----------
-        output_filename : str, default fhir.json
+        output_filename:
             Path to output fhir json.
 
         """

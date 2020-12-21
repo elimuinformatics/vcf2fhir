@@ -1,4 +1,4 @@
-vcf2fhir
+vcf2fhir : Converts variants from VCF format into HL7 FHIR Genomics format.
 ===============================================
 
 Contents:
@@ -8,3 +8,10 @@ Contents:
 
    QUICKSTART
    API
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
