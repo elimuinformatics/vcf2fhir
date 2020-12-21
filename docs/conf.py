@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.intersphinx']
+extensions = ['sphinx.ext.intersphinx', 'sphinx.ext.autodoc']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -38,16 +38,12 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'vcf2fhir'
-copyright = '2020, Shailesh Gothi<>\x1b[Dshaileshgothiece@gmail.com>'
-author = 'Shailesh Gothi<>\x1b[Dshaileshgothiece@gmail.com>'
+copyright = '2020, info@elimu.io'
+author = 'Shailesh Gothi @srgothi92'
 
 
 # The version info for the project you're documenting, acts as replacement for
 # The short X.Y version.
-import vcf2fhir
-version = vcf2fhir.VERSION
-# The full version, including alpha/beta/rc tags.
-release = vcf2fhir.VERSION
 
 # for source files.
 exclude_trees = []
@@ -74,6 +70,9 @@ html_theme_options = {
 
 }
 
+# mock depenpencies
+autodoc_mock_imports = ["pyranges", "vcf", "fhirclient", "pytz", "pandas", "numpy"]
+
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
 html_static_path = ['_static']
@@ -83,13 +82,6 @@ html_static_path = ['_static']
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'vcf2fhirdoc'
-
-# Grouping the document tree into LaTeX files. List of tuples
-# (source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [
-  ('index', 'vcf2fhit.tex', u'VCF to FHIR Documentation',
-   u'Shubham Londhe', 'manual'),
-]
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
