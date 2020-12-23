@@ -15,6 +15,7 @@ pip install vcf2fhir
 ```
 
 ### Quick Examples
+(some sample VCF files are [here](https://github.com/elimuinformatics/vcf2fhir/tree/master/vcf2fhir/test))
 
 ```python
 >>> import vcf2fhir
