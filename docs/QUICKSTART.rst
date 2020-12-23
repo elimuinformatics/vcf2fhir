@@ -26,6 +26,8 @@ This will install vcf2fhir library.
 Examples
 ---------------------
 
+(some sample VCF files are `here <https://github.com/elimuinformatics/vcf2fhir/tree/master/vcf2fhir/test>`_)
+
 Quick example
 
 .. code-block:: python
