@@ -41,7 +41,7 @@ class _Fhir_Helper:
         if(record.samples[0].phased == False):
            return 
         sample_data = record.samples[0].data
-        if(sample_data.GT != None and len(sample_data.GT.split('|')) >= 2 and sample_data.PS != None):
+        if(sample_data.GT != None and len(sample_data.GT.split('|')) >= 2 and 'PS' in sample_data._fields):
             self.phased_rec_map.setdefault(sample_data.PS, []).append(record)  
 
     def initalizeReport(self):
