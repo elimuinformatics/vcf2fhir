@@ -7,6 +7,7 @@ import logging
 
 general_logger = logging.getLogger("vcf2fhir.general")
 
+
 class _Utilities(object):
 
     """
@@ -15,12 +16,13 @@ class _Utilities(object):
      * @return date
      */
     """
-    def getFhirDate(): 
-        z = datetime.datetime.now(pytz.timezone('UTC')).strftime("%Y-%m-%dT%H:%M:%S%z")
+    def getFhirDate():
+        z = datetime.datetime.now(pytz.timezone(
+            'UTC')).strftime("%Y-%m-%dT%H:%M:%S%z")
         return z[:-2]+':'+z[-2:]
 
     def getSequenceRelation(phasedRecMap):
-        RelationTable= pd.DataFrame(columns=['POS1','POS2','Relation'])
+        RelationTable = pd.DataFrame(columns=['POS1', 'POS2', 'Relation'])
         for key in phasedRecMap:
             prev_record = None
             for record in phasedRecMap[key]:
@@ -31,9 +33,11 @@ class _Utilities(object):
                 record_data = record.samples[0].data
                 if(prev_data.PS == record_data.PS):
                     if prev_data.GT == record_data.GT:
-                        RelationTable = RelationTable.append({'POS1': prev_record.POS, 'POS2': record.POS, 'Relation': 'Cis'}, ignore_index=True)
+                        RelationTable = RelationTable.append(
+                            {'POS1': prev_record.POS, 'POS2': record.POS, 'Relation': 'Cis'}, ignore_index=True)
                     else:
-                        RelationTable = RelationTable.append({'POS1': prev_record.POS, 'POS2': record.POS, 'Relation': 'Trans'}, ignore_index=True)
+                        RelationTable = RelationTable.append(
+                            {'POS1': prev_record.POS, 'POS2': record.POS, 'Relation': 'Trans'}, ignore_index=True)
                 prev_record = record
         return RelationTable
 
@@ -56,27 +60,27 @@ class _Utilities(object):
             else:
                 _Utilities._error_log_allelicstate(record)
         elif sample.gt_type != None and len(alleles) == 1 and alleles[0] == '1':
-                if hasattr(sample.data, 'AD') and hasattr(sample.data, 'DP'):
-                    try:
-                        if(isinstance(sample.data.AD, list) and len(sample.data.AD) > 0):
-                            ratio = float(sample.data.AD[0])/float(sample.data.DP)
-                        else:
-                            ratio = float(sample.data.AD)/float(sample.data.DP)
-                        if ratio > 0.99:
-                            allelicState = "homoplasmic"
-                            allelicCode = "LA6704-6"
-                        else: 
-                            allelicState = "heteroplasmic"
-                            allelicCode = "LA6703-8"
-                    except Exception as e:
-                        general_logger.debug(e)
-                        _Utilities._error_log_allelicstate(record)
-                        pass
-                else:
+            if hasattr(sample.data, 'AD') and hasattr(sample.data, 'DP'):
+                try:
+                    if(isinstance(sample.data.AD, list) and len(sample.data.AD) > 0):
+                        ratio = float(sample.data.AD[0])/float(sample.data.DP)
+                    else:
+                        ratio = float(sample.data.AD)/float(sample.data.DP)
+                    if ratio > 0.99:
+                        allelicState = "homoplasmic"
+                        allelicCode = "LA6704-6"
+                    else:
+                        allelicState = "heteroplasmic"
+                        allelicCode = "LA6703-8"
+                except Exception as e:
+                    general_logger.debug(e)
                     _Utilities._error_log_allelicstate(record)
-        else:            
+                    pass
+            else:
+                _Utilities._error_log_allelicstate(record)
+        else:
             _Utilities._error_log_allelicstate(record)
-        return {'ALLELE': allelicState, 'CODE' : allelicCode}
+        return {'ALLELE': allelicState, 'CODE': allelicCode}
 
     def extract_chrom_identifier(chrom):
         chrom = chrom.upper().replace("CHR", "")
@@ -85,6 +89,5 @@ class _Utilities(object):
         return chrom
 
     def _error_log_allelicstate(record):
-            general_logger.error("Cannot Determine AllelicState for: %s , considered sample: %s", record, record.samples[0].data)
-
-        
+        general_logger.error(
+            "Cannot Determine AllelicState for: %s , considered sample: %s", record, record.samples[0].data)
