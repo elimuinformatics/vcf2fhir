@@ -27,11 +27,11 @@ class Converter(object):
     assembly to which variants in the VCF were called. Must be one of
     'GRCh37' or 'GRCh38'.
 
-    patient_id (optional): Supplied patient ID is inserted into
+    **patient_id** (optional): Supplied patient ID is inserted into
     generated FHIR output. Alphanumeric string without whitespace. if not provided,
     header of first sample column is used.
 
-    Conversion region (optional): Subset of the VCF file to be
+    **Conversion region** (optional): Subset of the VCF file to be
     converted into FHIR. If absent, the entire VCF file is converted. Can
     be supplied as either a parameter (conv_region_dict) or as a BED
     file (conv_region_filename):
