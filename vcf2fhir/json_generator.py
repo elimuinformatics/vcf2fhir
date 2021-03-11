@@ -8,6 +8,10 @@ general_logger = logging.getLogger("vcf2fhir.general")
 
 
 def _valid_record(record):
+    if not (_Utilities.validate_chrom_identifier(record.CHROM)):
+        invalid_record_logger.debug(
+            "Reason: VCF CHROM is not recognized, Record: %s, considered sample: %s", record, record.samples[0].data)
+        return False
     if(record.is_sv == True):
         invalid_record_logger.debug(
             "Reason: VCF INFO.SVTYPE is present. (Structural variants are excluded), Record: %s, considered sample: %s", record, record.samples[0].data)

@@ -413,6 +413,15 @@ class TestChromIdentifier(unittest.TestCase):
                 chrom), expected_chrom[i])
             i += 1
 
+    def test_chrom_validation(self):
+        actual_chrom = ['chrX', 'R', 'mt', 'chrR', 'chrM', 'chrMT', 'chr30', 'P', 'Z', '45', 'o', 'CHRX', '1', '22', 'CHR21', 'x']
+        recognized = [True, False, True, False, True, True, False, False, False, False, False, True, True, True, True, True]
+        i = 0
+        for chrom in actual_chrom:
+            self.assertEqual(_Utilities.validate_chrom_identifier(
+                chrom), recognized[i])
+            i += 1
+
 
 suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestVcf2FhirInputs))
 suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestTranslation))
