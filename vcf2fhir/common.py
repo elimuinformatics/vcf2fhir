@@ -41,7 +41,7 @@ class _Utilities(object):
                 prev_record = record
         return RelationTable
 
-    def getAllelicState(record):
+    def getAllelicState(record, ratio_ad_dp):
         allelicState = ''
         allelicCode = ''
         # Using  the first sample
@@ -66,7 +66,7 @@ class _Utilities(object):
                         ratio = float(sample.data.AD[0])/float(sample.data.DP)
                     else:
                         ratio = float(sample.data.AD)/float(sample.data.DP)
-                    if ratio > 0.99:
+                    if ratio > ratio_ad_dp:
                         allelicState = "homoplasmic"
                         allelicCode = "LA6704-6"
                     else:

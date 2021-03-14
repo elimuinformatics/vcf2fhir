@@ -47,9 +47,9 @@ def _fix_regions_chrom(region):
             _Utilities.extract_chrom_identifier)
 
 
-def _add_record_variants(record, ref_seq, patientID, fhir_helper):
+def _add_record_variants(record, ref_seq, patientID, fhir_helper, ratio_ad_dp):
     if(_valid_record(record) == True):
-        fhir_helper.add_variant_obv(record, ref_seq)
+        fhir_helper.add_variant_obv(record, ref_seq, ratio_ad_dp)
 
 
 def _add_region_studied(region_studied, nocall_region, fhir_helper, chrom, ref_seq, patientID):
@@ -61,7 +61,7 @@ def _add_region_studied(region_studied, nocall_region, fhir_helper, chrom, ref_s
             ref_seq, region_studied[chrom], nocall_region[chrom])
 
 
-def _get_fhir_json(vcf_reader, ref_build, patientID, has_tabix, conversion_region, region_studied, nocall_region, output_filename):
+def _get_fhir_json(vcf_reader, ref_build, patientID, has_tabix, conversion_region, region_studied, nocall_region,ratio_ad_dp, output_filename):
     fhir_helper = _Fhir_Helper(patientID)
     fhir_helper.initalizeReport()
     general_logger.debug("Finished Initializing empty report")
@@ -99,7 +99,7 @@ def _get_fhir_json(vcf_reader, ref_build, patientID, has_tabix, conversion_regio
                             record.CHROM = _Utilities.extract_chrom_identifier(
                                 record.CHROM)
                             _add_record_variants(
-                                record, ref_seq, patientID, fhir_helper)
+                                record, ref_seq, patientID, fhir_helper, ratio_ad_dp)
             elif not conversion_region:
                 vcf_iterator = None
                 try:
@@ -111,7 +111,7 @@ def _get_fhir_json(vcf_reader, ref_build, patientID, has_tabix, conversion_regio
                         record.CHROM = _Utilities.extract_chrom_identifier(
                             record.CHROM)
                         _add_record_variants(
-                            record, ref_seq, patientID, fhir_helper)
+                            record, ref_seq, patientID, fhir_helper, ratio_ad_dp)
     else:
         chrom_index = 1
         prev_add_chrom = ""
@@ -131,7 +131,7 @@ def _get_fhir_json(vcf_reader, ref_build, patientID, has_tabix, conversion_regio
                 ref_seq = _get_ref_seq_by_chrom(ref_build, record.CHROM)
                 if not conversion_region or conversion_region[record.CHROM, record.POS - 1: record.POS].empty == False:
                     _add_record_variants(
-                        record, ref_seq, patientID, fhir_helper)
+                        record, ref_seq, patientID, fhir_helper, ratio_ad_dp)
 
     general_logger.info("Adding all the phased sequence relationship found")
     fhir_helper.add_phased_relationship_obv()
