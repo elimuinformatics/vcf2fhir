@@ -99,13 +99,13 @@ class _Fhir_Helper:
         # Observation structure : described-variants
         self.report.contained.append(contained_rs)
 
-    def add_variant_obv(self, record, ref_seq):
+    def add_variant_obv(self, record, ref_seq, ratio_ad_dp):
         # collect all the record with similar position values,
         # to utilized later in phased sequence relationship
         self._addPhaseRecords(record)
         patient_reference = reference.FHIRReference(
             {"reference": "Patient/"+self.patientID})
-        alleles = _Utilities.getAllelicState(record)
+        alleles = _Utilities.getAllelicState(record, ratio_ad_dp)
         dvuid = "dv-" + uuid4().hex[:13]
         self.fhir_report.update({str(record.POS): dvuid})
         self.result_ids.append(dvuid)

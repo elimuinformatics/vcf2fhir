@@ -70,6 +70,9 @@ class Converter(object):
     (or 0-start, half-open) whereas VCF files and FHIR output are 1-based (or 1-start,
     fully-closed).
 
+    **ratio_ad_dp** (optional)(default value = 0.99): This ratio determine whether to assign Homoplasmic or Heteroplasmic
+     If allelic depth (FORMAT.AD) / read depth (FORMAT.DP) is greater than ratio_ad_dp then allelic state is
+      homoplasmic; else heteroplasmic.
     Returns
     -------
 
@@ -78,7 +81,8 @@ class Converter(object):
 
     """
 
-    def __init__(self, vcf_filename=None, ref_build=None, patient_id=None, has_tabix=False, conv_region_filename=None, conv_region_dict=None, region_studied_filename=None, nocall_filename=None):
+    def __init__(self, vcf_filename=None, ref_build=None, patient_id=None, has_tabix=False, conv_region_filename=None,
+                 conv_region_dict=None, region_studied_filename=None, nocall_filename=None, ratio_ad_dp=0.99):
 
         super(Converter, self).__init__()
         if not (vcf_filename):
@@ -139,6 +143,12 @@ class Converter(object):
                     "Please provide valid 'region_studied_filename'")
         else:
             self.region_studied = None
+        if not (ratio_ad_dp):
+            raise Exception('ratio_ad_dp cannot be None ')
+        if ratio_ad_dp < 0 or ratio_ad_dp >= 1:
+            raise Exception("Please provide a valid 'ratio_ad_dp' (limit 0 to 1)  ")
+
+        self.ratio_ad_dp = ratio_ad_dp
         self.has_tabix = has_tabix
         self.patient_id = patient_id
         self.ref_build = ref_build
@@ -157,7 +167,8 @@ class Converter(object):
         """
         general_logger.info("Starting VCF to FHIR Conversion")
         _get_fhir_json(self._vcf_reader, self.ref_build, self.patient_id, self.has_tabix,
-                       self.conversion_region, self.region_studied, self.nocall_region, output_filename)
+                       self.conversion_region, self.region_studied, self.nocall_region, self.ratio_ad_dp,
+                       output_filename)
         general_logger.info("Completed VCF to FHIR Conversion")
 
     def _fix_conv_region_zero_based(self, conv_region_dict):
