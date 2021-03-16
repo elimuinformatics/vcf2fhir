@@ -3,6 +3,7 @@ import datetime
 import pandas as pd
 import pytz
 import logging
+import re
 
 
 general_logger = logging.getLogger("vcf2fhir.general")
@@ -87,6 +88,12 @@ class _Utilities(object):
         if chrom == "MT":
             chrom = "M"
         return chrom
+
+    def validate_chrom_identifier(chrom):
+        chrom = _Utilities.extract_chrom_identifier(chrom)
+        pattern = '^[1-9]$|^1[0-9]$|^2[0-2]$|^[XYM]$'
+        result = re.match(pattern, chrom)
+        return bool(result)
 
     def _error_log_allelicstate(record):
         general_logger.error(
