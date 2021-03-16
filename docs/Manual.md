@@ -235,4 +235,4 @@ Mitochondrial DNA conversion
 
 -   If VCF ALT is a comma-separated list, then set ALT to correspond to FORMAT.GT (e.g. if FORMAT.GT is 3, then set ALT to 3rd value in list)
 
--   Allelic state is based on FORMAT.AD (allelic depth) / FORMAT.DP (read depth) ratio. If AD/DP ratio \> 99% then homoplasmic; else heteroplasmic. \[If AD and DP not present, don\'t output allelic state\]
+-   Allelic state is based on FORMAT.AD (allelic depth) / FORMAT.DP (read depth) ratio. Default ratio is 99%, but can be configured using ratio_ad_dp parameter. If AD/DP ratio \> ratio_ad_dp then homoplasmic; else heteroplasmic. \[If AD and DP not present, don\'t output allelic state\]
