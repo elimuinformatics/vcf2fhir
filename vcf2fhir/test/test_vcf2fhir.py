@@ -422,12 +422,34 @@ class TestChromIdentifier(unittest.TestCase):
                 chrom), recognized[i])
             i += 1
 
+class TestDataType(unittest.TestCase):
+
+    def test_validate_ratio_ad_dp(self):
+        ratio_ad_dp = [0.2, 0.65, 0.99, 1.3, -0.7, "Chr", False, True]
+        valid = [True, True, True, False, False, False, False, False]
+        i = 0
+        for value in ratio_ad_dp:
+            self.assertEqual(_Utilities.validate_ratio_ad_dp(
+                value), valid[i])
+            i += 1
+
+    def test_validate_has_tabix(self):
+        has_tabix = [True, False, 1, 23.4, 'C', "CHROM"]
+        valid = [True, True, False, False, False, False]
+        i = 0
+        for value in has_tabix:
+            self.assertEqual(_Utilities.validate_has_tabix(
+                value), valid[i])
+            i += 1
+
 
 suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestVcf2FhirInputs))
 suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestTranslation))
 suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestLogger))
 suite.addTests(unittest.TestLoader(
 ).loadTestsFromTestCase(TestChromIdentifier))
+suite.addTests(unittest.TestLoader(
+).loadTestsFromTestCase(TestDataType))
 
 if __name__ == '__main__':
     unittest.main()

@@ -95,6 +95,20 @@ class _Utilities(object):
         result = re.match(pattern, chrom)
         return bool(result)
 
+    def validate_ratio_ad_dp(ratio_ad_dp):
+        if not (ratio_ad_dp):
+            return False
+        if not isinstance(ratio_ad_dp, float):
+            return False
+        if ratio_ad_dp < 0 or ratio_ad_dp >= 1:
+            return False
+        return True
+
+    def validate_has_tabix(has_tabix):
+        if not isinstance(has_tabix, bool):
+            return False
+        return True
+
     def _error_log_allelicstate(record):
         general_logger.error(
             "Cannot Determine AllelicState for: %s , considered sample: %s", record, record.samples[0].data)
