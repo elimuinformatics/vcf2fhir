@@ -183,26 +183,6 @@
                         "coding": [
                             {
                                 "system": "http://loinc.org",
-                                "code": "62374-4",
-                                "display": "Human reference sequence assembly version"
-                            }
-                        ]
-                    },
-                    "valueCodeableConcept": {
-                        "coding": [
-                            {
-                                "system": "http://loinc.org",
-                                "code": "LA14029-5",
-                                "display": "GRCh37"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "code": {
-                        "coding": [
-                            {
-                                "system": "http://loinc.org",
                                 "code": "48013-7",
                                 "display": "Genomic reference sequence ID"
                             }
@@ -340,26 +320,6 @@
                 ]
             },
             "component": [
-                {
-                    "code": {
-                        "coding": [
-                            {
-                                "system": "http://loinc.org",
-                                "code": "62374-4",
-                                "display": "Human reference sequence assembly version"
-                            }
-                        ]
-                    },
-                    "valueCodeableConcept": {
-                        "coding": [
-                            {
-                                "system": "http://loinc.org",
-                                "code": "LA14029-5",
-                                "display": "GRCh37"
-                            }
-                        ]
-                    }
-                },
                 {
                     "code": {
                         "coding": [
@@ -507,26 +467,6 @@
                         "coding": [
                             {
                                 "system": "http://loinc.org",
-                                "code": "62374-4",
-                                "display": "Human reference sequence assembly version"
-                            }
-                        ]
-                    },
-                    "valueCodeableConcept": {
-                        "coding": [
-                            {
-                                "system": "http://loinc.org",
-                                "code": "LA14029-5",
-                                "display": "GRCh37"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "code": {
-                        "coding": [
-                            {
-                                "system": "http://loinc.org",
                                 "code": "48013-7",
                                 "display": "Genomic reference sequence ID"
                             }
@@ -664,26 +604,6 @@
                 ]
             },
             "component": [
-                {
-                    "code": {
-                        "coding": [
-                            {
-                                "system": "http://loinc.org",
-                                "code": "62374-4",
-                                "display": "Human reference sequence assembly version"
-                            }
-                        ]
-                    },
-                    "valueCodeableConcept": {
-                        "coding": [
-                            {
-                                "system": "http://loinc.org",
-                                "code": "LA14029-5",
-                                "display": "GRCh37"
-                            }
-                        ]
-                    }
-                },
                 {
                     "code": {
                         "coding": [
@@ -918,26 +838,6 @@
                 ]
             },
             "component": [
-                {
-                    "code": {
-                        "coding": [
-                            {
-                                "system": "http://loinc.org",
-                                "code": "62374-4",
-                                "display": "Human reference sequence assembly version"
-                            }
-                        ]
-                    },
-                    "valueCodeableConcept": {
-                        "coding": [
-                            {
-                                "system": "http://loinc.org",
-                                "code": "LA14029-5",
-                                "display": "GRCh37"
-                            }
-                        ]
-                    }
-                },
                 {
                     "code": {
                         "coding": [
