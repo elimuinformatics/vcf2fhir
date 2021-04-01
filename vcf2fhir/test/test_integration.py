@@ -6,7 +6,6 @@ import json
 from os.path import join, dirname
 import shutil
 import logging
-from vcf2fhir.common import _Utilities
 
 suite = doctest.DocTestSuite(vcf2fhir)
 
@@ -28,11 +27,15 @@ def _get_uids_map(fhir_json):
 
 def _validate_phase_rel(fhir_json, map_variant_index):
     for index_seq, list_index_var in map_variant_index.items():
-        for index, ref in enumerate(fhir_json['contained'][index_seq]['derivedFrom']):
+        for index, ref in enumerate(
+                fhir_json['contained'][index_seq]['derivedFrom']):
             variant_id = fhir_json['contained'][list_index_var[index]]['id']
             if not ref['reference'] == f'#{variant_id}':
                 return False
-            fhir_json['contained'][index_seq]['derivedFrom'][index]['reference'] = ''
+            s1 = 'contained'
+            s2 = 'derivedFrom'
+            s3 = 'reference'
+            fhir_json[s1][index_seq][s2][index][s3] = ''
     return True
 
 
@@ -53,31 +56,38 @@ class TestVcf2FhirInputs(unittest.TestCase):
             vcf2fhir.Converter(os.path.join(
                 os.path.dirname(__file__), 'vcf_example1.vcf'))
         self.assertEqual(
-            'You must provide build number ("GRCh37" or "GRCh38")', str(context.exception))
+            'You must provide build number ("GRCh37" or "GRCh38")', str(
+                context.exception))
 
     def test_invalid_ref_build(self):
         with self.assertRaises(Exception) as context:
             vcf2fhir.Converter(os.path.join(
                 os.path.dirname(__file__), 'vcf_example1.vcf'), 'b38')
         self.assertEqual(
-            'You must provide build number ("GRCh37" or "GRCh38")', str(context.exception))
+            'You must provide build number ("GRCh37" or "GRCh38")', str(
+                context.exception))
 
     def test_valid_ref_build_37(self):
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(
+        o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(
             os.path.dirname(__file__), 'vcf_example1.vcf'), 'GRCh37')
-        self.assertEqual(type(oVcf2Fhir), vcf2fhir.Converter)
+        self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
     def test_valid_ref_build_38(self):
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(
+        o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(
             os.path.dirname(__file__), 'vcf_example1.vcf'), 'GRCh38')
-        self.assertEqual(type(oVcf2Fhir), vcf2fhir.Converter)
+        self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
     def test_conv_region_only(self):
         conv_region_filename = os.path.join(os.path.dirname(
             __file__), 'RegionsToConvert_example3.bed')
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(
-            __file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', conv_region_filename=conv_region_filename)
-        self.assertEqual(type(oVcf2Fhir), vcf2fhir.Converter)
+        o_vcf_2_fhir = vcf2fhir.Converter(
+            os.path.join(
+                os.path.dirname(__file__),
+                'vcf_example3.vcf'),
+            'GRCh37',
+            'abc',
+            conv_region_filename=conv_region_filename)
+        self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
     def test_conv_region_dict(self):
         conv_region_dict = {
@@ -85,18 +95,29 @@ class TestVcf2FhirInputs(unittest.TestCase):
             "Start": [50001, 55001, 50001],
             "End": [52001, 60601, 60026]
         }
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(
-            __file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', conv_region_dict=conv_region_dict)
-        self.assertEqual(type(oVcf2Fhir), vcf2fhir.Converter)
+        o_vcf_2_fhir = vcf2fhir.Converter(
+            os.path.join(
+                os.path.dirname(__file__),
+                'vcf_example3.vcf'),
+            'GRCh37',
+            'abc',
+            conv_region_dict=conv_region_dict)
+        self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
     def test_conv_region_region_studied(self):
         region_studied_filename = os.path.join(
             os.path.dirname(__file__), 'RegionsStudied_example3.bed')
         conv_region_filename = os.path.join(os.path.dirname(
             __file__), 'RegionsToConvert_example3.bed')
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37',
-                                       'abc', conv_region_filename=conv_region_filename, region_studied_filename=region_studied_filename)
-        self.assertEqual(type(oVcf2Fhir), vcf2fhir.Converter)
+        o_vcf_2_fhir = vcf2fhir.Converter(
+            os.path.join(
+                os.path.dirname(__file__),
+                'vcf_example3.vcf'),
+            'GRCh37',
+            'abc',
+            conv_region_filename=conv_region_filename,
+            region_studied_filename=region_studied_filename)
+        self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
     def test_conv_region_nocall(self):
         conv_region_filename = os.path.join(os.path.dirname(
@@ -104,26 +125,46 @@ class TestVcf2FhirInputs(unittest.TestCase):
         nocall_filename = os.path.join(os.path.dirname(
             __file__), 'NoncallableRegions_example3.bed')
         with self.assertRaises(Exception) as context:
-            vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh37',
-                               'abc',  conv_region_filename=conv_region_filename, nocall_filename=nocall_filename)
+            vcf2fhir.Converter(
+                os.path.join(
+                    os.path.dirname(__file__),
+                    'vcf_example3.vcf'),
+                'GRCh37',
+                'abc',
+                conv_region_filename=conv_region_filename,
+                nocall_filename=nocall_filename)
         self.assertEqual(
-            'Please also provide region_studied_filename when nocall_filename is provided', str(context.exception))
+            ('Please also provide region_studied_filename ' +
+             'when nocall_filename is provided'), str(
+                context.exception))
 
     def test_no_conv_region_region_studied(self):
         region_studied_filename = os.path.join(
             os.path.dirname(__file__), 'RegionsStudied_example3.bed')
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(
-            __file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', region_studied_filename=region_studied_filename)
-        self.assertEqual(type(oVcf2Fhir), vcf2fhir.Converter)
+        o_vcf_2_fhir = vcf2fhir.Converter(
+            os.path.join(
+                os.path.dirname(__file__),
+                'vcf_example3.vcf'),
+            'GRCh37',
+            'abc',
+            region_studied_filename=region_studied_filename)
+        self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
     def test_no_conv_region_nocall(self):
         nocall_filename = os.path.join(os.path.dirname(
             __file__), 'NoncallableRegions_example3.bed')
         with self.assertRaises(Exception) as context:
-            vcf2fhir.Converter(os.path.join(os.path.dirname(
-                __file__), 'vcf_example3.vcf'), 'GRCh37', 'abc', nocall_filename=nocall_filename)
+            vcf2fhir.Converter(
+                os.path.join(
+                    os.path.dirname(__file__),
+                    'vcf_example3.vcf'),
+                'GRCh37',
+                'abc',
+                nocall_filename=nocall_filename)
         self.assertEqual(
-            'Please also provide region_studied_filename when nocall_filename is provided', str(context.exception))
+            ('Please also provide region_studied_filename ' +
+             'when nocall_filename is provided'), str(
+                context.exception))
 
 
 class TestTranslation(unittest.TestCase):
@@ -141,13 +182,13 @@ class TestTranslation(unittest.TestCase):
 
     def test_wo_patient_id(self):
         self.maxDiff = None
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(
+        o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(
             os.path.dirname(__file__), 'vcf_example1.vcf'), 'GRCh37')
         output_filename = os.path.join(os.path.dirname(
             __file__), self.TEST_RESULT_DIR, 'fhir_wo_patient_example1.json')
         expected_outfult_filename = os.path.join(
             os.path.dirname(__file__), 'expected_example1_wo_patient.json')
-        oVcf2Fhir.convert(output_filename)
+        o_vcf_2_fhir.convert(output_filename)
         actual_fhir_json = json.load(open(output_filename))
         # Validate the pased sequence relationship
         self.assertEqual(_validate_phase_rel(
@@ -157,19 +198,20 @@ class TestTranslation(unittest.TestCase):
         map_ids = _get_uids_map(actual_fhir_json)
         self.assertEqual(map_ids['obv_ids'], map_ids['result_ids'])
         actual_fhir_json['issued'] = ''
-        # Finally, check if the acutal json after removing all uids is same as exppected json
+        # Finally, check if the acutal json after removing all uids is same as
+        # exppected json
         expected_fhir_json = json.load(open(expected_outfult_filename))
         self.assertEqual(actual_fhir_json, expected_fhir_json)
 
     def test_with_patient_id(self):
         self.maxDiff = None
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(
+        o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(
             __file__), 'vcf_example1.vcf'), 'GRCh37', 'HG00628')
         output_filename = os.path.join(os.path.dirname(
             __file__), self.TEST_RESULT_DIR, 'fhir_with_patient_example1.json')
         expected_outfult_filename = os.path.join(os.path.dirname(
             __file__), 'expected_example1_with_patient.json')
-        oVcf2Fhir.convert(output_filename)
+        o_vcf_2_fhir.convert(output_filename)
         actual_fhir_json = json.load(open(output_filename))
         # Validate the pased sequence relationship
         self.assertEqual(_validate_phase_rel(
@@ -179,15 +221,17 @@ class TestTranslation(unittest.TestCase):
         map_ids = _get_uids_map(actual_fhir_json)
         self.assertEqual(map_ids['obv_ids'], map_ids['result_ids'])
         actual_fhir_json['issued'] = ''
-        # Finally, check if the acutal json after removing all uids is same as exppected json
+        # Finally, check if the acutal json after removing all uids is same as
+        # exppected json
         expected_fhir_json = json.load(open(expected_outfult_filename))
         self.assertEqual(actual_fhir_json, expected_fhir_json)
 
-    # FIXME: just a temporary test, later change it to a test that test particular variant
+    # FIXME: just a temporary test, later change it to a test that test
+    # particular variant
     def test_anotherfile(self):
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(
+        o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(
             __file__), 'vcf_example2.vcf'), 'GRCh37', 'HG00628')
-        oVcf2Fhir.convert(output_filename=os.path.join(
+        o_vcf_2_fhir.convert(output_filename=os.path.join(
             os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir2.json'))
 
     def test_region_studied(self):
@@ -202,9 +246,16 @@ class TestTranslation(unittest.TestCase):
             __file__), self.TEST_RESULT_DIR, 'fhir_example3.json')
         expected_outfult_filename = os.path.join(
             os.path.dirname(__file__), 'expected_example3.json')
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh38', 'HG00628',
-                                       conv_region_filename=conv_region_filename, region_studied_filename=region_studied_filename, nocall_filename=nocall_filename)
-        oVcf2Fhir.convert(output_filename)
+        o_vcf_2_fhir = vcf2fhir.Converter(
+            os.path.join(
+                os.path.dirname(__file__),
+                'vcf_example3.vcf'),
+            'GRCh38',
+            'HG00628',
+            conv_region_filename=conv_region_filename,
+            region_studied_filename=region_studied_filename,
+            nocall_filename=nocall_filename)
+        o_vcf_2_fhir.convert(output_filename)
         actual_fhir_json = json.load(open(output_filename))
         # Validate the pased sequence relationship
         self.assertEqual(_validate_phase_rel(
@@ -214,7 +265,8 @@ class TestTranslation(unittest.TestCase):
         map_ids = _get_uids_map(actual_fhir_json)
         self.assertEqual(map_ids['obv_ids'], map_ids['result_ids'])
         actual_fhir_json['issued'] = ''
-        # Finally, check if the acutal json after removing all uids is same as exppected json
+        # Finally, check if the acutal json after removing all uids is same as
+        # exppected json
         expected_fhir_json = json.load(open(expected_outfult_filename))
         self.assertEqual(actual_fhir_json, expected_fhir_json)
 
@@ -233,9 +285,16 @@ class TestTranslation(unittest.TestCase):
             __file__), self.TEST_RESULT_DIR, 'fhir_example3_dict.json')
         expected_outfult_filename = os.path.join(
             os.path.dirname(__file__), 'expected_example3.json')
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh38', 'HG00628',
-                                       conv_region_dict=conv_region_dict, region_studied_filename=region_studied_filename, nocall_filename=nocall_filename)
-        oVcf2Fhir.convert(output_filename)
+        o_vcf_2_fhir = vcf2fhir.Converter(
+            os.path.join(
+                os.path.dirname(__file__),
+                'vcf_example3.vcf'),
+            'GRCh38',
+            'HG00628',
+            conv_region_dict=conv_region_dict,
+            region_studied_filename=region_studied_filename,
+            nocall_filename=nocall_filename)
+        o_vcf_2_fhir.convert(output_filename)
         actual_fhir_json = json.load(open(output_filename))
         # Validate the pased sequence relationship
         self.assertEqual(_validate_phase_rel(
@@ -245,11 +304,13 @@ class TestTranslation(unittest.TestCase):
         map_ids = _get_uids_map(actual_fhir_json)
         self.assertEqual(map_ids['obv_ids'], map_ids['result_ids'])
         actual_fhir_json['issued'] = ''
-        # Finally, check if the acutal json after removing all uids is same as exppected json
+        # Finally, check if the acutal json after removing all uids is same as
+        # exppected json
         expected_fhir_json = json.load(open(expected_outfult_filename))
         self.assertEqual(actual_fhir_json, expected_fhir_json)
 
-    # Check if region studied observation outside the vcf files are also included in fhir report.
+    # Check if region studied observation outside the vcf files are also
+    # included in fhir report.
     def test_multiple_region_studied(self):
         self.maxDiff = None
         region_studied_filename = os.path.join(
@@ -262,9 +323,16 @@ class TestTranslation(unittest.TestCase):
             __file__), self.TEST_RESULT_DIR, 'fhir_example4.json')
         expected_outfult_filename = os.path.join(
             os.path.dirname(__file__), 'expected_example4.json')
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example4.vcf'), 'GRCh38', 'HG00628',
-                                       conv_region_filename=conv_region_filename, region_studied_filename=region_studied_filename, nocall_filename=nocall_filename)
-        oVcf2Fhir.convert(output_filename)
+        o_vcf_2_fhir = vcf2fhir.Converter(
+            os.path.join(
+                os.path.dirname(__file__),
+                'vcf_example4.vcf'),
+            'GRCh38',
+            'HG00628',
+            conv_region_filename=conv_region_filename,
+            region_studied_filename=region_studied_filename,
+            nocall_filename=nocall_filename)
+        o_vcf_2_fhir.convert(output_filename)
         actual_fhir_json = json.load(open(output_filename))
         # Validate the pased sequence relationship
         self.assertEqual(_validate_phase_rel(
@@ -274,7 +342,8 @@ class TestTranslation(unittest.TestCase):
         map_ids = _get_uids_map(actual_fhir_json)
         self.assertEqual(map_ids['obv_ids'], map_ids['result_ids'])
         actual_fhir_json['issued'] = ''
-        # Finally, check if the acutal json after removing all uids is same as exppected json
+        # Finally, check if the acutal json after removing all uids is same as
+        # exppected json
         expected_fhir_json = json.load(open(expected_outfult_filename))
         self.assertEqual(actual_fhir_json, expected_fhir_json)
 
@@ -283,18 +352,28 @@ class TestTranslation(unittest.TestCase):
             os.path.dirname(__file__), 'RegionsStudied_example4.bed')
         output_filename = os.path.join(os.path.dirname(
             __file__), self.TEST_RESULT_DIR, 'fhir_example4_test.json')
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(
-            __file__), 'vcf_example4.vcf'), 'GRCh38', 'HG00628', region_studied_filename=region_studied_filename)
-        oVcf2Fhir.convert(output_filename)
+        o_vcf_2_fhir = vcf2fhir.Converter(
+            os.path.join(
+                os.path.dirname(__file__),
+                'vcf_example4.vcf'),
+            'GRCh38',
+            'HG00628',
+            region_studied_filename=region_studied_filename)
+        o_vcf_2_fhir.convert(output_filename)
 
     def test_empty_fhir_json(self):
         conv_region_filename = os.path.join(os.path.dirname(
             __file__), 'RegionsToConvert_empty_example4.bed')
         output_filename = os.path.join(os.path.dirname(
             __file__), self.TEST_RESULT_DIR, 'fhir_example4_test.json')
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(
-            __file__), 'vcf_example4.vcf'), 'GRCh38', 'HG00628', conv_region_filename=conv_region_filename)
-        oVcf2Fhir.convert(output_filename)
+        o_vcf_2_fhir = vcf2fhir.Converter(
+            os.path.join(
+                os.path.dirname(__file__),
+                'vcf_example4.vcf'),
+            'GRCh38',
+            'HG00628',
+            conv_region_filename=conv_region_filename)
+        o_vcf_2_fhir.convert(output_filename)
 
     def test_tabix(self):
         self.maxDiff = None
@@ -308,9 +387,17 @@ class TestTranslation(unittest.TestCase):
             __file__), self.TEST_RESULT_DIR, 'fhir_example4_tabix.json')
         expected_outfult_filename = os.path.join(
             os.path.dirname(__file__), 'expected_example4.json')
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example4.vcf.gz'), 'GRCh38', 'HG00628', has_tabix=True,
-                                       conv_region_filename=conv_region_filename, region_studied_filename=region_studied_filename, nocall_filename=nocall_filename)
-        oVcf2Fhir.convert(output_filename)
+        o_vcf_2_fhir = vcf2fhir.Converter(
+            os.path.join(
+                os.path.dirname(__file__),
+                'vcf_example4.vcf.gz'),
+            'GRCh38',
+            'HG00628',
+            has_tabix=True,
+            conv_region_filename=conv_region_filename,
+            region_studied_filename=region_studied_filename,
+            nocall_filename=nocall_filename)
+        o_vcf_2_fhir.convert(output_filename)
         actual_fhir_json = json.load(open(output_filename))
         # Validate the pased sequence relationship
         self.assertEqual(_validate_phase_rel(
@@ -320,7 +407,8 @@ class TestTranslation(unittest.TestCase):
         map_ids = _get_uids_map(actual_fhir_json)
         self.assertEqual(map_ids['obv_ids'], map_ids['result_ids'])
         actual_fhir_json['issued'] = ''
-        # Finally, check if the acutal json after removing all uids is same as exppected json
+        # Finally, check if the acutal json after removing all uids is same as
+        # exppected json
         expected_fhir_json = json.load(open(expected_outfult_filename))
         self.assertEqual(actual_fhir_json, expected_fhir_json)
 
@@ -354,12 +442,14 @@ class TestLogger(unittest.TestCase):
             shutil.rmtree(self.LOG_DIR)
         os.mkdir(self.LOG_DIR)
 
-    # TODO: Delete the log folder after running all the tests, below method throws error becasue log files are still in use.
+    # TODO: Delete the log folder after running
+    # all the tests, below method throws error becasue
+    # log files are still in use.
     # @classmethod
     # def tearDownClass(self):
     #     shutil.rmtree(self.LOG_DIR)
 
-    def testLoggerWorks(self):
+    def test_logger_forks(self):
         region_studied_filename = os.path.join(
             os.path.dirname(__file__), 'RegionsStudied_example3.bed')
         conv_region_filename = os.path.join(os.path.dirname(
@@ -376,80 +466,25 @@ class TestLogger(unittest.TestCase):
         # add ch to logger
         general_logger.addHandler(self.genearl_fh)
         invalid_record_logger.addHandler(self.invalid_record_fh)
-        oVcf2Fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(__file__), 'vcf_example3.vcf'), 'GRCh38', 'HG00628',
-                                       conv_region_filename=conv_region_filename, region_studied_filename=region_studied_filename, nocall_filename=nocall_filename)
-        oVcf2Fhir.convert(output_filename)
+        o_vcf_2_fhir = vcf2fhir.Converter(
+            os.path.join(
+                os.path.dirname(__file__),
+                'vcf_example3.vcf'),
+            'GRCh38',
+            'HG00628',
+            conv_region_filename=conv_region_filename,
+            region_studied_filename=region_studied_filename,
+            nocall_filename=nocall_filename)
+        o_vcf_2_fhir.convert(output_filename)
         self.assertEqual(os.path.exists(self.log_general_filename), True)
         self.assertEqual(os.path.exists(
             self.log_invalid_record_filename), True)
 
 
-class TestChromIdentifier(unittest.TestCase):
-
-    def test_chrom_1_22(self):
-        actual_chrom = ['chr1', '1', 'CHR1', '22', 'CHR22', 'chr22']
-        expected_chrom = ['1', '1', '1', '22', '22', '22']
-        i = 0
-        for chrom in actual_chrom:
-            self.assertEqual(_Utilities.extract_chrom_identifier(
-                chrom), expected_chrom[i])
-            i += 1
-
-    def test_chrom_X_Y(self):
-        actual_chrom = ['chrX', 'X', 'x', 'CHRX', 'chrY', 'Y', 'Y', 'CHRY']
-        expected_chrom = ['X', 'X', 'X', 'X', 'Y', 'Y', 'Y', 'Y']
-        i = 0
-        for chrom in actual_chrom:
-            self.assertEqual(_Utilities.extract_chrom_identifier(
-                chrom), expected_chrom[i])
-            i += 1
-
-    def test_chrom_M(self):
-        actual_chrom = ['MT', 'm', 'M', 'mt', 'chrm', 'chrM', 'chrmt', 'chrMT']
-        expected_chrom = ['M', 'M', 'M', 'M', 'M', 'M', 'M', 'M']
-        i = 0
-        for chrom in actual_chrom:
-            self.assertEqual(_Utilities.extract_chrom_identifier(
-                chrom), expected_chrom[i])
-            i += 1
-
-    def test_chrom_validation(self):
-        actual_chrom = ['chrX', 'R', 'mt', 'chrR', 'chrM', 'chrMT', 'chr30', 'P', 'Z', '45', 'o', 'CHRX', '1', '22', 'CHR21', 'x']
-        recognized = [True, False, True, False, True, True, False, False, False, False, False, True, True, True, True, True]
-        i = 0
-        for chrom in actual_chrom:
-            self.assertEqual(_Utilities.validate_chrom_identifier(
-                chrom), recognized[i])
-            i += 1
-
-class TestDataType(unittest.TestCase):
-
-    def test_validate_ratio_ad_dp(self):
-        ratio_ad_dp = [0.2, 0.65, 0.99, 1.3, -0.7, "Chr", False, True]
-        valid = [True, True, True, False, False, False, False, False]
-        i = 0
-        for value in ratio_ad_dp:
-            self.assertEqual(_Utilities.validate_ratio_ad_dp(
-                value), valid[i])
-            i += 1
-
-    def test_validate_has_tabix(self):
-        has_tabix = [True, False, 1, 23.4, 'C', "CHROM"]
-        valid = [True, True, False, False, False, False]
-        i = 0
-        for value in has_tabix:
-            self.assertEqual(_Utilities.validate_has_tabix(
-                value), valid[i])
-            i += 1
-
-
 suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestVcf2FhirInputs))
 suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestTranslation))
 suite.addTests(unittest.TestLoader().loadTestsFromTestCase(TestLogger))
-suite.addTests(unittest.TestLoader(
-).loadTestsFromTestCase(TestChromIdentifier))
-suite.addTests(unittest.TestLoader(
-).loadTestsFromTestCase(TestDataType))
+
 
 if __name__ == '__main__':
     unittest.main()
