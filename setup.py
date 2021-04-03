@@ -19,8 +19,8 @@ setuptools.setup(
         "Operating System :: OS Independent",
         "License :: OSI Approved :: Apache Software License"
     ],
-    tests_require = [
-    'unittest',
+    tests_require=[
+        'unittest',
     ],
     install_requires=[
         'Cython >=0.29.21',
