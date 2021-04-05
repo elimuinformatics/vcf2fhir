@@ -3,7 +3,7 @@ import pyranges
 from .json_generator import _get_fhir_json
 import logging
 import sys
-from .common import _Utilities
+from .common import *
 general_logger = logging.getLogger('vcf2fhir.general')
 """Converter for a VCF version >4.1 file."""
 
@@ -162,10 +162,10 @@ class Converter(object):
         else:
             self.region_studied = None
 
-        if not _Utilities.validate_has_tabix(has_tabix):
+        if not validate_has_tabix(has_tabix):
             raise Exception("Please provide a valid 'has_tabix'")
 
-        if not _Utilities.validate_ratio_ad_dp(ratio_ad_dp):
+        if not validate_ratio_ad_dp(ratio_ad_dp):
             raise Exception("Please provide a valid 'ratio_ad_dp'")
 
         self.ratio_ad_dp = ratio_ad_dp

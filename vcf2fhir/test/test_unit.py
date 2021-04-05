@@ -1,7 +1,7 @@
 import doctest
 import unittest
 import vcf2fhir
-from vcf2fhir.common import _Utilities
+from vcf2fhir.common import *
 
 suite = doctest.DocTestSuite(vcf2fhir)
 
@@ -13,7 +13,7 @@ class TestChromIdentifier(unittest.TestCase):
         expected_chrom = ['1', '1', '1', '22', '22', '22']
         i = 0
         for chrom in actual_chrom:
-            self.assertEqual(_Utilities.extract_chrom_identifier(
+            self.assertEqual(extract_chrom_identifier(
                 chrom), expected_chrom[i])
             i += 1
 
@@ -22,7 +22,7 @@ class TestChromIdentifier(unittest.TestCase):
         expected_chrom = ['X', 'X', 'X', 'X', 'Y', 'Y', 'Y', 'Y']
         i = 0
         for chrom in actual_chrom:
-            self.assertEqual(_Utilities.extract_chrom_identifier(
+            self.assertEqual(extract_chrom_identifier(
                 chrom), expected_chrom[i])
             i += 1
 
@@ -31,7 +31,7 @@ class TestChromIdentifier(unittest.TestCase):
         expected_chrom = ['M', 'M', 'M', 'M', 'M', 'M', 'M', 'M']
         i = 0
         for chrom in actual_chrom:
-            self.assertEqual(_Utilities.extract_chrom_identifier(
+            self.assertEqual(extract_chrom_identifier(
                 chrom), expected_chrom[i])
             i += 1
 
@@ -72,7 +72,7 @@ class TestChromIdentifier(unittest.TestCase):
             True]
         i = 0
         for chrom in actual_chrom:
-            self.assertEqual(_Utilities.validate_chrom_identifier(
+            self.assertEqual(validate_chrom_identifier(
                 chrom), recognized[i])
             i += 1
 
@@ -84,7 +84,7 @@ class TestDataType(unittest.TestCase):
         valid = [True, True, True, False, False, False, False, False]
         i = 0
         for value in ratio_ad_dp:
-            self.assertEqual(_Utilities.validate_ratio_ad_dp(
+            self.assertEqual(validate_ratio_ad_dp(
                 value), valid[i])
             i += 1
 
@@ -93,7 +93,7 @@ class TestDataType(unittest.TestCase):
         valid = [True, True, False, False, False, False]
         i = 0
         for value in has_tabix:
-            self.assertEqual(_Utilities.validate_has_tabix(
+            self.assertEqual(validate_has_tabix(
                 value), valid[i])
             i += 1
 
