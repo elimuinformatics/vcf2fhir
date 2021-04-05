@@ -29,7 +29,8 @@ class Converter(object):
     'GRCh37' or 'GRCh38'.
 
     **patient_id** (optional): Supplied patient ID is inserted into
-    generated FHIR output. Alphanumeric string without whitespace. if not provided,
+    generated FHIR output. Alphanumeric string without whitespace. if \
+    not provided,
     header of first sample column is used.
 
     **Conversion region** (optional): Subset of the VCF file to be
@@ -40,8 +41,10 @@ class Converter(object):
        **conv_region_dict** : Array of regions (e.g. '{"Chromosome":
        ["X", "X", "M"],"Start": [50001, 55001, 50001],"End": [52001,
        60601, 60026]}'). Values for Chromosome must align with values in
-       VCF #CHROM field. Ranges must be `0-based <https://www.biostars.org/p/84686/>`_
-       (or 0-start, half-open) and based on GRCh37 or GRCh38 reference sequences.
+       VCF #CHROM field. Ranges must be `0-based \
+       <https://www.biostars.org/p/84686/>`_
+       (or 0-start, half-open) and based on GRCh37 or GRCh38 \
+       reference sequences.
 
        **conv_region_filename**: Valid path and filename without
        whitespace must be provided. Must be a valid BED file with first 3
@@ -67,12 +70,16 @@ class Converter(object):
     be provided. Must be a valid BED file, with first 3 columns: <chr>
     <start> <stop>. Values in <chr> field must align with values in VCF
     #CHROM field. Ranges must be based on GRCh37 or GRCh38 reference
-    sequences. Note that BED files are `0-based <https://www.biostars.org/p/84686/>`_
-    (or 0-start, half-open) whereas VCF files and FHIR output are 1-based (or 1-start,
+    sequences. Note that BED files are `0-based \
+    <https://www.biostars.org/p/84686/>`_
+    (or 0-start, half-open) whereas VCF files and FHIR output are \
+    1-based (or 1-start,
     fully-closed).
 
-    **ratio_ad_dp** (optional)(default value = 0.99): This ratio determine whether to assign Homoplasmic or Heteroplasmic
-     If allelic depth (FORMAT.AD) / read depth (FORMAT.DP) is greater than ratio_ad_dp then allelic state is
+    **ratio_ad_dp** (optional)(default value = 0.99): This ratio \
+    determine whether to assign Homoplasmic or Heteroplasmic
+     If allelic depth (FORMAT.AD) / read depth (FORMAT.DP) is \
+     greater than ratio_ad_dp then allelic state is
       homoplasmic; else heteroplasmic.
     Returns
     -------
@@ -82,8 +89,17 @@ class Converter(object):
 
     """
 
-    def __init__(self, vcf_filename=None, ref_build=None, patient_id=None, has_tabix=False, conv_region_filename=None,
-                 conv_region_dict=None, region_studied_filename=None, nocall_filename=None, ratio_ad_dp=0.99):
+    def __init__(
+            self,
+            vcf_filename=None,
+            ref_build=None,
+            patient_id=None,
+            has_tabix=False,
+            conv_region_filename=None,
+            conv_region_dict=None,
+            region_studied_filename=None,
+            nocall_filename=None,
+            ratio_ad_dp=0.99):
 
         super(Converter, self).__init__()
         if not (vcf_filename):
@@ -93,13 +109,14 @@ class Converter(object):
                 'You must provide build number ("GRCh37" or "GRCh38")')
         if nocall_filename and not region_studied_filename:
             raise Exception(
-                "Please also provide region_studied_filename when nocall_filename is provided")
+                ("Please also provide region_studied_filename " +
+                 "when nocall_filename is provided"))
         self.vcf_filename = vcf_filename
         try:
             self._vcf_reader = vcf.Reader(filename=vcf_filename)
         except FileNotFoundError:
             raise
-        except:
+        except BaseException:
             self._generate_exception("Please provide valid  'vcf_filename'")
         if not patient_id:
             patient_id = self._vcf_reader.samples[0]
@@ -108,7 +125,7 @@ class Converter(object):
                 self.nocall_region = pyranges.read_bed(nocall_filename)
             except FileNotFoundError:
                 raise
-            except:
+            except BaseException:
                 self._generate_exception(
                     "Please provide valid  'nocall_filename'")
         else:
@@ -119,7 +136,7 @@ class Converter(object):
                     conv_region_filename)
             except FileNotFoundError:
                 raise
-            except:
+            except BaseException:
                 self._generate_exception(
                     "Please provide valid 'conv_region_filename'")
         elif conv_region_dict:
@@ -128,7 +145,7 @@ class Converter(object):
                 self.conversion_region = pyranges.from_dict(conv_region_dict)
             except FileNotFoundError:
                 raise
-            except:
+            except BaseException:
                 self._generate_exception(
                     "Please provide valid 'conv_region_dict'")
         else:
@@ -139,12 +156,12 @@ class Converter(object):
                     region_studied_filename)
             except FileNotFoundError:
                 raise
-            except:
+            except BaseException:
                 self._generate_exception(
                     "Please provide valid 'region_studied_filename'")
         else:
             self.region_studied = None
-        
+
         if not _Utilities.validate_has_tabix(has_tabix):
             raise Exception("Please provide a valid 'has_tabix'")
 
@@ -160,7 +177,8 @@ class Converter(object):
         general_logger.info("Converter class instantiated successfully")
 
     def convert(self, output_filename='fhir.json'):
-        """ Generates HL7 FHIR Genomics format data as output_filename or fhir.json if it is not provided
+        """ Generates HL7 FHIR Genomics format data as output_filename \
+        or fhir.json if it is not provided
 
         Parameters
         ----------
@@ -169,9 +187,16 @@ class Converter(object):
 
         """
         general_logger.info("Starting VCF to FHIR Conversion")
-        _get_fhir_json(self._vcf_reader, self.ref_build, self.patient_id, self.has_tabix,
-                       self.conversion_region, self.region_studied, self.nocall_region, self.ratio_ad_dp,
-                       output_filename)
+        _get_fhir_json(
+            self._vcf_reader,
+            self.ref_build,
+            self.patient_id,
+            self.has_tabix,
+            self.conversion_region,
+            self.region_studied,
+            self.nocall_region,
+            self.ratio_ad_dp,
+            output_filename)
         general_logger.info("Completed VCF to FHIR Conversion")
 
     def _fix_conv_region_zero_based(self, conv_region_dict):
