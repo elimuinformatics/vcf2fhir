@@ -256,32 +256,6 @@ class _Fhir_Helper:
         )
         observation_dv.component = []
 
-        observation_dv_component1 = observation.ObservationComponent()
-        observation_dv_component1.code = concept.CodeableConcept(
-            {
-                "coding": [
-                    {
-                        "system": "http://loinc.org",
-                        "code": "62374-4",
-                        "display": "Human reference sequence assembly version"
-                    }
-                ]
-            }
-        )
-        observation_dv_component1\
-            .valueCodeableConcept = concept.CodeableConcept(
-                {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "LA14029-5",
-                            "display": "GRCh37"
-                        }
-                    ]
-                }
-            )
-        observation_dv.component.append(observation_dv_component1)
-
         observation_dv_component2 = observation.ObservationComponent()
         observation_dv_component2.code = concept.CodeableConcept(
             {
