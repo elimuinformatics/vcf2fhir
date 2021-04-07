@@ -1,14 +1,14 @@
 import logging
 from .gene_ref_seq import _get_ref_seq_by_chrom
 from .fhir_helper import _Fhir_Helper
-from .common import _Utilities
+from .common import *
 
 invalid_record_logger = logging.getLogger("vcf2fhir.invalidrecord")
 general_logger = logging.getLogger("vcf2fhir.general")
 
 
 def _valid_record(record):
-    if not (_Utilities.validate_chrom_identifier(record.CHROM)):
+    if not (validate_chrom_identifier(record.CHROM)):
         invalid_record_logger.debug(
             ("Reason: VCF CHROM is not recognized, " +
              "Record: %s, considered sample: %s"),
@@ -74,7 +74,7 @@ def _get_chrom(chrom_index):
 def _fix_regions_chrom(region):
     if region:
         region.Chromosome = region.Chromosome.apply(
-            _Utilities.extract_chrom_identifier)
+            extract_chrom_identifier)
 
 
 def _add_record_variants(record, ref_seq, patientID, fhir_helper, ratio_ad_dp):
@@ -132,7 +132,7 @@ def _get_fhir_json(
         for chrom_index in range(1, 26):
             chrom = _get_chrom(chrom_index)
             ref_seq = _get_ref_seq_by_chrom(
-                ref_build, _Utilities.extract_chrom_identifier(chrom))
+                ref_build, extract_chrom_identifier(chrom))
             _add_region_studied(region_studied, nocall_region,
                                 fhir_helper, chrom, ref_seq, patientID)
             if conversion_region and not conversion_region[chrom].empty:
@@ -145,7 +145,7 @@ def _get_fhir_json(
                         pass
                     if vcf_iterator:
                         for record in vcf_iterator:
-                            record.CHROM = _Utilities.extract_chrom_identifier(
+                            record.CHROM = extract_chrom_identifier(
                                 record.CHROM)
                             _add_record_variants(
                                 record,
@@ -162,7 +162,7 @@ def _get_fhir_json(
                     pass
                 if vcf_iterator:
                     for record in vcf_iterator:
-                        record.CHROM = _Utilities.extract_chrom_identifier(
+                        record.CHROM = extract_chrom_identifier(
                             record.CHROM)
                         _add_record_variants(
                             record,
@@ -175,7 +175,7 @@ def _get_fhir_json(
         chrom_index = 1
         prev_add_chrom = ""
         for record in vcf_reader:
-            record.CHROM = _Utilities.extract_chrom_identifier(record.CHROM)
+            record.CHROM = extract_chrom_identifier(record.CHROM)
             if not (
                     conversion_region and
                     conversion_region[record.CHROM].empty):

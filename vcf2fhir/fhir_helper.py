@@ -12,7 +12,7 @@ import fhirclient.models.medicationstatement as medication
 import numpy as np
 from collections import OrderedDict
 from uuid import uuid4
-from .common import _Utilities
+from .common import *
 
 
 class _Fhir_Helper:
@@ -96,7 +96,7 @@ class _Fhir_Helper:
             }
         )
         self.report.subject = patient_reference
-        self.report.issued = date.FHIRDate(_Utilities.get_fhir_date())
+        self.report.issued = date.FHIRDate(get_fhir_date())
         self.report.contained = []
 
     def add_regionstudied_obv(
@@ -204,7 +204,7 @@ class _Fhir_Helper:
         self._add_phase_records(record)
         patient_reference = reference.FHIRReference(
             {"reference": "Patient/" + self.patientID})
-        alleles = _Utilities.get_allelic_state(record, ratio_ad_dp)
+        alleles = get_allelic_state(record, ratio_ad_dp)
         dvuid = "dv-" + uuid4().hex[:13]
         self.fhir_report.update({str(record.POS): dvuid})
         self.result_ids.append(dvuid)
@@ -409,7 +409,7 @@ class _Fhir_Helper:
         patient_reference = reference.FHIRReference(
             {"reference": "Patient/" + self.patientID})
         self.sequence_rels \
-            = _Utilities.get_sequence_relation(self.phased_rec_map)
+            = get_sequence_relation(self.phased_rec_map)
         for index in self.sequence_rels.index:
             siduid = "sid-" + uuid4().hex[:13]
             self.result_ids.append(siduid)
