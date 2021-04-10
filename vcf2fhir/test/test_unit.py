@@ -8,6 +8,7 @@ suite = doctest.DocTestSuite(vcf2fhir)
 
 class TestChromIdentifier(unittest.TestCase):
 
+    @ignore_warnings
     def test_chrom_1_22(self):
         actual_chrom = ['chr1', '1', 'CHR1', '22', 'CHR22', 'chr22']
         expected_chrom = ['1', '1', '1', '22', '22', '22']
@@ -17,6 +18,7 @@ class TestChromIdentifier(unittest.TestCase):
                 chrom), expected_chrom[i])
             i += 1
 
+    @ignore_warnings
     def test_chrom_X_Y(self):
         actual_chrom = ['chrX', 'X', 'x', 'CHRX', 'chrY', 'Y', 'Y', 'CHRY']
         expected_chrom = ['X', 'X', 'X', 'X', 'Y', 'Y', 'Y', 'Y']
@@ -26,6 +28,7 @@ class TestChromIdentifier(unittest.TestCase):
                 chrom), expected_chrom[i])
             i += 1
 
+    @ignore_warnings
     def test_chrom_M(self):
         actual_chrom = ['MT', 'm', 'M', 'mt', 'chrm', 'chrM', 'chrmt', 'chrMT']
         expected_chrom = ['M', 'M', 'M', 'M', 'M', 'M', 'M', 'M']
@@ -35,6 +38,7 @@ class TestChromIdentifier(unittest.TestCase):
                 chrom), expected_chrom[i])
             i += 1
 
+    @ignore_warnings
     def test_chrom_validation(self):
         actual_chrom = [
             'chrX',
@@ -79,6 +83,7 @@ class TestChromIdentifier(unittest.TestCase):
 
 class TestDataType(unittest.TestCase):
 
+    @ignore_warnings
     def test_validate_ratio_ad_dp(self):
         ratio_ad_dp = [0.2, 0.65, 0.99, 1.3, -0.7, "Chr", False, True]
         valid = [True, True, True, False, False, False, False, False]
@@ -88,6 +93,7 @@ class TestDataType(unittest.TestCase):
                 value), valid[i])
             i += 1
 
+    @ignore_warnings
     def test_validate_has_tabix(self):
         has_tabix = [True, False, 1, 23.4, 'C', "CHROM"]
         valid = [True, True, False, False, False, False]

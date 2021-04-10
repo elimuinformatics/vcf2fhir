@@ -4,6 +4,7 @@ import pandas as pd
 import pytz
 import logging
 import re
+import warnings
 
 
 general_logger = logging.getLogger("vcf2fhir.general")
@@ -132,6 +133,14 @@ def validate_has_tabix(has_tabix):
     if not isinstance(has_tabix, bool):
         return False
     return True
+
+
+def ignore_warnings(test_func):
+    def do_test(self, *args, **kwargs):
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", ResourceWarning)
+            test_func(self, *args, **kwargs)
+    return do_test
 
 
 def _error_log_allelicstate(record):

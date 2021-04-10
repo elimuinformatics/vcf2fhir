@@ -6,6 +6,7 @@ import json
 from os.path import join, dirname
 import shutil
 import logging
+from vcf2fhir.common import ignore_warnings
 
 suite = doctest.DocTestSuite(vcf2fhir)
 
@@ -41,16 +42,19 @@ def _validate_phase_rel(fhir_json, map_variant_index):
 
 class TestVcf2FhirInputs(unittest.TestCase):
 
+    @ignore_warnings
     def test_required_vcf_filename(self):
         with self.assertRaises(Exception) as context:
             vcf2fhir.Converter()
         self.assertTrue(
             'You must provide vcf_filename' in str(context.exception))
 
+    @ignore_warnings
     def test_invalid_vcf_filename(self):
         self.assertRaises(FileNotFoundError,
                           vcf2fhir.Converter, *['Hello', 'GRCh38'])
 
+    @ignore_warnings
     def test_required_ref_build(self):
         with self.assertRaises(Exception) as context:
             vcf2fhir.Converter(os.path.join(
@@ -59,6 +63,7 @@ class TestVcf2FhirInputs(unittest.TestCase):
             'You must provide build number ("GRCh37" or "GRCh38")', str(
                 context.exception))
 
+    @ignore_warnings
     def test_invalid_ref_build(self):
         with self.assertRaises(Exception) as context:
             vcf2fhir.Converter(os.path.join(
@@ -67,16 +72,19 @@ class TestVcf2FhirInputs(unittest.TestCase):
             'You must provide build number ("GRCh37" or "GRCh38")', str(
                 context.exception))
 
+    @ignore_warnings
     def test_valid_ref_build_37(self):
         o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(
             os.path.dirname(__file__), 'vcf_example1.vcf'), 'GRCh37')
         self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
+    @ignore_warnings
     def test_valid_ref_build_38(self):
         o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(
             os.path.dirname(__file__), 'vcf_example1.vcf'), 'GRCh38')
         self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
+    @ignore_warnings
     def test_conv_region_only(self):
         conv_region_filename = os.path.join(os.path.dirname(
             __file__), 'RegionsToConvert_example3.bed')
@@ -89,6 +97,7 @@ class TestVcf2FhirInputs(unittest.TestCase):
             conv_region_filename=conv_region_filename)
         self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
+    @ignore_warnings
     def test_conv_region_dict(self):
         conv_region_dict = {
             "Chromosome": ["X", "X", "M"],
@@ -104,6 +113,7 @@ class TestVcf2FhirInputs(unittest.TestCase):
             conv_region_dict=conv_region_dict)
         self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
+    @ignore_warnings
     def test_conv_region_region_studied(self):
         region_studied_filename = os.path.join(
             os.path.dirname(__file__), 'RegionsStudied_example3.bed')
@@ -119,6 +129,7 @@ class TestVcf2FhirInputs(unittest.TestCase):
             region_studied_filename=region_studied_filename)
         self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
+    @ignore_warnings
     def test_conv_region_nocall(self):
         conv_region_filename = os.path.join(os.path.dirname(
             __file__), 'RegionsToConvert_example3.bed')
@@ -138,6 +149,7 @@ class TestVcf2FhirInputs(unittest.TestCase):
              'when nocall_filename is provided'), str(
                 context.exception))
 
+    @ignore_warnings
     def test_no_conv_region_region_studied(self):
         region_studied_filename = os.path.join(
             os.path.dirname(__file__), 'RegionsStudied_example3.bed')
@@ -150,6 +162,7 @@ class TestVcf2FhirInputs(unittest.TestCase):
             region_studied_filename=region_studied_filename)
         self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
+    @ignore_warnings
     def test_no_conv_region_nocall(self):
         nocall_filename = os.path.join(os.path.dirname(
             __file__), 'NoncallableRegions_example3.bed')
@@ -180,6 +193,7 @@ class TestTranslation(unittest.TestCase):
     def tearDownClass(self):
         shutil.rmtree(self.TEST_RESULT_DIR)
 
+    @ignore_warnings
     def test_wo_patient_id(self):
         self.maxDiff = None
         o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(
@@ -205,6 +219,7 @@ class TestTranslation(unittest.TestCase):
             expected_fhir_json = json.load(expected_output_file)
             self.assertEqual(actual_fhir_json, expected_fhir_json)
 
+    @ignore_warnings
     def test_with_patient_id(self):
         self.maxDiff = None
         o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(
@@ -232,12 +247,14 @@ class TestTranslation(unittest.TestCase):
 
     # FIXME: just a temporary test, later change it to a test that test
     # particular variant
+    @ignore_warnings
     def test_anotherfile(self):
         o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(
             __file__), 'vcf_example2.vcf'), 'GRCh37', 'HG00628')
         o_vcf_2_fhir.convert(output_filename=os.path.join(
             os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir2.json'))
 
+    @ignore_warnings
     def test_region_studied(self):
         self.maxDiff = None
         region_studied_filename = os.path.join(
@@ -276,6 +293,7 @@ class TestTranslation(unittest.TestCase):
             expected_fhir_json = json.load(expected_output_file)
             self.assertEqual(actual_fhir_json, expected_fhir_json)
 
+    @ignore_warnings
     def test_region_studied_dict(self):
         conv_region_dict = {
             "Chromosome": ["X", "X", "M"],
@@ -319,6 +337,7 @@ class TestTranslation(unittest.TestCase):
 
     # Check if region studied observation outside the vcf files are also
     # included in fhir report.
+    @ignore_warnings
     def test_multiple_region_studied(self):
         self.maxDiff = None
         region_studied_filename = os.path.join(
@@ -357,6 +376,7 @@ class TestTranslation(unittest.TestCase):
             expected_fhir_json = json.load(expected_output_file)
             self.assertEqual(actual_fhir_json, expected_fhir_json)
 
+    @ignore_warnings
     def test_region_studied_only(self):
         region_studied_filename = os.path.join(
             os.path.dirname(__file__), 'RegionsStudied_example4.bed')
@@ -371,6 +391,7 @@ class TestTranslation(unittest.TestCase):
             region_studied_filename=region_studied_filename)
         o_vcf_2_fhir.convert(output_filename)
 
+    @ignore_warnings
     def test_empty_fhir_json(self):
         conv_region_filename = os.path.join(os.path.dirname(
             __file__), 'RegionsToConvert_empty_example4.bed')
@@ -385,6 +406,7 @@ class TestTranslation(unittest.TestCase):
             conv_region_filename=conv_region_filename)
         o_vcf_2_fhir.convert(output_filename)
 
+    @ignore_warnings
     def test_tabix(self):
         self.maxDiff = None
         region_studied_filename = os.path.join(
@@ -461,6 +483,7 @@ class TestLogger(unittest.TestCase):
     # def tearDownClass(self):
     #     shutil.rmtree(self.LOG_DIR)
 
+    @ignore_warnings
     def test_logger_forks(self):
         region_studied_filename = os.path.join(
             os.path.dirname(__file__), 'RegionsStudied_example3.bed')
