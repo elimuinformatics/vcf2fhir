@@ -9,7 +9,6 @@ import fhirclient.models.fhirreference as reference
 import fhirclient.models.fhirdate as date
 import fhirclient.models.range as valRange
 import fhirclient.models.medicationstatement as medication
-import numpy as np
 from collections import OrderedDict
 from uuid import uuid4
 from .common import *
@@ -42,9 +41,9 @@ class _Fhir_Helper:
                     ]
                 }
             )
-            obv_comp.valueRange = valRange.Range({"low": {"value": np.float(
+            obv_comp.valueRange = valRange.Range({"low": {"value": float(
                 row['Start']) + 1},
-                "high": {"value": np.float(row['End']) + 1}})
+                "high": {"value": float(row['End']) + 1}})
             observation_rs_components.append(obv_comp)
         for _, row in nocall_regions.df.iterrows():
             obv_comp = observation.ObservationComponent()
@@ -59,9 +58,9 @@ class _Fhir_Helper:
                     ]
                 }
             )
-            obv_comp.valueRange = valRange.Range({"low": {"value": np.float(
+            obv_comp.valueRange = valRange.Range({"low": {"value": float(
                 row['Start']) + 1},
-                "high": {"value": np.float(row['End']) + 1}})
+                "high": {"value": float(row['End']) + 1}})
             observation_rs_components.append(obv_comp)
         return observation_rs_components
 
