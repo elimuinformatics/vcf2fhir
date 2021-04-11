@@ -62,13 +62,12 @@ def _valid_record(record):
 
 
 def _get_chrom(chrom_index):
-    if chrom_index == 23:
-        return "X"
-    elif chrom_index == 24:
-        return "Y"
-    elif chrom_index == 25:
-        return "M"
-    return str(chrom_index)
+    switcher = {
+        23: 'X',
+        24: 'Y',
+        25: 'M'
+    }
+    return switcher.get(chrom_index, str(chrom_index))
 
 
 def _fix_regions_chrom(region):

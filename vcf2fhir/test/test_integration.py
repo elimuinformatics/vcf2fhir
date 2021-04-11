@@ -39,6 +39,28 @@ def _validate_phase_rel(fhir_json, map_variant_index):
     return True
 
 
+def _compare_actual_and_expected_fhir_json(
+        self,
+        output_filename,
+        expected_output_filename,
+        dict):
+    with open(output_filename) as output_file,\
+            open(expected_output_filename) as expected_output_file:
+        actual_fhir_json = json.load(output_file)
+        # Validate the passed sequence relationship
+        self.assertEqual(_validate_phase_rel(
+            actual_fhir_json, dict), True)
+        # Validate: list of observation uids and list of result uids same.
+        # Also set the uids to '' to avoid guid comparison in next step
+        map_ids = _get_uids_map(actual_fhir_json)
+        self.assertEqual(map_ids['obv_ids'], map_ids['result_ids'])
+        actual_fhir_json['issued'] = ''
+        # Finally, check if the acutal json after removing all uids is
+        # same as expected json
+        expected_fhir_json = json.load(expected_output_file)
+        self.assertEqual(actual_fhir_json, expected_fhir_json)
+
+
 class TestVcf2FhirInputs(unittest.TestCase):
 
     def test_required_vcf_filename(self):
@@ -189,21 +211,11 @@ class TestTranslation(unittest.TestCase):
         expected_output_filename = os.path.join(
             os.path.dirname(__file__), 'expected_example1_wo_patient.json')
         o_vcf_2_fhir.convert(output_filename)
-        with open(output_filename) as output_file,\
-                open(expected_output_filename) as expected_output_file:
-            actual_fhir_json = json.load(output_file)
-            # Validate the passed sequence relationship
-            self.assertEqual(_validate_phase_rel(
-                actual_fhir_json, {8: [5, 6]}), True)
-            # Validate: list of observation uids and list of result uids same.
-            # Also set the uids to '' to avoid guid comparison in next step
-            map_ids = _get_uids_map(actual_fhir_json)
-            self.assertEqual(map_ids['obv_ids'], map_ids['result_ids'])
-            actual_fhir_json['issued'] = ''
-            # Finally, check if the acutal json after removing all uids is
-            # same as expected json
-            expected_fhir_json = json.load(expected_output_file)
-            self.assertEqual(actual_fhir_json, expected_fhir_json)
+        _compare_actual_and_expected_fhir_json(
+            self,
+            output_filename=output_filename,
+            expected_output_filename=expected_output_filename,
+            dict={8: [5, 6]})
 
     def test_with_patient_id(self):
         self.maxDiff = None
@@ -214,21 +226,11 @@ class TestTranslation(unittest.TestCase):
         expected_output_filename = os.path.join(os.path.dirname(
             __file__), 'expected_example1_with_patient.json')
         o_vcf_2_fhir.convert(output_filename)
-        with open(output_filename) as output_file,\
-                open(expected_output_filename) as expected_output_file:
-            actual_fhir_json = json.load(output_file)
-            # Validate the passed sequence relationship
-            self.assertEqual(_validate_phase_rel(
-                actual_fhir_json, {8: [5, 6]}), True)
-            # Validate: list of observation uids and list of result uids same.
-            # Also set the uids to '' to avoid guid comparison in next step
-            map_ids = _get_uids_map(actual_fhir_json)
-            self.assertEqual(map_ids['obv_ids'], map_ids['result_ids'])
-            actual_fhir_json['issued'] = ''
-            # Finally, check if the acutal json after removing all uids is
-            # same as expected json
-            expected_fhir_json = json.load(expected_output_file)
-            self.assertEqual(actual_fhir_json, expected_fhir_json)
+        _compare_actual_and_expected_fhir_json(
+            self,
+            output_filename=output_filename,
+            expected_output_filename=expected_output_filename,
+            dict={8: [5, 6]})
 
     # FIXME: just a temporary test, later change it to a test that test
     # particular variant
@@ -260,21 +262,11 @@ class TestTranslation(unittest.TestCase):
             region_studied_filename=region_studied_filename,
             nocall_filename=nocall_filename)
         o_vcf_2_fhir.convert(output_filename)
-        with open(output_filename) as output_file,\
-                open(expected_output_filename) as expected_output_file:
-            actual_fhir_json = json.load(output_file)
-            # Validate the passed sequence relationship
-            self.assertEqual(_validate_phase_rel(
-                actual_fhir_json, {7: [2, 3], 8: [3, 4]}), True)
-            # Validate: list of observation uids and list of result uids same.
-            # Also set the uids to '' to avoid guid comparison in next step
-            map_ids = _get_uids_map(actual_fhir_json)
-            self.assertEqual(map_ids['obv_ids'], map_ids['result_ids'])
-            actual_fhir_json['issued'] = ''
-            # Finally, check if the acutal json after removing all uids is
-            # same as expected json
-            expected_fhir_json = json.load(expected_output_file)
-            self.assertEqual(actual_fhir_json, expected_fhir_json)
+        _compare_actual_and_expected_fhir_json(
+            self,
+            output_filename=output_filename,
+            expected_output_filename=expected_output_filename,
+            dict={7: [2, 3], 8: [3, 4]})
 
     def test_region_studied_dict(self):
         conv_region_dict = {
@@ -301,21 +293,11 @@ class TestTranslation(unittest.TestCase):
             region_studied_filename=region_studied_filename,
             nocall_filename=nocall_filename)
         o_vcf_2_fhir.convert(output_filename)
-        with open(output_filename) as output_file,\
-                open(expected_output_filename) as expected_output_file:
-            actual_fhir_json = json.load(output_file)
-            # Validate the passed sequence relationship
-            self.assertEqual(_validate_phase_rel(
-                actual_fhir_json, {7: [2, 3], 8: [3, 4]}), True)
-            # Validate: list of observation uids and list of result uids same.
-            # Also set the uids to '' to avoid guid comparison in next step
-            map_ids = _get_uids_map(actual_fhir_json)
-            self.assertEqual(map_ids['obv_ids'], map_ids['result_ids'])
-            actual_fhir_json['issued'] = ''
-            # Finally, check if the acutal json after removing all uids is
-            # same as expected json
-            expected_fhir_json = json.load(expected_output_file)
-            self.assertEqual(actual_fhir_json, expected_fhir_json)
+        _compare_actual_and_expected_fhir_json(
+            self,
+            output_filename=output_filename,
+            expected_output_filename=expected_output_filename,
+            dict={7: [2, 3], 8: [3, 4]})
 
     # Check if region studied observation outside the vcf files are also
     # included in fhir report.
@@ -341,21 +323,11 @@ class TestTranslation(unittest.TestCase):
             region_studied_filename=region_studied_filename,
             nocall_filename=nocall_filename)
         o_vcf_2_fhir.convert(output_filename)
-        with open(output_filename) as output_file,\
-                open(expected_output_filename) as expected_output_file:
-            actual_fhir_json = json.load(output_file)
-            # Validate the passed sequence relationship
-            self.assertEqual(_validate_phase_rel(
-                actual_fhir_json, {31: [24, 25], 32: [25, 26]}), True)
-            # Validate: list of observation uids and list of result uids same.
-            # Also set the uids to '' to avoid guid comparison in next step
-            map_ids = _get_uids_map(actual_fhir_json)
-            self.assertEqual(map_ids['obv_ids'], map_ids['result_ids'])
-            actual_fhir_json['issued'] = ''
-            # Finally, check if the acutal json after removing all uids is
-            # same as expected json
-            expected_fhir_json = json.load(expected_output_file)
-            self.assertEqual(actual_fhir_json, expected_fhir_json)
+        _compare_actual_and_expected_fhir_json(
+            self,
+            output_filename=output_filename,
+            expected_output_filename=expected_output_filename,
+            dict={31: [24, 25], 32: [25, 26]})
 
     def test_region_studied_only(self):
         region_studied_filename = os.path.join(
@@ -408,21 +380,11 @@ class TestTranslation(unittest.TestCase):
             region_studied_filename=region_studied_filename,
             nocall_filename=nocall_filename)
         o_vcf_2_fhir.convert(output_filename)
-        with open(output_filename) as output_file,\
-                open(expected_output_filename) as expected_output_file:
-            actual_fhir_json = json.load(output_file)
-            # Validate the passed sequence relationship
-            self.assertEqual(_validate_phase_rel(
-                actual_fhir_json, {31: [24, 25], 32: [25, 26]}), True)
-            # Validate: list of observation uids and list of result uids same.
-            # Also set the uids to '' to avoid guid comparison in next step
-            map_ids = _get_uids_map(actual_fhir_json)
-            self.assertEqual(map_ids['obv_ids'], map_ids['result_ids'])
-            actual_fhir_json['issued'] = ''
-            # Finally, check if the acutal json after removing all uids is
-            # same as expected json
-            expected_fhir_json = json.load(expected_output_file)
-            self.assertEqual(actual_fhir_json, expected_fhir_json)
+        _compare_actual_and_expected_fhir_json(
+            self,
+            output_filename=output_filename,
+            expected_output_filename=expected_output_filename,
+            dict={31: [24, 25], 32: [25, 26]})
 
 
 class TestLogger(unittest.TestCase):
