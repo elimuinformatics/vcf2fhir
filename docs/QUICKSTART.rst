@@ -45,6 +45,18 @@ More Example to instantiate Converter
 
        vcf2fhir.Converter('vcftests.vcf','GRCh37', 'aabc')
 
+-  Converts all variants in VCF. FHIR report assign homoplasmic vs.
+   heteroplasmic based on:
+
+   If allelic depth (FORMAT.AD)/ read depth (FORMAT.DP) is greater than 0.89
+   then allelic state is homoplasmic; else heteroplasmic.
+
+   **Note** : default value of ratio_ad_dp = 0.99 and ratio_ad_dp is considered valid only when value lies between 0 and 1
+
+    .. code-block:: python
+
+        vcf2fhir.Converter('vcftests.vcf','GRCh37', 'aabc', ratio_ad_dp = 0.89)
+
 -  Submitting only noncallable region without other regions generates an
    error.
 

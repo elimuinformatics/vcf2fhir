@@ -85,7 +85,7 @@ class Converter(object):
     -------
 
     Object
-    An Instance of Conveter that helps to convert vcf file.
+    An Instance of Converter that helps to convert vcf file.
 
     """
 
