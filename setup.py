@@ -29,7 +29,7 @@ setuptools.setup(
         'pandas',
         'pytz >= 2019.3',
         'pyVCF >=0.6.8',
-        'pyranges >= 0.0.79'
+        'pyranges >= 0.0.96'
     ],
     python_requires='>=3.6',
 )
