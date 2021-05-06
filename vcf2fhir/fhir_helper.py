@@ -9,9 +9,18 @@ import fhirclient.models.fhirreference as reference
 import fhirclient.models.fhirdate as date
 import fhirclient.models.range as valRange
 import fhirclient.models.medicationstatement as medication
-from collections import OrderedDict
+import numpy as np
 from uuid import uuid4
 from .common import *
+
+CG_ORDER = ["system", "code"]
+CODE_ORD = ["system", "code", "display"]
+RS_ORDER = ['resourceType', 'id', 'meta', 'status', 'category', 'code',
+            'subject', 'component']
+DV_ORDER = ['resourceType', 'id', 'meta', 'status', 'category', 'code',
+            'subject', 'valueCodeableConcept', 'component']
+SID_ORDER = ['resourceType', 'id', 'meta', 'status', 'category',
+             'code', 'subject', 'valueCodeableConcept', 'derivedFrom']
 
 
 class _Fhir_Helper:
@@ -459,11 +468,8 @@ class _Fhir_Helper:
             od["result"] = response['result']
         else:
             od["result"] = []
-        od_code_coding = OrderedDict()
-        od_code_coding["system"] = od["code"]["coding"][0]["system"]
-        od_code_coding["code"] = od["code"]["coding"][0]["code"]
-        od_code_coding["display"] = od["code"]["coding"][0]["display"]
-        od["code"]["coding"][0] = od_code_coding
+        od['code']['coding'][0] =\
+            createOrderedDict(od['code']['coding'][0], CODE_ORD)
 
         sidIndex = 0
         for index, fhirReport in enumerate(od['contained']):
@@ -487,110 +493,40 @@ class _Fhir_Helper:
                 fhirReport['derivedFrom'] = derivedFrom
 
         for k, i in enumerate(od['contained']):
+            od_contained_k = od['contained'][k]
+            v_c_c = 'valueCodeableConcept'
+
             if (i['category'][0]['coding'][0]):
-                od_category_coding = OrderedDict()
-                temp = i['category'][0]['coding'][0]["system"]
-                od_category_coding["system"] = temp
-                temp = i['category'][0]['coding'][0]["code"]
-                od_category_coding["code"] = temp
-                temp = od_category_coding
-                od['contained'][k]['category'][0]['coding'][0] = temp
+                od_contained_k['category'][0]['coding'][0] =\
+                    createOrderedDict(i['category'][0]['coding'][0], CG_ORDER)
 
             if (i['code']['coding'][0]):
-                od_code_coding = OrderedDict()
-                od_code_coding["system"] = i['code']['coding'][0]["system"]
-                od_code_coding["code"] = i['code']['coding'][0]["code"]
-                od_code_coding["display"] = i['code']['coding'][0]["display"]
-                od['contained'][k]['code']['coding'][0] = od_code_coding
+                od_contained_k['code']['coding'][0] =\
+                    createOrderedDict(i['code']['coding'][0], CODE_ORD)
 
-            if 'valueCodeableConcept' in i.keys():
-                od_value_codeable_concept_coding = OrderedDict()
-                temp = i['valueCodeableConcept']['coding'][0]["system"]
-                od_value_codeable_concept_coding["system"] = temp
-                temp = i['valueCodeableConcept']['coding'][0]["code"]
-                od_value_codeable_concept_coding["code"] = temp
-                temp = i['valueCodeableConcept']['coding'][0]["display"]
-                od_value_codeable_concept_coding["display"] = temp
-                temp = od_value_codeable_concept_coding
-                od['contained'][k]['valueCodeableConcept']['coding'][0] = temp
+            if v_c_c in i.keys():
+                od_contained_k[v_c_c]['coding'][0] =\
+                    createOrderedDict(i[v_c_c]['coding'][0], CODE_ORD)
 
             if ((i['id'].startswith('dv-')) or (i['id'].startswith('rs-'))):
                 for q, j in enumerate(i['component']):
-                    od_component_code_coding = OrderedDict()
-                    if j['code']['coding'][0]["system"]:
-                        temp = j['code']['coding'][0]["system"]
-                        od_component_code_coding["system"] = temp
-                    if j['code']['coding'][0]["code"]:
-                        temp = j['code']['coding'][0]["code"]
-                        od_component_code_coding["code"] = temp
-                    if j['code']['coding'][0]["display"]:
-                        temp = j['code']['coding'][0]["display"]
-                        od_component_code_coding["display"] = temp
-                    if od['contained'][k]['component'][q]['code']['coding'][0]:
-                        temp = od_component_code_coding
-                        s1 = 'contained'
-                        s2 = 'component'
-                        od[s1][k][s2][q]['code']['coding'][0] = temp
+                    od_contained_k_component_q = od_contained_k['component'][q]
+                    if od_contained_k_component_q['code']['coding'][0]:
+                        od_contained_k_component_q['code']['coding'][0] =\
+                            createOrderedDict(j['code']['coding'][0], CODE_ORD)
 
-                    od_componentvalue_codeable_concept = OrderedDict()
-                    if 'valueCodeableConcept' in j.keys():
-                        temp = j['valueCodeableConcept']['coding'][0]["system"]
-                        od_componentvalue_codeable_concept["system"] = temp
-                        if 'code' in j['valueCodeableConcept']['coding'][0]\
-                            .keys(
-                        ):
-                            t = j['valueCodeableConcept']['coding'][0]["code"]
-                            od_componentvalue_codeable_concept["code"] = t
-                        if 'display' in j['valueCodeableConcept']['coding'][0]\
-                            .keys(
-                        ):
-                            s1 = 'valueCodeableConcept'
-                            s2 = 'display'
-                            temp = j[s1]['coding'][0]["display"]
-                            od_componentvalue_codeable_concept[s2] = temp
-                        s1 = 'contained'
-                        s2 = 'component'
-                        s3 = 'valueCodeableConcept'
-                        temp = od_componentvalue_codeable_concept
-                        od[s1][k][s2][q][s3]['coding'][0] = temp
+                    if v_c_c in j.keys():
+                        od_contained_k_component_q[v_c_c]['coding'][0] =\
+                            createOrderedDict(j[v_c_c]['coding'][0], CODE_ORD)
 
             if (i['id'].startswith('rs-')):
-                od_RS = OrderedDict()
-                od_RS["resourceType"] = i['resourceType']
-                od_RS["id"] = i['id']
-                od_RS["meta"] = i['meta']
-                od_RS["status"] = i['status']
-                od_RS["category"] = i['category']
-                od_RS["code"] = i['code']
-                od_RS["subject"] = i['subject']
-                od_RS["component"] = i['component']
-                od['contained'][k] = od_RS
+                od['contained'][k] = createOrderedDict(i, RS_ORDER)
 
             if (i['id'].startswith('dv-')):
-                od_DV = OrderedDict()
-                od_DV["resourceType"] = i['resourceType']
-                od_DV["id"] = i['id']
-                od_DV["meta"] = i['meta']
-                od_DV["status"] = i['status']
-                od_DV["category"] = i['category']
-                od_DV["code"] = i['code']
-                od_DV["subject"] = i['subject']
-                od_DV["valueCodeableConcept"] = i['valueCodeableConcept']
-                od_DV["component"] = i['component']
-                od['contained'][k] = od_DV
+                od['contained'][k] = createOrderedDict(i, DV_ORDER)
 
             if (i['id'].startswith('sid-')):
-                od_SID = OrderedDict()
-                od_SID["resourceType"] = i['resourceType']
-                od_SID["id"] = i['id']
-                od_SID["meta"] = i['meta']
-                od_SID["status"] = i['status']
-                od_SID["category"] = i['category']
-                od_SID["code"] = i['code']
-                od_SID["subject"] = i['subject']
-                od_SID["valueCodeableConcept"] = i['valueCodeableConcept']
-                od_SID["derivedFrom"] = i['derivedFrom']
-                od['contained'][k] = od_SID
+                od['contained'][k] = createOrderedDict(i, SID_ORDER)
         self.fhir_json = od
 
     def export_fhir_json(self, output_filename):

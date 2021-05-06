@@ -4,6 +4,7 @@ import pandas as pd
 import pytz
 import logging
 import re
+from collections import OrderedDict
 
 
 general_logger = logging.getLogger("vcf2fhir.general")
@@ -139,3 +140,11 @@ def _error_log_allelicstate(record):
         "Cannot Determine AllelicState for: %s , considered sample: %s",
         record,
         record.samples[0].data)
+
+
+def createOrderedDict(value_from, order):
+    value_to = OrderedDict()
+    for key in order:
+        if key in value_from.keys():
+            value_to[key] = value_from[key]
+    return value_to
