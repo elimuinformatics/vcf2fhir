@@ -114,8 +114,6 @@ Create a Variant observation for each non-excluded VCF row.
 
 -   Variant.valueCodeableConcept = LOINC LA9633-4 \'present\';
 
--   Variant.component LOINC 62374-4 \'Human reference sequence assembly version\' = GRCh37 or GRCh38, as determined from parameter value;
-
 -   Variant.component LOINC 48013-7 \'Genomic reference sequence ID\' = NCBI chromosome-level (\'NC\_\') RefSeq, as determined from genome build and VCF \#CHROM.
 
 -   Variant.component LOINC 69547-8 \'Genomic Ref allele \[ID\]\' = VCF REF;
