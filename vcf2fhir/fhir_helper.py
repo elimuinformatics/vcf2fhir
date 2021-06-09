@@ -37,19 +37,40 @@ class _Fhir_Helper:
             reportable_query_regions,
             nocall_regions):
         observation_rs_components = []
+        ranges_examined_component = concept.CodeableConcept(
+            {
+                "coding": [
+                    {
+                        "system": "http://loinc.org",
+                        "code": "51959-5",
+                        "display": "Ranges-examined component"
+                    }
+                ]
+            }
+        )
+        if (
+                reportable_query_regions is not None and
+                len(reportable_query_regions) == 0):
+            obv_comp = observation.ObservationComponent()
+            obv_comp.code = ranges_examined_component
+            obv_comp\
+                .dataAbsentReason = concept.CodeableConcept(
+                    {
+                        "coding": [
+                            {
+                                "system": ("http://terminology.hl7.org/" +
+                                           "CodeSystem/data-absent-reason"),
+                                "code": "not-performed",
+                                "display": "Not Performed"
+                            }
+                        ]
+                    }
+                )
+            observation_rs_components.append(obv_comp)
+            return observation_rs_components
         for _, row in reportable_query_regions.df.iterrows():
             obv_comp = observation.ObservationComponent()
-            obv_comp.code = concept.CodeableConcept(
-                {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "51959-5",
-                            "display": "Ranges-examined component"
-                        }
-                    ]
-                }
-            )
+            obv_comp.code = ranges_examined_component
             obv_comp.valueRange = valRange.Range({"low": {"value": float(
                 row['Start']) + 1},
                 "high": {"value": float(row['End']) + 1}})
@@ -112,7 +133,10 @@ class _Fhir_Helper:
             ref_seq,
             reportable_query_regions,
             nocall_regions):
-        if reportable_query_regions.empty and nocall_regions.empty:
+        if(((
+                not (reportable_query_regions is not None) and
+                (len(reportable_query_regions) == 0))) and
+                (reportable_query_regions.empty and nocall_regions.empty)):
             return
         patient_reference = reference.FHIRReference(
             {"reference": "Patient/" + self.patientID})
@@ -151,8 +175,8 @@ class _Fhir_Helper:
             }
         )]
         observation_rs.subject = patient_reference
-        observation_rs_component2 = observation.ObservationComponent()
-        observation_rs_component2.code = concept.CodeableConcept(
+        observation_rs_component1 = observation.ObservationComponent()
+        observation_rs_component1.code = concept.CodeableConcept(
             {
                 "coding": [
                     {
@@ -163,7 +187,7 @@ class _Fhir_Helper:
                 ]
             }
         )
-        observation_rs_component2\
+        observation_rs_component1\
             .valueCodeableConcept = concept.CodeableConcept(
                 {
                     "coding": [
@@ -175,8 +199,8 @@ class _Fhir_Helper:
                     ]
                 }
             )
-        observation_rs_component3 = observation.ObservationComponent()
-        observation_rs_component3.code = concept.CodeableConcept(
+        observation_rs_component2 = observation.ObservationComponent()
+        observation_rs_component2.code = concept.CodeableConcept(
             {
                 "coding": [
                     {
@@ -187,7 +211,7 @@ class _Fhir_Helper:
                 ]
             }
         )
-        observation_rs_component3\
+        observation_rs_component2\
             .valueCodeableConcept = concept.CodeableConcept(
                 {
                     "coding": [
@@ -201,8 +225,8 @@ class _Fhir_Helper:
         observation_rs_components = self._get_region_studied_component(
             reportable_query_regions, nocall_regions)
         observation_rs.component = [
-            observation_rs_component2,
-            observation_rs_component3] + observation_rs_components
+            observation_rs_component1,
+            observation_rs_component2] + observation_rs_components
         # Observation structure : described-variants
         self.report.contained.append(contained_rs)
 

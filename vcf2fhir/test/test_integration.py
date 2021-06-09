@@ -29,13 +29,21 @@ def _validate_phase_rel(fhir_json, map_variant_index):
     for index_seq, list_index_var in map_variant_index.items():
         for index, ref in enumerate(
                 fhir_json['contained'][index_seq]['derivedFrom']):
-            variant_id = fhir_json['contained'][list_index_var[index]]['id']
+            variant_id =\
+                fhir_json['contained'][list_index_var[index]]['id']
             if not ref['reference'] == f'#{variant_id}':
                 return False
-            s1 = 'contained'
-            s2 = 'derivedFrom'
-            s3 = 'reference'
-            fhir_json[s1][index_seq][s2][index][s3] = ''
+            fhir_json[
+                        'contained'
+                    ][
+                        index_seq
+                    ][
+                        'derivedFrom'
+                    ][
+                        index
+                    ][
+                        'reference'
+                    ] = ''
     return True
 
 
@@ -43,13 +51,15 @@ def _compare_actual_and_expected_fhir_json(
         self,
         output_filename,
         expected_output_filename,
-        dict):
+        dict=None,
+        is_null=False):
     with open(output_filename) as output_file,\
             open(expected_output_filename) as expected_output_file:
         actual_fhir_json = json.load(output_file)
         # Validate the passed sequence relationship
-        self.assertEqual(_validate_phase_rel(
-            actual_fhir_json, dict), True)
+        if not is_null:
+            self.assertEqual(_validate_phase_rel(
+                actual_fhir_json, dict), True)
         # Validate: list of observation uids and list of result uids same.
         # Also set the uids to '' to avoid guid comparison in next step
         map_ids = _get_uids_map(actual_fhir_json)
@@ -356,6 +366,31 @@ class TestTranslation(unittest.TestCase):
             'HG00628',
             conv_region_filename=conv_region_filename)
         o_vcf_2_fhir.convert(output_filename)
+
+    def test_no_region_examined(self):
+        self.maxDiff = None
+        region_studied_filename = os.path.join(
+            os.path.dirname(__file__), 'HG00403A_studied.bed')
+        conv_region_filename = os.path.join(os.path.dirname(
+            __file__), 'HG00403A_convert.bed')
+        output_filename = os.path.join(os.path.dirname(
+            __file__), self.TEST_RESULT_DIR, 'HG00403A.json')
+        expected_output_filename = os.path.join(
+            os.path.dirname(__file__), 'expected_HG00403A.json')
+        o_vcf_2_fhir = vcf2fhir.Converter(
+            os.path.join(
+                os.path.dirname(__file__),
+                'HG00403A.vcf.gz'),
+            'GRCh37',
+            has_tabix=True,
+            conv_region_filename=conv_region_filename,
+            region_studied_filename=region_studied_filename)
+        o_vcf_2_fhir.convert(output_filename)
+        _compare_actual_and_expected_fhir_json(
+            self,
+            output_filename=output_filename,
+            expected_output_filename=expected_output_filename,
+            is_null=True)
 
     def test_tabix(self):
         self.maxDiff = None
