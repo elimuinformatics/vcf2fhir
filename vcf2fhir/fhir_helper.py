@@ -43,7 +43,7 @@ class _Fhir_Helper:
                     {
                         "system": "http://loinc.org",
                         "code": "51959-5",
-                        "display": "Ranges-examined component"
+                        "display": "Range(s) of DNA sequence examined"
                     }
                 ]
             }
@@ -81,9 +81,10 @@ class _Fhir_Helper:
                 {
                     "coding": [
                         {
-                            "system": "http://loinc.org",
-                            "code": "TBD-UncallableRegions",
-                            "display": "Uncallable region"
+                            "system": ("http://hl7.org/fhir/uv/genomics" +
+                                       "-reporting/CodeSystem/TbdCodes"),
+                            "code": "uncallable-regions",
+                            "display": "Uncallable Regions"
                         }
                     ]
                 }
@@ -113,6 +114,17 @@ class _Fhir_Helper:
                                 ("http://hl7.org/fhir/uv/genomics-reporting" +
                                  "/StructureDefinition/genomics-report")]})
         self.report.status = "final"
+        self.report.category = concept.CodeableConcept(
+            {
+                "coding": [
+                    {
+                        "system": ("http://terminology.hl7.org/" +
+                                   "CodeSystem/v2-0074"),
+                        "code": "GE"
+                    }
+                ]
+            }
+        )
         self.report.code = concept.CodeableConcept(
             {
                 "coding": [
@@ -402,7 +414,7 @@ class _Fhir_Helper:
                 "coding": [
                     {
                         "system": ("http://hl7.org/fhir/uv/" +
-                                   "genomics-reporting/CodeSystem/tbd-codes"),
+                                   "genomics-reporting/CodeSystem/TbdCodes"),
                         "code": "exact-start-end",
                         "display": "Variant exact start and end"}]})
         observation_dv_component7.valueRange = valRange.Range(
@@ -457,8 +469,8 @@ class _Fhir_Helper:
                     "coding": [
                         {
                             "system": ("http://hl7.org/fhir/uv/" +
-                                       "genomics-reporting/" +
-                                       "CodeSystem/seq-phase-relationship"),
+                                       "genomics-reporting/CodeSystem/" +
+                                       "SequencePhaseRelationshipCS"),
                             "code": self.sequence_rels.at[index, 'Relation'],
                             "display":self.sequence_rels.at[index, 'Relation']
                         }
@@ -485,6 +497,10 @@ class _Fhir_Helper:
         else:
             od["contained"] = []
         od["status"] = response['status']
+        od['category'] = []
+        od['category'].append(response['category'])
+        od['category'][0]['coding'][0] =\
+            createOrderedDict(od['category'][0]['coding'][0], CG_ORDER)
         od["code"] = response['code']
         od["subject"] = response['subject']
         od["issued"] = response['issued']
