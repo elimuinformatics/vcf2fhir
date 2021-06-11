@@ -11,6 +11,8 @@ Installation
 
 Installing vcf2fhir is pretty simple. Here is a step by step plan on how to do it.
 
+Install and add `Ubuntu WSL <https://www.microsoft.com/en-in/p/ubuntu-1804-lts/9n9tngvndl3q?rtc=1&activetab=pivot:overviewtab>`_ to the `windows terminal <https://www.microsoft.com/en-in/p/windows-terminal/9n0dx20hk701?activetab=pivot:overviewtab>`_. (Only for windows users!)
+
 .. note::
     vcf2fhir is available on Pypi as ``vcf2fhir``.
 
