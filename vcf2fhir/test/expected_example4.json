@@ -84,7 +84,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -101,9 +101,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://loinc.org",
-                                "code": "TBD-UncallableRegions",
-                                "display": "Uncallable region"
+                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
+                                "code": "uncallable-regions",
+                                "display": "Uncallable Regions"
                             }
                         ]
                     },
@@ -195,7 +195,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -287,7 +287,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -379,7 +379,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -471,7 +471,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -563,7 +563,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -655,7 +655,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -747,7 +747,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -839,7 +839,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -931,7 +931,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -1023,7 +1023,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -1115,7 +1115,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -1207,7 +1207,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -1299,7 +1299,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -1391,7 +1391,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -1483,7 +1483,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -1575,7 +1575,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -1667,7 +1667,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -1759,7 +1759,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -1851,7 +1851,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -1943,7 +1943,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -2035,7 +2035,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -2127,7 +2127,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -2270,7 +2270,7 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes",
+                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
                                 "code": "exact-start-end",
                                 "display": "Variant exact start and end"
                             }
@@ -2412,7 +2412,7 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes",
+                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
                                 "code": "exact-start-end",
                                 "display": "Variant exact start and end"
                             }
@@ -2554,7 +2554,7 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes",
+                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
                                 "code": "exact-start-end",
                                 "display": "Variant exact start and end"
                             }
@@ -2696,7 +2696,7 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes",
+                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
                                 "code": "exact-start-end",
                                 "display": "Variant exact start and end"
                             }
@@ -2838,7 +2838,7 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes",
+                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
                                 "code": "exact-start-end",
                                 "display": "Variant exact start and end"
                             }
@@ -2980,7 +2980,7 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes",
+                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
                                 "code": "exact-start-end",
                                 "display": "Variant exact start and end"
                             }
@@ -3071,7 +3071,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -3163,7 +3163,7 @@
                             {
                                 "system": "http://loinc.org",
                                 "code": "51959-5",
-                                "display": "Ranges-examined component"
+                                "display": "Range(s) of DNA sequence examined"
                             }
                         ]
                     },
@@ -3212,7 +3212,7 @@
             "valueCodeableConcept": {
                 "coding": [
                     {
-                        "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/seq-phase-relationship",
+                        "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/SequencePhaseRelationshipCS",
                         "code": "Cis",
                         "display": "Cis"
                     }
@@ -3261,7 +3261,7 @@
             "valueCodeableConcept": {
                 "coding": [
                     {
-                        "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/seq-phase-relationship",
+                        "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/SequencePhaseRelationshipCS",
                         "code": "Cis",
                         "display": "Cis"
                     }
@@ -3278,6 +3278,16 @@
         }
     ],
     "status": "final",
+    "category": [
+        {
+            "coding": [
+                {
+                    "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+                    "code": "GE"
+                }
+            ]
+        }
+    ],
     "code": {
         "coding": [
             {

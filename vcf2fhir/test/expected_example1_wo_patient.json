@@ -135,7 +135,7 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes",
+                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
                                 "code": "exact-start-end",
                                 "display": "Variant exact start and end"
                             }
@@ -277,7 +277,7 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes",
+                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
                                 "code": "exact-start-end",
                                 "display": "Variant exact start and end"
                             }
@@ -419,7 +419,7 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes",
+                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
                                 "code": "exact-start-end",
                                 "display": "Variant exact start and end"
                             }
@@ -561,7 +561,7 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes",
+                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
                                 "code": "exact-start-end",
                                 "display": "Variant exact start and end"
                             }
@@ -703,7 +703,7 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes",
+                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
                                 "code": "exact-start-end",
                                 "display": "Variant exact start and end"
                             }
@@ -845,7 +845,7 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes",
+                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
                                 "code": "exact-start-end",
                                 "display": "Variant exact start and end"
                             }
@@ -987,7 +987,7 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes",
+                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
                                 "code": "exact-start-end",
                                 "display": "Variant exact start and end"
                             }
@@ -1129,7 +1129,7 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/tbd-codes",
+                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
                                 "code": "exact-start-end",
                                 "display": "Variant exact start and end"
                             }
@@ -1177,7 +1177,7 @@
             "valueCodeableConcept": {
                 "coding": [
                     {
-                        "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/seq-phase-relationship",
+                        "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/SequencePhaseRelationshipCS",
                         "code": "Trans",
                         "display": "Trans"
                     }
@@ -1194,6 +1194,16 @@
         }
     ],
     "status": "final",
+    "category": [
+        {
+            "coding": [
+                {
+                    "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+                    "code": "GE"
+                }
+            ]
+        }
+    ],
     "code": {
         "coding": [
             {
