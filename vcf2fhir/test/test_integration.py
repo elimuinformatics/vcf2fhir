@@ -124,8 +124,8 @@ class TestVcf2FhirInputs(unittest.TestCase):
     def test_conv_region_dict(self):
         conv_region_dict = {
             "Chromosome": ["X", "X", "M"],
-            "Start": [50001, 55001, 50001],
-            "End": [52001, 60601, 60026]
+            "Start": [50000, 55000, 50000],
+            "End": [52000, 60600, 60025]
         }
         o_vcf_2_fhir = vcf2fhir.Converter(
             os.path.join(
@@ -281,8 +281,8 @@ class TestTranslation(unittest.TestCase):
     def test_region_studied_dict(self):
         conv_region_dict = {
             "Chromosome": ["X", "X", "M"],
-            "Start": [50001, 55001, 50001],
-            "End": [52001, 60601, 60026]
+            "Start": [50000, 55000, 50000],
+            "End": [52000, 60600, 60025]
         }
         self.maxDiff = None
         region_studied_filename = os.path.join(
