@@ -39,8 +39,8 @@ class Converter(object):
     file (conv_region_filename):
 
        **conv_region_dict** : Array of regions (e.g. '{"Chromosome":
-       ["X", "X", "M"],"Start": [50001, 55001, 50001],"End": [52001,
-       60601, 60026]}'). Values for Chromosome must align with values in
+       ["X", "X", "M"],"Start": [50000, 55000, 50000],"End": [52000,
+       60600, 60025]}'). Values for Chromosome must align with values in
        VCF #CHROM field. Ranges must be `0-based \
        <https://www.biostars.org/p/84686/>`_
        (or 0-start, half-open) and based on GRCh37 or GRCh38 \
@@ -141,7 +141,6 @@ class Converter(object):
                     "Please provide valid 'conv_region_filename'")
         elif conv_region_dict:
             try:
-                self._fix_conv_region_zero_based(conv_region_dict)
                 self.conversion_region = pyranges.from_dict(conv_region_dict)
             except FileNotFoundError:
                 raise
@@ -198,16 +197,6 @@ class Converter(object):
             self.ratio_ad_dp,
             output_filename)
         general_logger.info("Completed VCF to FHIR Conversion")
-
-    def _fix_conv_region_zero_based(self, conv_region_dict):
-        i = 0
-        for start in conv_region_dict["Start"]:
-            conv_region_dict["Start"][i] = start - 1
-            i += 1
-        i = 0
-        for end in conv_region_dict["End"]:
-            conv_region_dict["End"][i] = end - 1
-            i += 1
 
     def _generate_exception(self, msg):
         general_logger.error(msg, exc_info=True)
