@@ -210,7 +210,7 @@ def _get_fhir_json(
                         not conversion_region or
                         conversion_region[
                             record.CHROM,
-                            record.POS - 1: record.POS
+                            record.POS - 1: (record.POS + len(record.REF) - 1)
                         ].empty is False):
                     _add_record_variants(
                         record, ref_seq, patientID, fhir_helper, ratio_ad_dp)
