@@ -202,8 +202,8 @@
                         "coding": [
                             {
                                 "system": "http://loinc.org",
-                                "code": "53034-5",
-                                "display": "Allelic state"
+                                "code": "48002-0",
+                                "display": "Genomic Source Class"
                             }
                         ]
                     },
@@ -211,8 +211,8 @@
                         "coding": [
                             {
                                 "system": "http://loinc.org",
-                                "code": "LA6706-1",
-                                "display": "heterozygous"
+                                "code": "LA6684-0",
+                                "display": "Somatic"
                             }
                         ]
                     }
@@ -344,8 +344,8 @@
                         "coding": [
                             {
                                 "system": "http://loinc.org",
-                                "code": "53034-5",
-                                "display": "Allelic state"
+                                "code": "48002-0",
+                                "display": "Genomic Source Class"
                             }
                         ]
                     },
@@ -353,8 +353,8 @@
                         "coding": [
                             {
                                 "system": "http://loinc.org",
-                                "code": "LA6706-1",
-                                "display": "heterozygous"
+                                "code": "LA6684-0",
+                                "display": "Somatic"
                             }
                         ]
                     }
@@ -486,8 +486,8 @@
                         "coding": [
                             {
                                 "system": "http://loinc.org",
-                                "code": "53034-5",
-                                "display": "Allelic state"
+                                "code": "48002-0",
+                                "display": "Genomic Source Class"
                             }
                         ]
                     },
@@ -495,8 +495,8 @@
                         "coding": [
                             {
                                 "system": "http://loinc.org",
-                                "code": "LA6706-1",
-                                "display": "heterozygous"
+                                "code": "LA6684-0",
+                                "display": "Somatic"
                             }
                         ]
                     }
@@ -628,8 +628,8 @@
                         "coding": [
                             {
                                 "system": "http://loinc.org",
-                                "code": "53034-5",
-                                "display": "Allelic state"
+                                "code": "48002-0",
+                                "display": "Genomic Source Class"
                             }
                         ]
                     },
@@ -637,8 +637,8 @@
                         "coding": [
                             {
                                 "system": "http://loinc.org",
-                                "code": "LA6706-1",
-                                "display": "heterozygous"
+                                "code": "LA6684-0",
+                                "display": "Somatic"
                             }
                         ]
                     }
@@ -862,8 +862,8 @@
                         "coding": [
                             {
                                 "system": "http://loinc.org",
-                                "code": "53034-5",
-                                "display": "Allelic state"
+                                "code": "48002-0",
+                                "display": "Genomic Source Class"
                             }
                         ]
                     },
@@ -871,10 +871,26 @@
                         "coding": [
                             {
                                 "system": "http://loinc.org",
-                                "code": "LA6703-8",
-                                "display": "heteroplasmic"
+                                "code": "LA6684-0",
+                                "display": "Somatic"
                             }
                         ]
+                    }
+                },
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "81258-6",
+                                "display": "Sample VAF"
+                            }
+                        ]
+                    },
+                    "valueQuantity": {
+                        "system": "http://unitsofmeasure.org",
+                        "code": "1",
+                        "value": 0.8
                     }
                 },
                 {

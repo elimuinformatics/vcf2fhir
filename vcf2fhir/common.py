@@ -6,10 +6,33 @@ import pytz
 import logging
 import re
 from collections import OrderedDict
+from enum import Enum
 
 
 general_logger = logging.getLogger("vcf2fhir.general")
-
+SVs = {'INS', 'DEL', 'DUP', 'CNV', 'INV'}
+VARIANT_COMPONENTS_ORDER = [
+    'dna_change_type_component',
+    'ref_seq_id_component', 'genomic_source_class_component',
+    'allelic_state_component', 'allelic_frequency_component',
+    'copy_number_component', 'ref_allele_component', 'alt_allele_component',
+    'genomic_coord_system_component', 'exact_start_end_component',
+    'outer_start_end_component', 'inner_start_end_component',
+]
+GERMLINE = 'Germline'
+SOMATIC = 'Somatic'
+MIXED = 'Mixed'
+SVTYPE_TO_DNA_CHANGE_TYPE = {
+    'CNV': ['SO:0001019', 'copy_number_variation'],
+    'DUP': ['SO:1000035', 'duplication'],
+    'INV': ['SO:1000036', 'inversion'],
+    'DEL': ['SO:0000159', 'deletion'],
+    'INS': ['SO:0000667', 'insertion']
+}
+GENOMIC_SOURCE_CLASS_TO_CODE = {
+    GERMLINE: 'LA6683-2',
+    SOMATIC: 'LA6684-0'
+}
 
 """
 /**
@@ -17,6 +40,17 @@ general_logger = logging.getLogger("vcf2fhir.general")
  * @return date
  */
 """
+
+
+class Genomic_Source_Class(Enum):
+
+    @classmethod
+    def set_(cls):
+        return set(map(lambda c: c.value, cls))
+
+    GERMLINE = GERMLINE
+    SOMATIC = SOMATIC
+    MIXED = MIXED
 
 
 def get_fhir_date():
@@ -61,6 +95,7 @@ def get_sequence_relation(phased_rec_map):
 def get_allelic_state(record, ratio_ad_dp):
     allelic_state = ''
     allelic_code = ''
+    allelic_frequency = None
     # Using  the first sample
     sample = record.samples[0]
     alleles = sample.gt_alleles
@@ -85,8 +120,10 @@ def get_allelic_state(record, ratio_ad_dp):
                    len(sample.data.AD) > 0):
                     ratio = float(
                         sample.data.AD[0]) / float(sample.data.DP)
+                    allelic_frequency = ratio
                 else:
                     ratio = float(sample.data.AD) / float(sample.data.DP)
+                    allelic_frequency = ratio
                 if ratio > ratio_ad_dp:
                     allelic_state = "homoplasmic"
                     allelic_code = "LA6704-6"
@@ -101,7 +138,11 @@ def get_allelic_state(record, ratio_ad_dp):
             _error_log_allelicstate(record)
     else:
         _error_log_allelicstate(record)
-    return {'ALLELE': allelic_state, 'CODE': allelic_code}
+    return {
+                'ALLELE': allelic_state,
+                'CODE': allelic_code,
+                'FREQUENCY': allelic_frequency
+            }
 
 
 def extract_chrom_identifier(chrom):
@@ -148,6 +189,16 @@ def _error_log_allelicstate(record):
         "Cannot Determine AllelicState for: %s , considered sample: %s",
         record,
         record.samples[0].data)
+
+
+def get_dna_chg(svtype):
+    dna_chg = SVTYPE_TO_DNA_CHANGE_TYPE.get(svtype)
+    return {"CODE": dna_chg[0], "DISPLAY": dna_chg[1]}
+
+
+def get_genomic_source_class(genomic_source_class):
+    source_class_code = GENOMIC_SOURCE_CLASS_TO_CODE.get(genomic_source_class)
+    return {"CODE": source_class_code, "DISPLAY": genomic_source_class}
 
 
 def createOrderedDict(value_from, order):

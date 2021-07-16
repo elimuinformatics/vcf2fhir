@@ -2,6 +2,7 @@ import os
 import json
 import fhirclient.models.diagnosticreport as dr
 import fhirclient.models.codeableconcept as concept
+import fhirclient.models.quantity as quantity
 import fhirclient.models.meta as meta
 import fhirclient.models.resource as resource
 import fhirclient.models.observation as observation
@@ -14,6 +15,7 @@ from .common import *
 
 CG_ORDER = ["system", "code"]
 CODE_ORD = ["system", "code", "display"]
+VQ_ORD = ["system", "code", "value"]
 RS_ORDER = ['resourceType', 'id', 'meta', 'status', 'category', 'code',
             'subject', 'component']
 DV_ORDER = ['resourceType', 'id', 'meta', 'status', 'category', 'code',
@@ -151,7 +153,9 @@ class _Fhir_Helper:
         # Observation structure : described-variants
         self.report.contained.append(contained_rs)
 
-    def add_variant_obv(self, record, ref_seq, ratio_ad_dp):
+    def add_variant_obv(
+            self,
+            record, ref_seq, ratio_ad_dp, genomic_source_class):
         # collect all the record with similar position values,
         # to utilized later in phased sequence relationship
         self._add_phase_records(record)
@@ -173,162 +177,192 @@ class _Fhir_Helper:
             }
         )
         observation_dv.status = "final"
-        observation_dv.category = [concept.CodeableConcept(
-            {
-                "coding": [
-                    {
-                        "system": ("http://terminology.hl7.org/" +
-                                   "CodeSystem/observation-category"),
-                        "code": "laboratory"
-                    }
-                ]
-            }
+        observation_dv.category = [get_codeable_concept(
+            "http://terminology.hl7.org/CodeSystem/observation-category",
+            "laboratory"
         )]
-        observation_dv.code = concept.CodeableConcept(
-            {
-                "coding": [
-                    {
-                        "system": "http://loinc.org",
-                        "code": "69548-6",
-                        "display": "Genetic variant assessment"
-                    }
-                ]
-            }
+        observation_dv.code = get_codeable_concept(
+            "http://loinc.org", "69548-6", "Genetic variant assessment"
         )
         observation_dv.subject = patient_reference
-        observation_dv.valueCodeableConcept = concept.CodeableConcept(
-            {
-                "coding": [
-                    {
-                        "system": "http://loinc.org",
-                        "code": "LA9633-4",
-                        "display": "present"
-                    }
-                ]
-            }
+        observation_dv.valueCodeableConcept = get_codeable_concept(
+            "http://loinc.org", "LA9633-4", "present"
         )
         observation_dv.component = []
 
-        observation_dv_component2 = observation.ObservationComponent()
-        observation_dv_component2.code = concept.CodeableConcept(
-            {
-                "coding": [
-                    {
-                        "system": "http://loinc.org",
-                        "code": "48013-7",
-                        "display": "Genomic reference sequence ID"
-                    }
-                ]
-            }
-        )
-        observation_dv_component2\
-            .valueCodeableConcept = concept.CodeableConcept(
-                {
-                    "coding": [
-                        {
-                            "system": "http://www.ncbi.nlm.nih.gov/nuccore",
-                            "code": ref_seq
-                        }
-                    ]
-                }
+        if record.is_sv:
+            dna_chg = get_dna_chg(record.INFO['SVTYPE'])
+            dna_change_type_component = observation.ObservationComponent()
+            dna_change_type_component.code = get_codeable_concept(
+                "http://loinc.org", "48019-4", "DNA Change Type"
             )
-        observation_dv.component.append(observation_dv_component2)
+            dna_change_type_component\
+                .valueCodeableConcept = get_codeable_concept(
+                    "http://sequenceontology.org", dna_chg['CODE'],
+                    dna_chg['DISPLAY']
+                )
 
-        if alleles['CODE'] != "" or alleles['ALLELE'] != "":
-            observation_dv_component3 = observation.ObservationComponent()
-            observation_dv_component3.code = concept.CodeableConcept(
-                {
-                    "coding": [
+            if(record.INFO['SVTYPE'] in list(SVs - {'INV', 'INS'}) and
+               hasattr(record.samples[0].data, 'CN')):
+                copy_number_component = observation.ObservationComponent()
+                copy_number_component.code = get_codeable_concept(
+                    "http://loinc.org", "82155-3",
+                    "Genomic Structural Variant copy Number"
+                )
+                copy_number_component\
+                    .valueQuantity = quantity.Quantity(
                         {
-                            "system": "http://loinc.org",
-                            "code": "53034-5",
-                            "display": "Allelic state"
+                            "system": "http://unitsofmeasure.org",
+                            "code": '1',
+                            "value": record.samples[0]["CN"]
                         }
-                    ]
-                }
-            )
-            observation_dv_component3\
-                .valueCodeableConcept = concept.CodeableConcept(
-                    {
-                        "coding": [
-                            {
-                                "system": "http://loinc.org",
-                                "code": alleles['CODE'],
-                                "display": alleles['ALLELE']
+                    )
+
+            # In the following if-else block we check if there is a CIPOS
+            # and a CIEND field in record.INFO and calculate inner and outer
+            # start and end based on it, else we ignore the outer-start-end
+            # component and populate the inner-start-end component based on
+            # only the INFO.END value.
+            if hasattr(record.INFO, 'CIPOS') and hasattr(record.INFO, 'CIEND'):
+                inner_start = record.POS + record.INFO['CIPOS'][1]
+                inner_end = record.INFO['END'] + abs(record.INFO['CIEND'][0])
+                outer_start = record.POS - abs(record.INFO['CIPOS'][0])
+                outer_end = record.INFO['END'] + record.INFO['CIEND'][1]
+                outer_start_end_component = observation.ObservationComponent()
+                outer_start_end_component.code = get_codeable_concept(
+                    ("http://hl7.org/fhir/uv/genomics-reporting" +
+                     "/CodeSystem/TbdCodes"),
+                    "outer-start-end", "Variant outer start and end"
+                )
+                outer_start_end_component\
+                    .valueRange = valRange.Range(
+                        {
+                            "low": {
+                                "value": outer_start
+                            },
+                            "high": {
+                                "value": outer_end
                             }
-                        ]
+                        }
+                    )
+            else:
+                inner_start = record.POS
+                inner_end = record.INFO['END']
+
+            inner_start_end_component = observation.ObservationComponent()
+            inner_start_end_component.code = get_codeable_concept(
+                ("http://hl7.org/fhir/uv/ge" +
+                 "nomics-reporting/CodeSystem/TbdCodes"), "inner-start-end",
+                "Variant inner start and end"
+            )
+            inner_start_end_component\
+                .valueRange = valRange.Range(
+                    {
+                        "low": {
+                            "value": inner_start
+                        },
+                        "high": {
+                            "value": inner_end
+                        }
                     }
                 )
-            observation_dv.component.append(observation_dv_component3)
-
-        observation_dv_component4 = observation.ObservationComponent()
-        observation_dv_component4.code = concept.CodeableConcept(
-            {
-                "coding": [
-                    {
-                        "system": "http://loinc.org",
-                        "code": "69547-8",
-                        "display": "Genomic Ref allele [ID]"
-                    }
-                ]
-            }
-        )
-        observation_dv_component4.valueString = record.REF
-        observation_dv.component.append(observation_dv_component4)
-
-        observation_dv_component5 = observation.ObservationComponent()
-        observation_dv_component5.code = concept.CodeableConcept(
-            {
-                "coding": [
-                    {
-                        "system": "http://loinc.org",
-                        "code": "69551-0",
-                        "display": "Genomic Alt allele [ID]"
-                    }
-                ]
-            }
-        )
-        observation_dv_component5.valueString = record.ALT[0].sequence
-        observation_dv.component.append(observation_dv_component5)
-
-        observation_dv_component6 = observation.ObservationComponent()
-        observation_dv_component6.code = concept.CodeableConcept(
-            {
-                "coding": [
-                    {
-                        "system": "http://loinc.org",
-                        "code": "92822-6",
-                        "display": "Genomic coord system"
-                    }
-                ]
-            }
-        )
-        observation_dv_component6\
-            .valueCodeableConcept = concept.CodeableConcept(
-                {
-                    "coding": [
+        else:
+            if alleles['FREQUENCY'] is not None:
+                allelic_frequency_component =\
+                    observation.ObservationComponent()
+                allelic_frequency_component.code = get_codeable_concept(
+                    "http://loinc.org", "81258-6", "Sample VAF"
+                )
+                allelic_frequency_component\
+                    .valueQuantity = quantity.Quantity(
                         {
-                            "system": "http://loinc.org",
-                            "code": "LA30102-0",
-                            "display": "1-based character counting"
+                            "system": "http://unitsofmeasure.org",
+                            "code": "1",
+                            "value": alleles['FREQUENCY']
                         }
-                    ]
-                }
-            )
-        observation_dv.component.append(observation_dv_component6)
+                    )
 
-        observation_dv_component7 = observation.ObservationComponent()
-        observation_dv_component7.code = concept.CodeableConcept(
-            {
-                "coding": [
-                    {
-                        "system": ("http://hl7.org/fhir/uv/" +
-                                   "genomics-reporting/CodeSystem/TbdCodes"),
-                        "code": "exact-start-end",
-                        "display": "Variant exact start and end"}]})
-        observation_dv_component7.valueRange = valRange.Range(
-            {"low": {"value": int(record.POS)}})
-        observation_dv.component.append(observation_dv_component7)
+            exact_start_end_component = observation.ObservationComponent()
+            exact_start_end_component.code = get_codeable_concept(
+                ("http://hl7.org/fhir/uv/genomics-reporting/Code" +
+                 "System/TbdCodes"), "exact-start-end",
+                "Variant exact start and end"
+            )
+            exact_start_end_component.valueRange = valRange.Range(
+                {"low": {"value": int(record.POS)}})
+
+        ref_seq_id_component = observation.ObservationComponent()
+        ref_seq_id_component.code = get_codeable_concept(
+            "http://loinc.org", "48013-7", "Genomic reference sequence ID"
+        )
+        ref_seq_id_component\
+            .valueCodeableConcept = get_codeable_concept(
+                "http://www.ncbi.nlm.nih.gov/nuccore", ref_seq
+            )
+
+        if genomic_source_class in Genomic_Source_Class.set_() - {MIXED}:
+            source_class = get_genomic_source_class(genomic_source_class)
+            genomic_source_class_component = observation.ObservationComponent()
+            genomic_source_class_component.code = get_codeable_concept(
+                "http://loinc.org", "48002-0", "Genomic Source Class"
+            )
+            genomic_source_class_component\
+                .valueCodeableConcept = get_codeable_concept(
+                    "http://loinc.org", source_class["CODE"],
+                    source_class["DISPLAY"]
+                )
+
+        # The following if condition checks if allelic code or
+        # allelic display is not an empty string and genomic source
+        # class is 'germline' for simple variants and structural variants
+        # with INFO.SVTYPE in ['INS', 'DEL', 'DUP', 'INV']
+        if((alleles['CODE'] != "" or alleles['ALLELE'] != "") and
+            genomic_source_class == Genomic_Source_Class.GERMLINE.value and
+            not (record.is_sv and
+                 record.INFO['SVTYPE'] not in list(SVs - {'CNV'}))):
+            allelic_state_component = observation.ObservationComponent()
+            allelic_state_component.code = get_codeable_concept(
+                "http://loinc.org", "53034-5", "Allelic state"
+            )
+            allelic_state_component\
+                .valueCodeableConcept = get_codeable_concept(
+                    "http://loinc.org", alleles['CODE'], alleles['ALLELE']
+                )
+
+        ref_allele_component = observation.ObservationComponent()
+        ref_allele_component.code = get_codeable_concept(
+            "http://loinc.org", "69547-8", "Genomic Ref allele [ID]"
+        )
+        ref_allele_component.valueString = record.REF
+
+        # The following if condition checks if RECORD.ALT is a
+        # simple character string, for simple variants and structural
+        # variants with INFO.SYTYPE in ['INS'].
+        if(len(record.ALT) == 1 and record.ALT[0] is not None and
+           record.ALT[0].type in ['SNV', 'MNV'] and
+           not (record.is_sv and record.INFO['SVTYPE'] not in ['INS'])):
+            alt_allele_component = observation.ObservationComponent()
+            alt_allele_component.code = get_codeable_concept(
+                "http://loinc.org", "69551-0", "Genomic Alt allele [ID]"
+            )
+            alt_allele_component.valueString = record.ALT[0].sequence
+
+        genomic_coord_system_component = observation.ObservationComponent()
+        genomic_coord_system_component.code = get_codeable_concept(
+            "http://loinc.org", "92822-6", "Genomic coord system"
+        )
+        genomic_coord_system_component\
+            .valueCodeableConcept = get_codeable_concept(
+                "http://loinc.org", "LA30102-0", "1-based character counting"
+            )
+
+        # The following block of code adds a variant component to the list
+        # of components based on the VARIANT_COMPONENTS_ORDER list if it is
+        # declared. The declaration of the variable is ensured using the
+        # locals() dictionary.
+        for variant_component in VARIANT_COMPONENTS_ORDER:
+            if variant_component in locals():
+                observation_dv.component.append(locals()[variant_component])
 
         self.report.contained.append(observation_dv)
 
@@ -422,6 +456,7 @@ class _Fhir_Helper:
         for k, i in enumerate(od['contained']):
             od_contained_k = od['contained'][k]
             v_c_c = 'valueCodeableConcept'
+            v_q = 'valueQuantity'
 
             if (i['category'][0]['coding'][0]):
                 od_contained_k['category'][0]['coding'][0] =\
@@ -445,6 +480,10 @@ class _Fhir_Helper:
                     if v_c_c in j.keys():
                         od_contained_k_component_q[v_c_c]['coding'][0] =\
                             createOrderedDict(j[v_c_c]['coding'][0], CODE_ORD)
+
+                    if v_q in j.keys():
+                        od_contained_k_component_q[v_q] =\
+                            createOrderedDict(j[v_q], VQ_ORD)
 
             if (i['id'].startswith('rs-')):
                 od['contained'][k] = createOrderedDict(i, RS_ORDER)
