@@ -1,6 +1,7 @@
 import os
 import datetime
 import pandas as pd
+import fhirclient.models.codeableconcept as concept
 import pytz
 import logging
 import re
@@ -75,15 +76,13 @@ def get_allelic_state(record, ratio_ad_dp):
             allelic_code = 'LA6707-9'
         else:
             _error_log_allelicstate(record)
-    elif (
-            sample.gt_type is not None and
-            len(alleles) == 1 and
-            alleles[0] == '1'):
+    elif (sample.gt_type is not None and
+          len(alleles) == 1 and
+          alleles[0] == '1'):
         if hasattr(sample.data, 'AD') and hasattr(sample.data, 'DP'):
             try:
-                if(
-                        isinstance(sample.data.AD, list) and
-                        len(sample.data.AD) > 0):
+                if(isinstance(sample.data.AD, list) and
+                   len(sample.data.AD) > 0):
                     ratio = float(
                         sample.data.AD[0]) / float(sample.data.DP)
                 else:
@@ -133,6 +132,15 @@ def validate_has_tabix(has_tabix):
     if not isinstance(has_tabix, bool):
         return False
     return True
+
+
+def get_codeable_concept(system, code, display=None):
+    codeable_concept = {"coding": [{}]}
+    codeable_concept['coding'][0]['system'] = system
+    codeable_concept['coding'][0]['code'] = code
+    if display is not None:
+        codeable_concept['coding'][0]['display'] = display
+    return concept.CodeableConcept(codeable_concept)
 
 
 def _error_log_allelicstate(record):

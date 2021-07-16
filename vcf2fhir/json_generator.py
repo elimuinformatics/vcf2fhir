@@ -82,19 +82,12 @@ def _add_record_variants(record, ref_seq, patientID, fhir_helper, ratio_ad_dp):
 
 
 def _add_region_studied(
-        region_studied,
-        conversion_region,
-        nocall_region,
-        fhir_helper,
-        chrom,
-        ref_seq,
-        patientID):
-    if((
-            (region_studied and not region_studied[chrom].empty) or
-            (nocall_region and not nocall_region[chrom].empty)) or
-            (
-                (region_studied is not None and len(region_studied) == 0) and
-                (conversion_region and not conversion_region[chrom].empty))):
+        region_studied, conversion_region,
+        nocall_region, fhir_helper, chrom, ref_seq, patientID):
+    if(((region_studied and not region_studied[chrom].empty) or
+       (nocall_region and not nocall_region[chrom].empty)) or
+       ((region_studied is not None and len(region_studied) == 0) and
+       (conversion_region and not conversion_region[chrom].empty))):
         general_logger.info("Adding region Studied observation for %s", chrom)
         general_logger.debug("Region Examined %s", region_studied[chrom])
         general_logger.debug("Region Uncallable %s", nocall_region[chrom])
@@ -136,13 +129,8 @@ def _get_fhir_json(
             ref_seq = _get_ref_seq_by_chrom(
                 ref_build, extract_chrom_identifier(chrom))
             _add_region_studied(
-                region_studied,
-                conversion_region,
-                nocall_region,
-                fhir_helper,
-                chrom,
-                ref_seq,
-                patientID
+                region_studied, conversion_region,
+                nocall_region, fhir_helper, chrom, ref_seq, patientID
             )
             if conversion_region and not conversion_region[chrom].empty:
                 for _, row in conversion_region[chrom].df.iterrows():
@@ -195,13 +183,8 @@ def _get_fhir_json(
                         current_ref_seq = _get_ref_seq_by_chrom(
                             ref_build, chrom)
                         _add_region_studied(
-                            region_studied,
-                            conversion_region,
-                            nocall_region,
-                            fhir_helper,
-                            chrom,
-                            current_ref_seq,
-                            patientID)
+                            region_studied, conversion_region, nocall_region,
+                            fhir_helper, chrom, current_ref_seq, patientID)
                         prev_add_chrom = chrom
                         chrom_index += 1
                         chrom = _get_chrom(chrom_index)

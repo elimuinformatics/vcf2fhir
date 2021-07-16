@@ -9,7 +9,6 @@ import fhirclient.models.fhirreference as reference
 import fhirclient.models.fhirdate as date
 import fhirclient.models.range as valRange
 import fhirclient.models.medicationstatement as medication
-import numpy as np
 from uuid import uuid4
 from .common import *
 
@@ -33,38 +32,21 @@ class _Fhir_Helper:
         self.patientID = patientID
 
     def _get_region_studied_component(
-            self,
-            reportable_query_regions,
-            nocall_regions):
+            self, reportable_query_regions, nocall_regions):
         observation_rs_components = []
-        ranges_examined_component = concept.CodeableConcept(
-            {
-                "coding": [
-                    {
-                        "system": "http://loinc.org",
-                        "code": "51959-5",
-                        "display": "Range(s) of DNA sequence examined"
-                    }
-                ]
-            }
+        ranges_examined_component = get_codeable_concept(
+            "http://loinc.org", "51959-5",
+            "Range(s) of DNA sequence examined"
         )
-        if (
-                reportable_query_regions is not None and
-                len(reportable_query_regions) == 0):
+        if(reportable_query_regions is not None and
+           len(reportable_query_regions) == 0):
             obv_comp = observation.ObservationComponent()
             obv_comp.code = ranges_examined_component
             obv_comp\
-                .dataAbsentReason = concept.CodeableConcept(
-                    {
-                        "coding": [
-                            {
-                                "system": ("http://terminology.hl7.org/" +
-                                           "CodeSystem/data-absent-reason"),
-                                "code": "not-performed",
-                                "display": "Not Performed"
-                            }
-                        ]
-                    }
+                .dataAbsentReason = get_codeable_concept(
+                    ("http://terminology.hl7.org/" +
+                     "CodeSystem/data-absent-reason"), "not-performed",
+                    "Not Performed"
                 )
             observation_rs_components.append(obv_comp)
             return observation_rs_components
@@ -77,17 +59,10 @@ class _Fhir_Helper:
             observation_rs_components.append(obv_comp)
         for _, row in nocall_regions.df.iterrows():
             obv_comp = observation.ObservationComponent()
-            obv_comp.code = concept.CodeableConcept(
-                {
-                    "coding": [
-                        {
-                            "system": ("http://hl7.org/fhir/uv/genomics" +
-                                       "-reporting/CodeSystem/TbdCodes"),
-                            "code": "uncallable-regions",
-                            "display": "Uncallable Regions"
-                        }
-                    ]
-                }
+            obv_comp.code = get_codeable_concept(
+                ("http://hl7.org/fhir/uv/genomics" +
+                 "-reporting/CodeSystem/TbdCodes"), "uncallable-regions",
+                "Uncallable Regions"
             )
             obv_comp.valueRange = valRange.Range({"low": {"value": float(
                 row['Start']) + 1},
@@ -99,10 +74,9 @@ class _Fhir_Helper:
         if(record.samples[0].phased is False):
             return
         sample_data = record.samples[0].data
-        if(
-                sample_data.GT is not None and
-                len(sample_data.GT.split('|')) >= 2 and
-                'PS' in sample_data._fields):
+        if(sample_data.GT is not None and
+           len(sample_data.GT.split('|')) >= 2 and
+           'PS' in sample_data._fields):
             self.phased_rec_map.setdefault(sample_data.PS, []).append(record)
 
     def initalize_report(self):
@@ -114,41 +88,22 @@ class _Fhir_Helper:
                                 ("http://hl7.org/fhir/uv/genomics-reporting" +
                                  "/StructureDefinition/genomics-report")]})
         self.report.status = "final"
-        self.report.category = concept.CodeableConcept(
-            {
-                "coding": [
-                    {
-                        "system": ("http://terminology.hl7.org/" +
-                                   "CodeSystem/v2-0074"),
-                        "code": "GE"
-                    }
-                ]
-            }
+        self.report.category = get_codeable_concept(
+            "http://terminology.hl7.org/CodeSystem/v2-0074", "GE"
         )
-        self.report.code = concept.CodeableConcept(
-            {
-                "coding": [
-                    {
-                        "system": "http://loinc.org",
-                        "code": "81247-9",
-                        "display": "Master HL7 genetic variant reporting panel"
-                    }
-                ]
-            }
+        self.report.code = get_codeable_concept(
+            "http://loinc.org", "81247-9",
+            "Master HL7 genetic variant reporting panel"
         )
         self.report.subject = patient_reference
         self.report.issued = date.FHIRDate(get_fhir_date())
         self.report.contained = []
 
     def add_regionstudied_obv(
-            self,
-            ref_seq,
-            reportable_query_regions,
-            nocall_regions):
-        if(((
-                not (reportable_query_regions is not None) and
-                (len(reportable_query_regions) == 0))) and
-                (reportable_query_regions.empty and nocall_regions.empty)):
+            self, ref_seq, reportable_query_regions, nocall_regions):
+        if(((not (reportable_query_regions is not None) and
+           (len(reportable_query_regions) == 0))) and
+           (reportable_query_regions.empty and nocall_regions.empty)):
             return
         patient_reference = reference.FHIRReference(
             {"reference": "Patient/" + self.patientID})
@@ -163,76 +118,30 @@ class _Fhir_Helper:
                                       ("http://hl7.org/fhir/uv/" +
                                        "genomics-reporting/" +
                                        "StructureDefinition/region-studied")]})
-        observation_rs.code = concept.CodeableConcept(
-            {
-                "coding": [
-                    {
-                        "system": "http://loinc.org",
-                        "code": "53041-0",
-                        "display": "DNA region of interest panel"
-                    }
-                ]
-            }
+        observation_rs.code = get_codeable_concept(
+            "http://loinc.org", "53041-0", "DNA region of interest panel"
         )
         observation_rs.status = "final"
-        observation_rs.category = [concept.CodeableConcept(
-            {
-                "coding": [
-                    {
-                        "system": ("http://terminology.hl7.org/" +
-                                   "CodeSystem/observation-category"),
-                        "code": "laboratory"
-                    }
-                ]
-            }
+        observation_rs.category = [get_codeable_concept(
+            "http://terminology.hl7.org/CodeSystem/observation-category",
+            "laboratory"
         )]
         observation_rs.subject = patient_reference
         observation_rs_component1 = observation.ObservationComponent()
-        observation_rs_component1.code = concept.CodeableConcept(
-            {
-                "coding": [
-                    {
-                        "system": "http://loinc.org",
-                        "code": "92822-6",
-                        "display": "Genomic coord system"
-                    }
-                ]
-            }
+        observation_rs_component1.code = get_codeable_concept(
+            "http://loinc.org", "92822-6", "Genomic coord system"
         )
         observation_rs_component1\
-            .valueCodeableConcept = concept.CodeableConcept(
-                {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "LA30102-0",
-                            "display": "1-based character counting"
-                        }
-                    ]
-                }
+            .valueCodeableConcept = get_codeable_concept(
+                "http://loinc.org", "LA30102-0", "1-based character counting"
             )
         observation_rs_component2 = observation.ObservationComponent()
-        observation_rs_component2.code = concept.CodeableConcept(
-            {
-                "coding": [
-                    {
-                        "system": "http://loinc.org",
-                        "code": "48013-7",
-                        "display": "Genomic reference sequence ID"
-                    }
-                ]
-            }
+        observation_rs_component2.code = get_codeable_concept(
+            "http://loinc.org", "48013-7", "Genomic reference sequence ID"
         )
         observation_rs_component2\
-            .valueCodeableConcept = concept.CodeableConcept(
-                {
-                    "coding": [
-                        {
-                            "system": "http://www.ncbi.nlm.nih.gov/nuccore",
-                            "code": ref_seq
-                        }
-                    ]
-                }
+            .valueCodeableConcept = get_codeable_concept(
+                "http://www.ncbi.nlm.nih.gov/nuccore", ref_seq
             )
         observation_rs_components = self._get_region_studied_component(
             reportable_query_regions, nocall_regions)
@@ -441,41 +350,19 @@ class _Fhir_Helper:
                                               "StructureDefinition/" +
                                               "sequence-phase-relationship")]})
             observation_sid.status = "final"
-            observation_sid.category = [concept.CodeableConcept(
-                {
-                    "coding": [
-                        {
-                            "system": ("http://terminology.hl7.org/" +
-                                       "CodeSystem/observation-category"),
-                            "code": "laboratory"
-                        }
-                    ]
-                }
+            observation_sid.category = [get_codeable_concept(
+                "http://terminology.hl7.org/CodeSystem/observation-category",
+                "laboratory"
             )]
-            observation_sid.code = concept.CodeableConcept(
-                {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "82120-7",
-                            "display": "Allelic phase"
-                        }
-                    ]
-                }
+            observation_sid.code = get_codeable_concept(
+                "http://loinc.org", "82120-7", "Allelic phase"
             )
             observation_sid.subject = patient_reference
-            observation_sid.valueCodeableConcept = concept.CodeableConcept(
-                {
-                    "coding": [
-                        {
-                            "system": ("http://hl7.org/fhir/uv/" +
-                                       "genomics-reporting/CodeSystem/" +
-                                       "SequencePhaseRelationshipCS"),
-                            "code": self.sequence_rels.at[index, 'Relation'],
-                            "display":self.sequence_rels.at[index, 'Relation']
-                        }
-                    ]
-                }
+            observation_sid.valueCodeableConcept = get_codeable_concept(
+                ("http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/" +
+                 "SequencePhaseRelationshipCS"),
+                self.sequence_rels.at[index, 'Relation'],
+                self.sequence_rels.at[index, 'Relation']
             )
             self.report.contained.append(observation_sid)
 
