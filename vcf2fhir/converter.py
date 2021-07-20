@@ -77,10 +77,10 @@ class Converter(object):
     fully-closed).
 
     **ratio_ad_dp** (optional)(default value = 0.99): This ratio \
-    determine whether to assign Homoplasmic or Heteroplasmic
-     If allelic depth (FORMAT.AD) / read depth (FORMAT.DP) is \
-     greater than ratio_ad_dp then allelic state is
-      homoplasmic; else heteroplasmic.
+    determine whether to assign Homoplasmic or Heteroplasmic.
+    If allelic depth (FORMAT.AD) / read depth (FORMAT.DP) is \
+    greater than ratio_ad_dp then allelic state is
+    homoplasmic; else heteroplasmic.
     Returns
     -------
 
