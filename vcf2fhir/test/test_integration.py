@@ -225,7 +225,7 @@ class TestTranslation(unittest.TestCase):
             self,
             output_filename=output_filename,
             expected_output_filename=expected_output_filename,
-            dict={8: [5, 6]})
+            dict={5: [2, 3]})
 
     def test_with_patient_id(self):
         self.maxDiff = None
@@ -240,7 +240,7 @@ class TestTranslation(unittest.TestCase):
             self,
             output_filename=output_filename,
             expected_output_filename=expected_output_filename,
-            dict={8: [5, 6]})
+            dict={5: [2, 3]})
 
     # FIXME: just a temporary test, later change it to a test that test
     # particular variant

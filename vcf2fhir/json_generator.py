@@ -7,7 +7,7 @@ invalid_record_logger = logging.getLogger("vcf2fhir.invalidrecord")
 general_logger = logging.getLogger("vcf2fhir.general")
 
 
-def _valid_record(record):
+def _valid_record(record, genomic_source_class):
     if not (validate_chrom_identifier(record.CHROM)):
         invalid_record_logger.debug(
             ("Reason: VCF CHROM is not recognized, " +
@@ -15,14 +15,48 @@ def _valid_record(record):
             record,
             record.samples[0].data)
         return False
-    if(record.is_sv):
-        invalid_record_logger.debug(
-            ("Reason: VCF INFO.SVTYPE is present. " +
-             "(Structural variants are excluded), " +
-             "Record: %s, considered sample: %s"),
-            record,
-            record.samples[0].data)
-        return False
+    if record.is_sv:
+        if len(record.samples) > 1:
+            invalid_record_logger.debug(
+                ("Reason: Multi-sample VCFs for SVs are not allowed, " +
+                 "Record: %s, considered sample: %s"),
+                record,
+                record.samples[0].data)
+            return False
+        if(record.INFO['SVTYPE'] not in list(SVs)):
+            invalid_record_logger.debug(
+                ("Reason: VCF INFO.SVTYPE must be in ['INS', 'DEL', " +
+                 "'DUP', 'CNV', 'INV']. Record: %s, considered sample: %s"),
+                record,
+                record.samples[0].data)
+            return False
+        # The following if condition checks if RECORD.ALT is a
+        # '.' or simple character string or comma-separated character string or
+        # angle-bracketed token or comma separated angle-bracketed token,
+        # for structural variants.
+        if(not all(alt is None or alt.type in ['SNV', 'MNV'] or
+           isinstance(alt, vcf.model._SV) for alt in record.ALT)):
+            invalid_record_logger.debug(
+                ("Reason: ALT is not a simple character string, " +
+                 "comma-separated character string, angle-bracketed token, " +
+                 "comma separated angle-bracketed token " +
+                 "list or '.', Record: %s, considered sample: %s"),
+                record,
+                record.samples[0].data)
+            return False
+    else:
+        # The following if condition checks if RECORD.ALT is a
+        # '.' or simple character string or comma-separated character string,
+        # for simple variants.
+        if(not all(alt is None or alt.type in ['SNV', 'MNV']
+           for alt in record.ALT)):
+            invalid_record_logger.debug(
+                ("Reason: ALT is not a simple character string, " +
+                 "comma-separated character string " +
+                 "or '.', Record: %s, considered sample: %s"),
+                record,
+                record.samples[0].data)
+            return False
     if(record.FILTER is not None and len(record.FILTER) != 0):
         invalid_record_logger.debug(
             ("Reason: VCF FILTER does not equal " +
@@ -30,20 +64,25 @@ def _valid_record(record):
             record,
             record.samples[0].data)
         return False
-    if(len(record.samples) == 0 or record.samples[0].gt_type is None):
+    # The following if condition checks if FORMAT.GT contains '.' when
+    # genomic source class is 'germline' for simple variants and Structural
+    # variants with SVTYPE in ['INV', 'DEL', 'INS'].
+    if((len(record.samples) == 0 or record.samples[0].gt_type is None) or
+        record.samples[0]['GT'] in ['0/0', '0|0', '0'] or
+        ((((not record.is_sv or (record.is_sv and
+            record.INFO['SVTYPE'] in list(SVs - {'DUP', 'CNV'})))) and
+            '.' in record.samples[0]['GT'] and
+            genomic_source_class == Genomic_Source_Class.GERMLINE.value))):
         invalid_record_logger.debug(
             ("Reason: VCF FORMAT.GT is null ('./.', '.|.', '.', etc), " +
              "Record: %s, considered sample: %s"),
             record,
             record.samples[0].data)
         return False
-    if(
-            len(record.ALT) != 1 or
-            (record.ALT[0].type != 'SNV' and record.ALT[0].type != 'MNV')):
+    if not record.REF.isalpha():
         invalid_record_logger.debug(
-            ("Reason: ALT is not a simple character string, comma-separated " +
-             "character string or '.' (Rows where ALT is a token " +
-             "(e.g. 'DEL') are excluded), Record: %s, considered sample: %s"),
+            ("Reason: REF is not a simple character string. " +
+             "Record: %s, considered sample: %s"),
             record,
             record.samples[0].data)
         return False
@@ -76,25 +115,21 @@ def _fix_regions_chrom(region):
             extract_chrom_identifier)
 
 
-def _add_record_variants(record, ref_seq, patientID, fhir_helper, ratio_ad_dp):
-    if(_valid_record(record)):
-        fhir_helper.add_variant_obv(record, ref_seq, ratio_ad_dp)
+def _add_record_variants(
+        record,
+        ref_seq, patientID, fhir_helper, ratio_ad_dp, genomic_source_class):
+    if(_valid_record(record, genomic_source_class)):
+        fhir_helper.add_variant_obv(
+            record, ref_seq, ratio_ad_dp, genomic_source_class)
 
 
 def _add_region_studied(
-        region_studied,
-        conversion_region,
-        nocall_region,
-        fhir_helper,
-        chrom,
-        ref_seq,
-        patientID):
-    if((
-            (region_studied and not region_studied[chrom].empty) or
-            (nocall_region and not nocall_region[chrom].empty)) or
-            (
-                (region_studied is not None and len(region_studied) == 0) and
-                (conversion_region and not conversion_region[chrom].empty))):
+        region_studied, conversion_region,
+        nocall_region, fhir_helper, chrom, ref_seq, patientID):
+    if(((region_studied and not region_studied[chrom].empty) or
+       (nocall_region and not nocall_region[chrom].empty)) or
+       ((region_studied is not None and len(region_studied) == 0) and
+       (conversion_region and not conversion_region[chrom].empty))):
         general_logger.info("Adding region Studied observation for %s", chrom)
         general_logger.debug("Region Examined %s", region_studied[chrom])
         general_logger.debug("Region Uncallable %s", nocall_region[chrom])
@@ -104,14 +139,8 @@ def _add_region_studied(
 
 def _get_fhir_json(
         vcf_reader,
-        ref_build,
-        patientID,
-        has_tabix,
-        conversion_region,
-        region_studied,
-        nocall_region,
-        ratio_ad_dp,
-        output_filename):
+        ref_build, patientID, has_tabix, conversion_region, region_studied,
+        nocall_region, ratio_ad_dp, genomic_source_class, output_filename):
     fhir_helper = _Fhir_Helper(patientID)
     fhir_helper.initalize_report()
     general_logger.debug("Finished Initializing empty report")
@@ -136,13 +165,8 @@ def _get_fhir_json(
             ref_seq = _get_ref_seq_by_chrom(
                 ref_build, extract_chrom_identifier(chrom))
             _add_region_studied(
-                region_studied,
-                conversion_region,
-                nocall_region,
-                fhir_helper,
-                chrom,
-                ref_seq,
-                patientID
+                region_studied, conversion_region,
+                nocall_region, fhir_helper, chrom, ref_seq, patientID
             )
             if conversion_region and not conversion_region[chrom].empty:
                 for _, row in conversion_region[chrom].df.iterrows():
@@ -157,11 +181,8 @@ def _get_fhir_json(
                             record.CHROM = extract_chrom_identifier(
                                 record.CHROM)
                             _add_record_variants(
-                                record,
-                                ref_seq,
-                                patientID,
-                                fhir_helper,
-                                ratio_ad_dp
+                                record, ref_seq, patientID,
+                                fhir_helper, ratio_ad_dp, genomic_source_class
                             )
             elif not conversion_region:
                 vcf_iterator = None
@@ -174,11 +195,8 @@ def _get_fhir_json(
                         record.CHROM = extract_chrom_identifier(
                             record.CHROM)
                         _add_record_variants(
-                            record,
-                            ref_seq,
-                            patientID,
-                            fhir_helper,
-                            ratio_ad_dp
+                            record, ref_seq, patientID,
+                            fhir_helper, ratio_ad_dp, genomic_source_class
                         )
     else:
         chrom_index = 1
@@ -195,25 +213,22 @@ def _get_fhir_json(
                         current_ref_seq = _get_ref_seq_by_chrom(
                             ref_build, chrom)
                         _add_region_studied(
-                            region_studied,
-                            conversion_region,
-                            nocall_region,
-                            fhir_helper,
-                            chrom,
-                            current_ref_seq,
-                            patientID)
+                            region_studied, conversion_region, nocall_region,
+                            fhir_helper, chrom, current_ref_seq, patientID)
                         prev_add_chrom = chrom
                         chrom_index += 1
                         chrom = _get_chrom(chrom_index)
                 ref_seq = _get_ref_seq_by_chrom(ref_build, record.CHROM)
-                if (
-                        not conversion_region or
-                        conversion_region[
-                            record.CHROM,
-                            record.POS - 1: (record.POS + len(record.REF) - 1)
-                        ].empty is False):
+                end = record.POS + len(record.REF) - 1
+                if record.is_sv and hasattr(record.INFO, 'END'):
+                    end = record.INFO['END']
+                if(not conversion_region or
+                   conversion_region[
+                        record.CHROM, record.POS - 1: end
+                   ].empty is False):
                     _add_record_variants(
-                        record, ref_seq, patientID, fhir_helper, ratio_ad_dp)
+                        record, ref_seq, patientID,
+                        fhir_helper, ratio_ad_dp, genomic_source_class)
 
     general_logger.info("Adding all the phased sequence relationship found")
     fhir_helper.add_phased_relationship_obv()

@@ -81,6 +81,12 @@ class Converter(object):
     If allelic depth (FORMAT.AD) / read depth (FORMAT.DP) is \
     greater than ratio_ad_dp then allelic state is
     homoplasmic; else heteroplasmic.
+
+    **genomic_source_class** (optional)(default value = somatic): An \
+    assertion as to whether variants in the VCF file are in the \
+    germline (i.e. inherited), somatic (e.g. arose spontaneously \
+    as cancer mutations), or mixed (i.e. may be a combination of \
+    germline and/or somatic).
     Returns
     -------
 
@@ -90,16 +96,10 @@ class Converter(object):
     """
 
     def __init__(
-            self,
-            vcf_filename=None,
-            ref_build=None,
-            patient_id=None,
-            has_tabix=False,
-            conv_region_filename=None,
-            conv_region_dict=None,
-            region_studied_filename=None,
-            nocall_filename=None,
-            ratio_ad_dp=0.99):
+            self, vcf_filename=None, ref_build=None, patient_id=None,
+            has_tabix=False, conv_region_filename=None, conv_region_dict=None,
+            region_studied_filename=None, nocall_filename=None,
+            ratio_ad_dp=0.99, genomic_source_class='somatic'):
 
         super(Converter, self).__init__()
         if not (vcf_filename):
@@ -167,12 +167,18 @@ class Converter(object):
         if not validate_ratio_ad_dp(ratio_ad_dp):
             raise Exception("Please provide a valid 'ratio_ad_dp'")
 
+        if genomic_source_class.title() not in Genomic_Source_Class.set_():
+            raise Exception(
+                ("Please provide a valid Genomic Source Class " +
+                 "('germline' or 'somatic' or 'mixed')"))
+
         self.ratio_ad_dp = ratio_ad_dp
         self.has_tabix = has_tabix
         self.patient_id = patient_id
         self.ref_build = ref_build
         self.nocall_filename = nocall_filename
         self.conv_region_filename = conv_region_filename
+        self.genomic_source_class = genomic_source_class.title()
         general_logger.info("Converter class instantiated successfully")
 
     def convert(self, output_filename='fhir.json'):
@@ -187,15 +193,9 @@ class Converter(object):
         """
         general_logger.info("Starting VCF to FHIR Conversion")
         _get_fhir_json(
-            self._vcf_reader,
-            self.ref_build,
-            self.patient_id,
-            self.has_tabix,
-            self.conversion_region,
-            self.region_studied,
-            self.nocall_region,
-            self.ratio_ad_dp,
-            output_filename)
+            self._vcf_reader, self.ref_build, self.patient_id, self.has_tabix,
+            self.conversion_region, self.region_studied, self.nocall_region,
+            self.ratio_ad_dp, self.genomic_source_class, output_filename)
         general_logger.info("Completed VCF to FHIR Conversion")
 
     def _generate_exception(self, msg):
