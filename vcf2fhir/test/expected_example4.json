@@ -2188,6 +2188,25 @@
                         "coding": [
                             {
                                 "system": "http://loinc.org",
+                                "code": "48004-6",
+                                "display": "DNA change (c.HGVS)"
+                            }
+                        ]
+                    },
+                    "valueCodeableConcept": {
+                        "coding": [
+                            {
+                                "system": "http://varnomen.hgvs.org",
+                                "code": "NC_000023.11:60465:T:C"
+                            }
+                        ]
+                    }
+                },
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
                                 "code": "48013-7",
                                 "display": "Genomic reference sequence ID"
                             }
@@ -2289,6 +2308,64 @@
             "id": "",
             "meta": {
                 "profile": [
+                    "http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/diagnostic-implication"
+                ]
+            },
+            "status": "final",
+            "category": [
+                {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "laboratory"
+                        }
+                    ]
+                }
+            ],
+            "code": {
+                "coding": [
+                    {
+                        "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
+                        "code": "diagnostic-implication",
+                        "display": "Diagnostic Implication"
+                    }
+                ]
+            },
+            "subject": {
+                "reference": "Patient/HG00628"
+            },
+            "component": [
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "53037-8",
+                                "display": "Genetic variation clinical significance [Imp]"
+                            }
+                        ]
+                    },
+                    "valueCodeableConcept": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "display": "not specified"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "derivedFrom": [
+                {
+                    "reference": ""
+                }
+            ]
+        },
+        {
+            "resourceType": "Observation",
+            "id": "",
+            "meta": {
+                "profile": [
                     "http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/variant"
                 ]
             },
@@ -2325,6 +2402,25 @@
                 ]
             },
             "component": [
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "48004-6",
+                                "display": "DNA change (c.HGVS)"
+                            }
+                        ]
+                    },
+                    "valueCodeableConcept": {
+                        "coding": [
+                            {
+                                "system": "http://varnomen.hgvs.org",
+                                "code": "NC_000023.11:60578:G:A"
+                            }
+                        ]
+                    }
+                },
                 {
                     "code": {
                         "coding": [
@@ -2431,6 +2527,64 @@
             "id": "",
             "meta": {
                 "profile": [
+                    "http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/diagnostic-implication"
+                ]
+            },
+            "status": "final",
+            "category": [
+                {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "laboratory"
+                        }
+                    ]
+                }
+            ],
+            "code": {
+                "coding": [
+                    {
+                        "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
+                        "code": "diagnostic-implication",
+                        "display": "Diagnostic Implication"
+                    }
+                ]
+            },
+            "subject": {
+                "reference": "Patient/HG00628"
+            },
+            "component": [
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "53037-8",
+                                "display": "Genetic variation clinical significance [Imp]"
+                            }
+                        ]
+                    },
+                    "valueCodeableConcept": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "display": "not specified"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "derivedFrom": [
+                {
+                    "reference": ""
+                }
+            ]
+        },
+        {
+            "resourceType": "Observation",
+            "id": "",
+            "meta": {
+                "profile": [
                     "http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/variant"
                 ]
             },
@@ -2467,6 +2621,25 @@
                 ]
             },
             "component": [
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "48004-6",
+                                "display": "DNA change (c.HGVS)"
+                            }
+                        ]
+                    },
+                    "valueCodeableConcept": {
+                        "coding": [
+                            {
+                                "system": "http://varnomen.hgvs.org",
+                                "code": "NC_000023.11:60582:G:C"
+                            }
+                        ]
+                    }
+                },
                 {
                     "code": {
                         "coding": [
@@ -2573,6 +2746,64 @@
             "id": "",
             "meta": {
                 "profile": [
+                    "http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/diagnostic-implication"
+                ]
+            },
+            "status": "final",
+            "category": [
+                {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "laboratory"
+                        }
+                    ]
+                }
+            ],
+            "code": {
+                "coding": [
+                    {
+                        "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
+                        "code": "diagnostic-implication",
+                        "display": "Diagnostic Implication"
+                    }
+                ]
+            },
+            "subject": {
+                "reference": "Patient/HG00628"
+            },
+            "component": [
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "53037-8",
+                                "display": "Genetic variation clinical significance [Imp]"
+                            }
+                        ]
+                    },
+                    "valueCodeableConcept": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "display": "not specified"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "derivedFrom": [
+                {
+                    "reference": ""
+                }
+            ]
+        },
+        {
+            "resourceType": "Observation",
+            "id": "",
+            "meta": {
+                "profile": [
                     "http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/variant"
                 ]
             },
@@ -2609,6 +2840,25 @@
                 ]
             },
             "component": [
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "48004-6",
+                                "display": "DNA change (c.HGVS)"
+                            }
+                        ]
+                    },
+                    "valueCodeableConcept": {
+                        "coding": [
+                            {
+                                "system": "http://varnomen.hgvs.org",
+                                "code": "NC_000023.11:60592:A:T"
+                            }
+                        ]
+                    }
+                },
                 {
                     "code": {
                         "coding": [
@@ -2715,6 +2965,64 @@
             "id": "",
             "meta": {
                 "profile": [
+                    "http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/diagnostic-implication"
+                ]
+            },
+            "status": "final",
+            "category": [
+                {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "laboratory"
+                        }
+                    ]
+                }
+            ],
+            "code": {
+                "coding": [
+                    {
+                        "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
+                        "code": "diagnostic-implication",
+                        "display": "Diagnostic Implication"
+                    }
+                ]
+            },
+            "subject": {
+                "reference": "Patient/HG00628"
+            },
+            "component": [
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "53037-8",
+                                "display": "Genetic variation clinical significance [Imp]"
+                            }
+                        ]
+                    },
+                    "valueCodeableConcept": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "display": "not specified"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "derivedFrom": [
+                {
+                    "reference": ""
+                }
+            ]
+        },
+        {
+            "resourceType": "Observation",
+            "id": "",
+            "meta": {
+                "profile": [
                     "http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/variant"
                 ]
             },
@@ -2751,6 +3059,25 @@
                 ]
             },
             "component": [
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "48004-6",
+                                "display": "DNA change (c.HGVS)"
+                            }
+                        ]
+                    },
+                    "valueCodeableConcept": {
+                        "coding": [
+                            {
+                                "system": "http://varnomen.hgvs.org",
+                                "code": "NC_000023.11:60691:T:C"
+                            }
+                        ]
+                    }
+                },
                 {
                     "code": {
                         "coding": [
@@ -2857,6 +3184,64 @@
             "id": "",
             "meta": {
                 "profile": [
+                    "http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/diagnostic-implication"
+                ]
+            },
+            "status": "final",
+            "category": [
+                {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "laboratory"
+                        }
+                    ]
+                }
+            ],
+            "code": {
+                "coding": [
+                    {
+                        "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
+                        "code": "diagnostic-implication",
+                        "display": "Diagnostic Implication"
+                    }
+                ]
+            },
+            "subject": {
+                "reference": "Patient/HG00628"
+            },
+            "component": [
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "53037-8",
+                                "display": "Genetic variation clinical significance [Imp]"
+                            }
+                        ]
+                    },
+                    "valueCodeableConcept": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "display": "not specified"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "derivedFrom": [
+                {
+                    "reference": ""
+                }
+            ]
+        },
+        {
+            "resourceType": "Observation",
+            "id": "",
+            "meta": {
+                "profile": [
                     "http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/variant"
                 ]
             },
@@ -2893,6 +3278,25 @@
                 ]
             },
             "component": [
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "48004-6",
+                                "display": "DNA change (c.HGVS)"
+                            }
+                        ]
+                    },
+                    "valueCodeableConcept": {
+                        "coding": [
+                            {
+                                "system": "http://varnomen.hgvs.org",
+                                "code": "NC_000023.11:60881:T:G"
+                            }
+                        ]
+                    }
+                },
                 {
                     "code": {
                         "coding": [
@@ -2991,6 +3395,64 @@
                             "value": 60882
                         }
                     }
+                }
+            ]
+        },
+        {
+            "resourceType": "Observation",
+            "id": "",
+            "meta": {
+                "profile": [
+                    "http://hl7.org/fhir/uv/genomics-reporting/StructureDefinition/diagnostic-implication"
+                ]
+            },
+            "status": "final",
+            "category": [
+                {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                            "code": "laboratory"
+                        }
+                    ]
+                }
+            ],
+            "code": {
+                "coding": [
+                    {
+                        "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
+                        "code": "diagnostic-implication",
+                        "display": "Diagnostic Implication"
+                    }
+                ]
+            },
+            "subject": {
+                "reference": "Patient/HG00628"
+            },
+            "component": [
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "code": "53037-8",
+                                "display": "Genetic variation clinical significance [Imp]"
+                            }
+                        ]
+                    },
+                    "valueCodeableConcept": {
+                        "coding": [
+                            {
+                                "system": "http://loinc.org",
+                                "display": "not specified"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "derivedFrom": [
+                {
+                    "reference": ""
                 }
             ]
         },
@@ -3302,6 +3764,24 @@
     },
     "issued": "",
     "result": [
+        {
+            "reference": ""
+        },
+        {
+            "reference": ""
+        },
+        {
+            "reference": ""
+        },
+        {
+            "reference": ""
+        },
+        {
+            "reference": ""
+        },
+        {
+            "reference": ""
+        },
         {
             "reference": ""
         },

@@ -10,18 +10,34 @@ from enum import Enum
 
 
 general_logger = logging.getLogger("vcf2fhir.general")
+
+# The list of Structural Variants that we currently support.
 SVs = {'INS', 'DEL', 'DUP', 'CNV', 'INV'}
+
+# The following list contains all the variant components that we currently
+# support in the order they are expected in the output FHIR JSON.
 VARIANT_COMPONENTS_ORDER = [
-    'dna_change_type_component',
+    'dna_chg_component', 'dna_change_type_component',
     'ref_seq_id_component', 'genomic_source_class_component',
+    'amino_acid_chg_component', 'transcript_ref_seq_component',
     'allelic_state_component', 'allelic_frequency_component',
     'copy_number_component', 'ref_allele_component', 'alt_allele_component',
     'genomic_coord_system_component', 'exact_start_end_component',
     'outer_start_end_component', 'inner_start_end_component',
 ]
+
+# The following list contains all the diagnostic implication components
+# that we currently support in the order they are expected in the
+# output FHIR JSON.
+DIAGNOSTIC_IMPLICATION_ORDER = [
+    'clinical_significance_component',
+    'associated_phenotype_component'
+]
+
 GERMLINE = 'Germline'
 SOMATIC = 'Somatic'
 MIXED = 'Mixed'
+
 SVTYPE_TO_DNA_CHANGE_TYPE = {
     'CNV': ['SO:0001019', 'copy_number_variation'],
     'DUP': ['SO:1000035', 'duplication'],
@@ -29,9 +45,22 @@ SVTYPE_TO_DNA_CHANGE_TYPE = {
     'DEL': ['SO:0000159', 'deletion'],
     'INS': ['SO:0000667', 'insertion']
 }
+
+# The following dictionary maps Genomic Source Class to it's loinc code.
+# The code values are taken from <https://loinc.org/48002-0/>
 GENOMIC_SOURCE_CLASS_TO_CODE = {
     GERMLINE: 'LA6683-2',
     SOMATIC: 'LA6684-0'
+}
+
+# The following dictionary maps Clinical Significance to it's loinc code.
+# The code values are taken from <https://loinc.org/53037-8/>
+CLIN_SIG_TO_CODE = {
+    'Pathogenic': 'LA6668-3',
+    'Likely pathogenic': 'LA26332-9',
+    'Uncertain significance': 'LA26333-7',
+    'Likely benign': 'LA26334-5',
+    'Benign': 'LA6675-8'
 }
 
 """
@@ -207,3 +236,72 @@ def createOrderedDict(value_from, order):
         if key in value_from.keys():
             value_to[key] = value_from[key]
     return value_to
+
+
+def is_present(annotation, component):
+    if(not annotation[component].empty and
+       not pd.isna(annotation.iloc[0][component])):
+        return True
+    else:
+        return False
+
+
+# The following function is used to fetch the annotations for the record
+# supplied. It returns None is there are no annotations for that record
+def get_annotations(record, annotations, spdi_representation):
+    if annotations is None:
+        return {'dna_change': spdi_representation,
+                'amino_acid_change': None, 'clin_sig': "not specified",
+                'phenotype': None, 'transcript_ref_seq': None,
+                'gene_studied': 'HGNC:0000^NoGene^HGNC'}
+
+    annotation = annotations[
+                    (annotations['CHROM'] == f'chr{record.CHROM}') &
+                    (annotations['POS'] == record.POS)
+                ]
+    if len(annotation) == 0:
+        return None
+    else:
+        if(is_present(annotation, 'cHGVS') and
+           is_present(annotation, 'transcriptRefSeq')):
+            transcript_ref_seq = annotation.iloc[0]['transcriptRefSeq']
+            dna_change = (f'{annotation.iloc[0]["transcriptRefSeq"]}:' +
+                          f'{annotation.iloc[0]["cHGVS"]}')
+        elif(is_present(annotation, 'cHGVS') and
+             not is_present(annotation, 'transcriptRefSeq')):
+            transcript_ref_seq = None
+            dna_change = f'{annotation.iloc[0]["cHGVS"]}'
+        else:
+            transcript_ref_seq = None
+            dna_change = spdi_representation
+
+        if(is_present(annotation, 'pHGVS') and
+           is_present(annotation, 'proteinRefSeq')):
+            amino_acid_change = (f'{annotation.iloc[0]["proteinRefSeq"]}:' +
+                                 f'{annotation.iloc[0]["pHGVS"]}')
+        elif(is_present(annotation, 'pHGVS') and
+             not is_present(annotation, 'proteinRefSeq')):
+            amino_acid_change = f'{annotation.iloc[0]["pHGVS"]}'
+        else:
+            amino_acid_change = None
+
+        if is_present(annotation, 'clinSig'):
+            clin_sig = annotation.iloc[0]['clinSig']
+        else:
+            clin_sig = "not specified"
+
+        if is_present(annotation, 'phenotype'):
+            phenotype = annotation.iloc[0]['phenotype']
+        else:
+            phenotype = None
+
+        if is_present(annotation, 'gene'):
+            gene_studied = annotation.iloc[0]['gene']
+        else:
+            gene_studied = 'HGNC:0000^NoGene^HGNC'
+
+        return {'dna_change': dna_change,
+                'amino_acid_change': amino_acid_change,
+                'clin_sig': clin_sig, 'phenotype': phenotype,
+                'transcript_ref_seq': transcript_ref_seq,
+                'gene_studied': gene_studied}
