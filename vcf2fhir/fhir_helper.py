@@ -18,6 +18,8 @@ CODE_ORD = ["system", "code", "display"]
 VQ_ORD = ["system", "code", "value"]
 RS_ORDER = ['resourceType', 'id', 'meta', 'status', 'category', 'code',
             'subject', 'component']
+DI_ORDER = ['resourceType', 'id', 'meta', 'status', 'category', 'code',
+            'subject', 'component']
 DV_ORDER = ['resourceType', 'id', 'meta', 'status', 'category', 'code',
             'subject', 'valueCodeableConcept', 'component']
 SID_ORDER = ['resourceType', 'id', 'meta', 'status', 'category',
@@ -153,9 +155,67 @@ class _Fhir_Helper:
         # Observation structure : described-variants
         self.report.contained.append(contained_rs)
 
+    def add_diagnostic_implication(
+            self, record, ref_seq, variant_id, annotation_record):
+        contained_uid = "di-" + uuid4().hex[:13]
+        self.result_ids.append(contained_uid)
+        variant_reference = reference.FHIRReference(
+            {"reference": f'#{variant_id}'})
+        observation_di = observation.Observation()
+        observation_di.resource_type = "Observation"
+        observation_di.id = contained_uid
+        observation_di.meta =\
+            meta.Meta({"profile": [("http://hl7.org/fhir/uv/genomics-" +
+                                    "reporting/StructureDefinition/" +
+                                    "diagnostic-implication")]})
+        observation_di.subject = variant_reference
+        observation_di.code = get_codeable_concept(
+            ("http://hl7.org/fhir/uv/genomics-reporting" +
+             "/CodeSystem/TbdCodes"),
+            "diagnostic-implication", "Diagnostic Implication")
+        observation_di.status = "final"
+        observation_di.category = [get_codeable_concept(
+            "http://terminology.hl7.org/CodeSystem/observation-category",
+            "laboratory"
+        )]
+        observation_di.component = []
+
+        clin_sig_code = CLIN_SIG_TO_CODE.get(annotation_record['clin_sig'])
+        clinical_significance_component = observation.ObservationComponent()
+        clinical_significance_component.code = get_codeable_concept(
+            "http://loinc.org",
+            "53037-8", "Genetic variation clinical significance [Imp]"
+        )
+        clinical_significance_component\
+            .valueCodeableConcept = get_codeable_concept(
+                "http://loinc.org",
+                clin_sig_code, annotation_record['clin_sig']
+            )
+
+        if annotation_record['phenotype'] is not None:
+            associated_phenotype_component = observation.ObservationComponent()
+            associated_phenotype_component.code = get_codeable_concept(
+                "http://loinc.org", "81259-4", "Associated phenotype"
+            )
+            associated_phenotype_component\
+                .valueCodeableConcept = get_codeable_concept(
+                    "http://www.ncbi.nlm.nih.gov/medgen",
+                    annotation_record['phenotype'].split('^')[0],
+                    annotation_record['phenotype'].split('^')[1]
+                )
+
+        # The following block of code adds a diagnostic
+        # implication component to the listof components based on the
+        # DIAGNOSTIC_IMPLICATION_ORDER list if it isdeclared. The
+        # declaration of thevariable is ensured using thelocals() dictionary.
+        for di_component in DIAGNOSTIC_IMPLICATION_ORDER:
+            if di_component in locals():
+                observation_di.component.append(locals()[di_component])
+        self.report.contained.append(observation_di)
+
     def add_variant_obv(
-            self,
-            record, ref_seq, ratio_ad_dp, genomic_source_class):
+            self, record, ref_seq,
+            ratio_ad_dp, genomic_source_class, annotation_record):
         # collect all the record with similar position values,
         # to utilized later in phased sequence relationship
         self._add_phase_records(record)
@@ -356,6 +416,42 @@ class _Fhir_Helper:
                 "http://loinc.org", "LA30102-0", "1-based character counting"
             )
 
+        if annotation_record['transcript_ref_seq'] is not None:
+            transcript_ref_seq_component =\
+                observation.ObservationComponent()
+            transcript_ref_seq_component.code = get_codeable_concept(
+                "http://loinc.org", "51958-7",
+                "Transcript reference sequence [ID]"
+            )
+            transcript_ref_seq_component\
+                .valueCodeableConcept = get_codeable_concept(
+                    "http://www.ncbi.nlm.nih.gov/refseq",
+                    annotation_record['transcript_ref_seq'],
+                    annotation_record['transcript_ref_seq']
+                )
+
+        dna_chg_component = observation.ObservationComponent()
+        dna_chg_component.code = get_codeable_concept(
+            "http://loinc.org", "48004-6",
+            "DNA change (c.HGVS)"
+        )
+        dna_chg_component\
+            .valueCodeableConcept = get_codeable_concept(
+                "http://varnomen.hgvs.org", annotation_record['dna_change']
+            )
+
+        if annotation_record['amino_acid_change'] is not None:
+            amino_acid_chg_component = observation.ObservationComponent()
+            amino_acid_chg_component.code = get_codeable_concept(
+                "http://loinc.org", "48005-3", "Amino acid change (pHGVS)"
+            )
+            amino_acid_chg_component\
+                .valueCodeableConcept = get_codeable_concept(
+                    "http://varnomen.hgvs.org",
+                    annotation_record['amino_acid_change'],
+                    annotation_record['amino_acid_change']
+                )
+
         # The following block of code adds a variant component to the list
         # of components based on the VARIANT_COMPONENTS_ORDER list if it is
         # declared. The declaration of the variable is ensured using the
@@ -365,6 +461,9 @@ class _Fhir_Helper:
                 observation_dv.component.append(locals()[variant_component])
 
         self.report.contained.append(observation_dv)
+        self.add_diagnostic_implication(
+            record, ref_seq,
+            observation_dv.id, annotation_record)
 
     def add_phased_relationship_obv(self):
         patient_reference = reference.FHIRReference(
@@ -470,7 +569,9 @@ class _Fhir_Helper:
                 od_contained_k[v_c_c]['coding'][0] =\
                     createOrderedDict(i[v_c_c]['coding'][0], CODE_ORD)
 
-            if ((i['id'].startswith('dv-')) or (i['id'].startswith('rs-'))):
+            if((i['id'].startswith('dv-')) or
+               (i['id'].startswith('rs-')) or
+               (i['id'].startswith('di-'))):
                 for q, j in enumerate(i['component']):
                     od_contained_k_component_q = od_contained_k['component'][q]
                     if od_contained_k_component_q['code']['coding'][0]:
@@ -493,6 +594,14 @@ class _Fhir_Helper:
 
             if (i['id'].startswith('sid-')):
                 od['contained'][k] = createOrderedDict(i, SID_ORDER)
+
+            if (i['id'].startswith('di-')):
+                od['contained'][k] = createOrderedDict(i, DI_ORDER)
+                od['contained'][k]['derivedFrom'] = [{}]
+                od['contained'][k]['derivedFrom'][0]['reference'] =\
+                    f"{i['subject']['reference']}"
+                od['contained'][k]['subject']['reference'] =\
+                    f'Patient/{self.patientID}'
         self.fhir_json = od
 
     def export_fhir_json(self, output_filename):

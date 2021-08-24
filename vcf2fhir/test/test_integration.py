@@ -14,6 +14,8 @@ def _get_uids_map(fhir_json):
     obv_ids = []
     result_ids = []
     for index, obv in enumerate(fhir_json['contained']):
+        if obv['id'].startswith('di-'):
+            fhir_json['contained'][index]['derivedFrom'][0]['reference'] = ''
         id = obv['id']
         obv_ids.append(f'#{id}')
         fhir_json['contained'][index]['id'] = ''
@@ -27,23 +29,16 @@ def _get_uids_map(fhir_json):
 
 def _validate_phase_rel(fhir_json, map_variant_index):
     for index_seq, list_index_var in map_variant_index.items():
-        for index, ref in enumerate(
-                fhir_json['contained'][index_seq]['derivedFrom']):
-            variant_id =\
-                fhir_json['contained'][list_index_var[index]]['id']
-            if not ref['reference'] == f'#{variant_id}':
-                return False
-            fhir_json[
-                        'contained'
-                    ][
-                        index_seq
-                    ][
-                        'derivedFrom'
-                    ][
-                        index
-                    ][
-                        'reference'
-                    ] = ''
+        if('derivedFrom' in fhir_json['contained'][index_seq] and
+           not fhir_json['contained'][index_seq]['id'].startswith('di-')):
+            for index, ref in enumerate(
+                    fhir_json['contained'][index_seq]['derivedFrom']):
+                variant_id =\
+                    fhir_json['contained'][list_index_var[index]]['id']
+                if not ref['reference'] == f'#{variant_id}':
+                    return False
+                fhir_json['contained'][index_seq]['derivedFrom'][index][
+                    'reference'] = ''
     return True
 
 
@@ -225,7 +220,7 @@ class TestTranslation(unittest.TestCase):
             self,
             output_filename=output_filename,
             expected_output_filename=expected_output_filename,
-            dict={5: [2, 3]})
+            dict={10: [4, 6]})
 
     def test_with_patient_id(self):
         self.maxDiff = None
@@ -240,7 +235,7 @@ class TestTranslation(unittest.TestCase):
             self,
             output_filename=output_filename,
             expected_output_filename=expected_output_filename,
-            dict={5: [2, 3]})
+            dict={10: [4, 6]})
 
     # FIXME: just a temporary test, later change it to a test that test
     # particular variant
@@ -276,7 +271,7 @@ class TestTranslation(unittest.TestCase):
             self,
             output_filename=output_filename,
             expected_output_filename=expected_output_filename,
-            dict={7: [2, 3], 8: [3, 4]})
+            dict={13: [5, 7], 12: [3, 5]})
 
     def test_region_studied_dict(self):
         conv_region_dict = {
@@ -307,7 +302,7 @@ class TestTranslation(unittest.TestCase):
             self,
             output_filename=output_filename,
             expected_output_filename=expected_output_filename,
-            dict={7: [2, 3], 8: [3, 4]})
+            dict={13: [5, 7], 12: [3, 5]})
 
     # Check if region studied observation outside the vcf files are also
     # included in fhir report.
@@ -337,7 +332,7 @@ class TestTranslation(unittest.TestCase):
             self,
             output_filename=output_filename,
             expected_output_filename=expected_output_filename,
-            dict={31: [24, 25], 32: [25, 26]})
+            dict={38: [27, 29], 37: [25, 27]})
 
     def test_region_studied_only(self):
         region_studied_filename = os.path.join(
@@ -392,6 +387,36 @@ class TestTranslation(unittest.TestCase):
             expected_output_filename=expected_output_filename,
             is_null=True)
 
+    def test_annotation(self):
+        self.maxDiff = None
+        region_studied_filename = os.path.join(
+            os.path.dirname(__file__), 'NB6TK328_region_studied.bed')
+        conv_region_filename = os.path.join(os.path.dirname(
+            __file__), 'NB6TK328_conversion_region.bed')
+        annotation_filename = os.path.join(os.path.dirname(
+            __file__), 'NB6TK328_annotations.txt')
+        output_filename = os.path.join(os.path.dirname(
+            __file__), self.TEST_RESULT_DIR, 'fhir_annotation.json')
+        expected_output_filename = os.path.join(
+            os.path.dirname(__file__), 'expected_annotation.json')
+        o_vcf_2_fhir = vcf2fhir.Converter(
+            os.path.join(
+                os.path.dirname(__file__),
+                'NB6TK328_filtered.vcf'),
+            'GRCh38',
+            'NB6TK328',
+            conv_region_filename=conv_region_filename,
+            region_studied_filename=region_studied_filename,
+            ratio_ad_dp=0.95,
+            genomic_source_class='germline',
+            annotation_filename=annotation_filename)
+        o_vcf_2_fhir.convert(output_filename)
+        _compare_actual_and_expected_fhir_json(
+            self,
+            output_filename=output_filename,
+            expected_output_filename=expected_output_filename,
+            dict={18: [11, 12], 19: [12, 13]})
+
     def test_tabix(self):
         self.maxDiff = None
         region_studied_filename = os.path.join(
@@ -419,7 +444,7 @@ class TestTranslation(unittest.TestCase):
             self,
             output_filename=output_filename,
             expected_output_filename=expected_output_filename,
-            dict={31: [24, 25], 32: [25, 26]})
+            dict={38: [27, 29], 37: [25, 27]})
 
 
 class TestLogger(unittest.TestCase):

@@ -116,11 +116,16 @@ def _fix_regions_chrom(region):
 
 
 def _add_record_variants(
-        record,
-        ref_seq, patientID, fhir_helper, ratio_ad_dp, genomic_source_class):
-    if(_valid_record(record, genomic_source_class)):
-        fhir_helper.add_variant_obv(
-            record, ref_seq, ratio_ad_dp, genomic_source_class)
+        record, ref_seq, patientID, fhir_helper,
+        ratio_ad_dp, genomic_source_class, annotations):
+    spdi_representation = (f'{ref_seq}:{record.POS - 1}:{record.REF}:' +
+                           f'{"".join(list(map(str, list(record.ALT))))}')
+    annotation_record =\
+        get_annotations(record, annotations, spdi_representation)
+    if(annotation_record is not None and
+       _valid_record(record, genomic_source_class)):
+        fhir_helper.add_variant_obv(record, ref_seq, ratio_ad_dp,
+                                    genomic_source_class, annotation_record)
 
 
 def _add_region_studied(
@@ -140,7 +145,8 @@ def _add_region_studied(
 def _get_fhir_json(
         vcf_reader,
         ref_build, patientID, has_tabix, conversion_region, region_studied,
-        nocall_region, ratio_ad_dp, genomic_source_class, output_filename):
+        nocall_region, ratio_ad_dp, genomic_source_class,
+        annotations, output_filename):
     fhir_helper = _Fhir_Helper(patientID)
     fhir_helper.initalize_report()
     general_logger.debug("Finished Initializing empty report")
@@ -182,7 +188,8 @@ def _get_fhir_json(
                                 record.CHROM)
                             _add_record_variants(
                                 record, ref_seq, patientID,
-                                fhir_helper, ratio_ad_dp, genomic_source_class
+                                fhir_helper, ratio_ad_dp,
+                                genomic_source_class, annotations
                             )
             elif not conversion_region:
                 vcf_iterator = None
@@ -196,7 +203,8 @@ def _get_fhir_json(
                             record.CHROM)
                         _add_record_variants(
                             record, ref_seq, patientID,
-                            fhir_helper, ratio_ad_dp, genomic_source_class
+                            fhir_helper, ratio_ad_dp,
+                            genomic_source_class, annotations
                         )
     else:
         chrom_index = 1
@@ -228,7 +236,8 @@ def _get_fhir_json(
                    ].empty is False):
                     _add_record_variants(
                         record, ref_seq, patientID,
-                        fhir_helper, ratio_ad_dp, genomic_source_class)
+                        fhir_helper, ratio_ad_dp,
+                        genomic_source_class, annotations)
 
     general_logger.info("Adding all the phased sequence relationship found")
     fhir_helper.add_phased_relationship_obv()

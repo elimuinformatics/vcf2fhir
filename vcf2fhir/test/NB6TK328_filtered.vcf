@@ -1,0 +1,281 @@
+##fileformat=VCFv4.2
+##ALT=<ID=NON_REF,Description="Represents any possible alternative allele not already represented at this location by REF and ALT">
+##FILTER=<ID=LowQual,Description="Low quality">
+##FILTER=<ID=VQSRTrancheINDEL99.90to100.00+,Description="Truth sensitivity tranche level for INDEL model at VQS Lod < -70747.6335">
+##FILTER=<ID=VQSRTrancheINDEL99.90to100.00,Description="Truth sensitivity tranche level for INDEL model at VQS Lod: -70747.6335 <= x < -5.0033">
+##FILTER=<ID=VQSRTrancheSNP99.90to100.00+,Description="Truth sensitivity tranche level for SNP model at VQS Lod < -191360.649">
+##FILTER=<ID=VQSRTrancheSNP99.90to100.00,Description="Truth sensitivity tranche level for SNP model at VQS Lod: -191360.649 <= x < -1.7354">
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=MIN_DP,Number=1,Type=Integer,Description="Minimum DP observed within the GVCF block">
+##FORMAT=<ID=PGT,Number=1,Type=String,Description="Physical phasing haplotype information, describing how the alternate alleles are phased in relation to one another; will always be heterozygous and is not intended to describe called alleles">
+##FORMAT=<ID=PID,Number=1,Type=String,Description="Physical phasing ID information, where each unique ID within a given sample (but not across samples) connects records within a phasing group">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification">
+##FORMAT=<ID=PS,Number=1,Type=Integer,Description="Phasing set (typically the position of the first variant in the set)">
+##FORMAT=<ID=RGQ,Number=1,Type=Integer,Description="Unconditional reference genotype confidence, encoded as a phred quality -10*log10 p(genotype call is wrong)">
+##FORMAT=<ID=SB,Number=4,Type=Integer,Description="Per-sample component statistics which comprise the Fisher's Exact Test to detect strand bias.">
+##GATKCommandLine.ApplyRecalibration=<ID=ApplyRecalibration,Version=3.8-1_MGI-3-g60d2c5f,Date="Thu Sep 24 22:14:38 CST 2020",Epoch=1600956878041,CommandLineOptions="analysis_type=ApplyRecalibration input_file=[] showFullBamList=false read_buffer_size=null read_filter=[] disable_read_filter=[] intervals=null excludeIntervals=null interval_set_rule=UNION interval_merging=ALL interval_padding=0 reference_sequence=/mnt/ssd/MegaBOLT_scheduler/reference/hg38.fa nonDeterministicRandomSeed=false disableDithering=false maxRuntime=-1 maxRuntimeUnits=MINUTES downsampling_type=BY_SAMPLE downsample_to_fraction=null downsample_to_coverage=1000 baq=OFF baqGapOpenPenalty=40.0 refactor_NDN_cigar_string=false fix_misencoded_quality_scores=false allow_potentially_misencoded_quality_scores=false useOriginalQualities=false defaultBaseQualities=-1 performanceLog=null BQSR=null quantize_quals=0 static_quantized_quals=null round_down_quantized=false disable_indel_quals=false emit_original_quals=false preserve_qscores_less_than=6 globalQScorePrior=-1.0 secondsBetweenProgressUpdates=10 validation_strictness=SILENT remove_program_records=false keep_program_records=false sample_rename_mapping_file=null unsafe=null use_jdk_deflater=false use_jdk_inflater=false disable_auto_index_creation_and_locking_when_reading_rods=false no_cmdline_in_header=false sites_only=false never_trim_vcf_format_field=false bcf=false bam_compression=null simplifyBAM=false disable_bam_indexing=false generate_md5=false num_threads=1 num_cpu_threads_per_data_thread=1 num_io_threads=0 monitorThreadEfficiency=false num_bam_file_handles=null read_group_black_list=null pedigree=[] pedigreeString=[] pedigreeValidationType=STRICT allow_intervals_with_unindexed_bam=false generateShadowBCF=false variant_index_type=DYNAMIC_SEEK variant_index_parameter=-1 reference_window_stop=0 phone_home= gatk_key=null tag=NA logging_level=INFO log_to_file=null help=false version=false input=[(RodBinding name=input source=/mnt/ssd/MegaBOLT_scheduler/tmpDir/70/1/tmp_vqsr_14/sample.raw.snp.vcf.gz)] recal_file=(RodBinding name=recal_file source=/mnt/ssd/MegaBOLT_scheduler/tmpDir/70/1/tmp_vqsr_14/sample.recalibrate_SNP.recal) tranches_file=/mnt/ssd/MegaBOLT_scheduler/tmpDir/70/1/tmp_vqsr_14/sample.recalibrate_SNP.tranches out=/mnt/ssd/MegaBOLT_scheduler/tmpDir/70/1/tmp_vqsr_14/sample.filtered.snp.vcf.gz ts_filter_level=99.9 useAlleleSpecificAnnotations=false lodCutoff=null ignore_filter=null ignore_all_filters=false excludeFiltered=false mode=SNP filter_reads_with_N_cigar=false filter_mismatching_base_and_quals=false filter_bases_not_stored=false">
+##GATKCommandLine.GenotypeGVCFs=<ID=GenotypeGVCFs,Version=3.8-1_MGI-3-g60d2c5f,Date="Thu Sep 24 21:33:27 CST 2020",Epoch=1600954407279,CommandLineOptions="analysis_type=GenotypeGVCFs input_file=[] showFullBamList=false read_buffer_size=null read_filter=[] disable_read_filter=[] intervals=null excludeIntervals=null interval_set_rule=UNION interval_merging=ALL interval_padding=0 reference_sequence=/mnt/ssd/MegaBOLT_scheduler/reference/hg38.fa nonDeterministicRandomSeed=false disableDithering=false maxRuntime=-1 maxRuntimeUnits=MINUTES downsampling_type=BY_SAMPLE downsample_to_fraction=null downsample_to_coverage=1000 baq=OFF baqGapOpenPenalty=40.0 refactor_NDN_cigar_string=false fix_misencoded_quality_scores=false allow_potentially_misencoded_quality_scores=false useOriginalQualities=false defaultBaseQualities=-1 performanceLog=null BQSR=null quantize_quals=0 static_quantized_quals=null round_down_quantized=false disable_indel_quals=false emit_original_quals=false preserve_qscores_less_than=6 globalQScorePrior=-1.0 secondsBetweenProgressUpdates=10 validation_strictness=SILENT remove_program_records=false keep_program_records=false sample_rename_mapping_file=null unsafe=null use_jdk_deflater=false use_jdk_inflater=false disable_auto_index_creation_and_locking_when_reading_rods=false no_cmdline_in_header=false sites_only=false never_trim_vcf_format_field=false bcf=false bam_compression=null simplifyBAM=false disable_bam_indexing=false generate_md5=false num_threads=40 num_cpu_threads_per_data_thread=1 num_io_threads=0 monitorThreadEfficiency=false num_bam_file_handles=null read_group_black_list=null pedigree=[] pedigreeString=[] pedigreeValidationType=STRICT allow_intervals_with_unindexed_bam=false generateShadowBCF=false variant_index_type=DYNAMIC_SEEK variant_index_parameter=-1 reference_window_stop=0 phone_home= gatk_key=null tag=NA logging_level=INFO log_to_file=null help=false version=false variant=[(RodBindingCollection [(RodBinding name=variant source=/mnt/ssd/MegaBOLT_scheduler/tmpDir/70/1/NB6TK328.bwa.sortdup.bqsr.hc4.g.vcf.gz)])] out=/mnt/ssd/MegaBOLT_scheduler/tmpDir/70/1/NB6TK328.bwa.sortdup.bqsr.hc4.genotype.vcf.gz includeNonVariantSites=false uniquifySamples=false annotateNDA=false useNewAFCalculator=false heterozygosity=0.001 indel_heterozygosity=1.25E-4 heterozygosity_stdev=0.01 standard_min_confidence_threshold_for_calling=10.0 standard_min_confidence_threshold_for_emitting=30.0 max_alternate_alleles=6 max_genotype_count=1024 max_num_PL_values=100 input_prior=[] sample_ploidy=2 annotation=[] group=[StandardAnnotation] dbsnp=(RodBinding name=dbsnp source=/mnt/ssd/MegaBOLT_scheduler/reference/dbsnp_151.hg38.vcf.gz) filter_reads_with_N_cigar=false filter_mismatching_base_and_quals=false filter_bases_not_stored=false">
+##GATKCommandLine.SelectVariants.2=<ID=SelectVariants,Version=3.8-1_MGI-3-g60d2c5f,Date="Thu Sep 24 22:17:08 CST 2020",Epoch=1600957028412,CommandLineOptions="analysis_type=SelectVariants input_file=[] showFullBamList=false read_buffer_size=null read_filter=[] disable_read_filter=[] intervals=null excludeIntervals=null interval_set_rule=UNION interval_merging=ALL interval_padding=0 reference_sequence=/mnt/ssd/MegaBOLT_scheduler/reference/hg38.fa nonDeterministicRandomSeed=false disableDithering=false maxRuntime=-1 maxRuntimeUnits=MINUTES downsampling_type=BY_SAMPLE downsample_to_fraction=null downsample_to_coverage=1000 baq=OFF baqGapOpenPenalty=40.0 refactor_NDN_cigar_string=false fix_misencoded_quality_scores=false allow_potentially_misencoded_quality_scores=false useOriginalQualities=false defaultBaseQualities=-1 performanceLog=null BQSR=null quantize_quals=0 static_quantized_quals=null round_down_quantized=false disable_indel_quals=false emit_original_quals=false preserve_qscores_less_than=6 globalQScorePrior=-1.0 secondsBetweenProgressUpdates=10 validation_strictness=SILENT remove_program_records=false keep_program_records=false sample_rename_mapping_file=null unsafe=null use_jdk_deflater=false use_jdk_inflater=false disable_auto_index_creation_and_locking_when_reading_rods=false no_cmdline_in_header=false sites_only=false never_trim_vcf_format_field=false bcf=false bam_compression=null simplifyBAM=false disable_bam_indexing=false generate_md5=false num_threads=1 num_cpu_threads_per_data_thread=1 num_io_threads=0 monitorThreadEfficiency=false num_bam_file_handles=null read_group_black_list=null pedigree=[] pedigreeString=[] pedigreeValidationType=STRICT allow_intervals_with_unindexed_bam=false generateShadowBCF=false variant_index_type=DYNAMIC_SEEK variant_index_parameter=-1 reference_window_stop=0 phone_home= gatk_key=null tag=NA logging_level=INFO log_to_file=null help=false version=false variant=(RodBinding name=variant source=/mnt/ssd/MegaBOLT_scheduler/tmpDir/70/1/tmp_vqsr_14/sample.filtered.snp.vcf.gz) discordance=(RodBinding name= source=UNBOUND) concordance=(RodBinding name= source=UNBOUND) out=/mnt/ssd/MegaBOLT_scheduler/tmpDir/70/1/tmp_vqsr_14/sample.anno.snp.vcf.gz sample_name=[] sample_expressions=null sample_file=null exclude_sample_name=[] exclude_sample_file=[] exclude_sample_expressions=[] selectexpressions=[] invertselect=false excludeNonVariants=false excludeFiltered=true preserveAlleles=false removeUnusedAlternates=false restrictAllelesTo=ALL keepOriginalAC=false keepOriginalDP=false mendelianViolation=false invertMendelianViolation=false mendelianViolationQualThreshold=0.0 select_random_fraction=0.0 remove_fraction_genotypes=0.0 selectTypeToInclude=[] selectTypeToExclude=[] keepIDs=null excludeIDs=null fullyDecode=false justRead=false maxIndelSize=2147483647 minIndelSize=0 maxFilteredGenotypes=2147483647 minFilteredGenotypes=0 maxFractionFilteredGenotypes=1.0 minFractionFilteredGenotypes=0.0 maxNOCALLnumber=2147483647 maxNOCALLfraction=1.0 setFilteredGtToNocall=false ALLOW_NONOVERLAPPING_COMMAND_LINE_SAMPLES=false forceValidOutput=false filter_reads_with_N_cigar=false filter_mismatching_base_and_quals=false filter_bases_not_stored=false">
+##GATKCommandLine.SelectVariants=<ID=SelectVariants,Version=3.8-1_MGI-3-g60d2c5f,Date="Thu Sep 24 21:45:16 CST 2020",Epoch=1600955116586,CommandLineOptions="analysis_type=SelectVariants input_file=[] showFullBamList=false read_buffer_size=null read_filter=[] disable_read_filter=[] intervals=null excludeIntervals=null interval_set_rule=UNION interval_merging=ALL interval_padding=0 reference_sequence=/mnt/ssd/MegaBOLT_scheduler/reference/hg38.fa nonDeterministicRandomSeed=false disableDithering=false maxRuntime=-1 maxRuntimeUnits=MINUTES downsampling_type=BY_SAMPLE downsample_to_fraction=null downsample_to_coverage=1000 baq=OFF baqGapOpenPenalty=40.0 refactor_NDN_cigar_string=false fix_misencoded_quality_scores=false allow_potentially_misencoded_quality_scores=false useOriginalQualities=false defaultBaseQualities=-1 performanceLog=null BQSR=null quantize_quals=0 static_quantized_quals=null round_down_quantized=false disable_indel_quals=false emit_original_quals=false preserve_qscores_less_than=6 globalQScorePrior=-1.0 secondsBetweenProgressUpdates=10 validation_strictness=SILENT remove_program_records=false keep_program_records=false sample_rename_mapping_file=null unsafe=null use_jdk_deflater=false use_jdk_inflater=false disable_auto_index_creation_and_locking_when_reading_rods=false no_cmdline_in_header=false sites_only=false never_trim_vcf_format_field=false bcf=false bam_compression=null simplifyBAM=false disable_bam_indexing=false generate_md5=false num_threads=1 num_cpu_threads_per_data_thread=1 num_io_threads=0 monitorThreadEfficiency=false num_bam_file_handles=null read_group_black_list=null pedigree=[] pedigreeString=[] pedigreeValidationType=STRICT allow_intervals_with_unindexed_bam=false generateShadowBCF=false variant_index_type=DYNAMIC_SEEK variant_index_parameter=-1 reference_window_stop=0 phone_home= gatk_key=null tag=NA logging_level=INFO log_to_file=null help=false version=false variant=(RodBinding name=variant source=/mnt/ssd/MegaBOLT_scheduler/tmpDir/70/1/tmp_vqsr_14/sample.raw.vcf.gz) discordance=(RodBinding name= source=UNBOUND) concordance=(RodBinding name= source=UNBOUND) out=/mnt/ssd/MegaBOLT_scheduler/tmpDir/70/1/tmp_vqsr_14/sample.raw.snp.vcf.gz sample_name=[] sample_expressions=null sample_file=null exclude_sample_name=[] exclude_sample_file=[] exclude_sample_expressions=[] selectexpressions=[] invertselect=false excludeNonVariants=true excludeFiltered=false preserveAlleles=false removeUnusedAlternates=false restrictAllelesTo=ALL keepOriginalAC=false keepOriginalDP=false mendelianViolation=false invertMendelianViolation=false mendelianViolationQualThreshold=0.0 select_random_fraction=0.0 remove_fraction_genotypes=0.0 selectTypeToInclude=[SNP] selectTypeToExclude=[] keepIDs=null excludeIDs=null fullyDecode=false justRead=false maxIndelSize=2147483647 minIndelSize=0 maxFilteredGenotypes=2147483647 minFilteredGenotypes=0 maxFractionFilteredGenotypes=1.0 minFractionFilteredGenotypes=0.0 maxNOCALLnumber=2147483647 maxNOCALLfraction=1.0 setFilteredGtToNocall=false ALLOW_NONOVERLAPPING_COMMAND_LINE_SAMPLES=false forceValidOutput=false filter_reads_with_N_cigar=false filter_mismatching_base_and_quals=false filter_bases_not_stored=false">
+##GATKCommandLine=<ID=HaplotypeCaller,CommandLine="HaplotypeCaller --standard-min-confidence-threshold-for-calling 10.0 --dbsnp /mnt/ssd/MegaBOLT_scheduler/reference/dbsnp_151.hg38.vcf.gz --gvcf-gq-bands 100 --pcr-indel-model NONE --emit-ref-confidence GVCF --output /mnt/ssd/MegaBOLT_scheduler/tmpDir/70/1/NB6TK328.bwa.sortdup.bqsr.hc4.g.vcf.gz --use-fpga true --num-threads 40 --interval-padding 0 --input /mnt/ssd/MegaBOLT_scheduler/tmpDir/70/1/NB6TK328.bwa.sortdup.bqsr.bam --reference /mnt/ssd/MegaBOLT_scheduler/reference/hg38.fa --arguments_file /mnt/ssd/MegaBOLT_scheduler/bin/arguments_file.GQB --min-assembly-region-size 50 --max-assembly-region-size 300 --assembly-region-padding 100 --max-reads-per-alignment-start 50 --active-probability-threshold 0.002 --max-prob-propagation-distance 50 --annotate-with-num-discovered-alleles false --heterozygosity 0.001 --indel-heterozygosity 1.25E-4 --heterozygosity-stdev 0.01 --max-alternate-alleles 6 --max-genotype-count 1024 --sample-ploidy 2 --num-reference-samples-if-no-call 0 --contamination-fraction-to-filter 0.0 --output-mode EMIT_VARIANTS_ONLY --all-site-pls false --floor-blocks false --indel-size-to-eliminate-in-ref-model 10 --use-alleles-trigger false --disable-optimizations false --just-determine-active-regions false --dont-genotype false --do-not-run-physical-phasing false --do-not-correct-overlapping-quality false --use-filtered-reads-for-annotations false --adaptive-pruning false --do-not-recover-dangling-branches false --recover-dangling-heads false --kmer-size 10 --kmer-size 25 --dont-increase-kmer-sizes-for-cycles false --allow-non-unique-kmers-in-ref false --num-pruning-samples 1 --min-dangling-branch-length 4 --recover-all-dangling-branches false --max-num-haplotypes-in-population 128 --min-pruning 2 --adaptive-pruning-initial-error-rate 0.001 --pruning-lod-threshold 2.302585092994046 --max-unpruned-variants 100 --linked-de-bruijn-graph false --disable-artificial-haplotype-recovery false --debug-assembly false --debug-graph-transformations false --capture-assembly-failure-bam false --error-correction-log-odds -Infinity --error-correct-reads false --kmer-length-for-read-error-correction 25 --min-observations-for-kmer-to-be-solid 20 --likelihood-calculation-engine PairHMM --base-quality-score-threshold 18 --pair-hmm-gap-continuation-penalty 10 --pair-hmm-implementation FASTEST_AVAILABLE --phred-scaled-global-read-mismapping-rate 45 --native-pair-hmm-use-double-precision false --bam-writer-type CALLED_HAPLOTYPES --dont-use-soft-clipped-bases false --min-base-quality-score 10 --smith-waterman JAVA --max-mnp-distance 0 --force-call-filtered-alleles false --allele-informative-reads-overlap-margin 2 --debug-option false --interval-set-rule UNION --interval-exclusion-padding 0 --interval-merging-rule ALL --read-validation-stringency SILENT --seconds-between-progress-updates 10.0 --disable-sequence-dictionary-validation false --create-output-bam-index true --create-output-bam-md5 false --create-output-variant-index true --create-output-variant-md5 false --lenient false --add-output-sam-program-record true --add-output-vcf-command-line true --cloud-prefetch-buffer 40 --cloud-index-prefetch-buffer -1 --disable-bam-index-caching false --sites-only-vcf-output false --help false --version false --showHidden false --verbosity INFO --QUIET false --use-jdk-deflater false --use-jdk-inflater false --gcs-max-retries 20 --gcs-project-for-requester-pays  --disable-tool-default-read-filters false --minimum-mapping-quality 20 --disable-tool-default-annotations false --enable-all-annotations false --allow-old-rms-mapping-quality-annotation-data false",Version="4.1.8.1.ACC1",Date="September 24, 2020 9:07:02 PM CST">
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes, for each ALT allele, in the same order as listed">
+##INFO=<ID=AF,Number=A,Type=Float,Description="Allele Frequency, for each ALT allele, in the same order as listed">
+##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+##INFO=<ID=BaseQRankSum,Number=1,Type=Float,Description="Z-score from Wilcoxon rank sum test of Alt Vs. Ref base qualities">
+##INFO=<ID=DB,Number=0,Type=Flag,Description="dbSNP Membership">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth; some reads may have been filtered">
+##INFO=<ID=END,Number=1,Type=Integer,Description="Stop position of the interval">
+##INFO=<ID=ExcessHet,Number=1,Type=Float,Description="Phred-scaled p-value for exact test of excess heterozygosity">
+##INFO=<ID=FS,Number=1,Type=Float,Description="Phred-scaled p-value using Fisher's exact test to detect strand bias">
+##INFO=<ID=HaplotypeScore,Number=1,Type=Float,Description="Consistency of the site with at most two segregating haplotypes">
+##INFO=<ID=InbreedingCoeff,Number=1,Type=Float,Description="Inbreeding coefficient as estimated from the genotype likelihoods per-sample when compared against the Hardy-Weinberg expectation">
+##INFO=<ID=MLEAC,Number=A,Type=Integer,Description="Maximum likelihood expectation (MLE) for the allele counts (not necessarily the same as the AC), for each ALT allele, in the same order as listed">
+##INFO=<ID=MLEAF,Number=A,Type=Float,Description="Maximum likelihood expectation (MLE) for the allele frequency (not necessarily the same as the AF), for each ALT allele, in the same order as listed">
+##INFO=<ID=MQ,Number=1,Type=Float,Description="RMS Mapping Quality">
+##INFO=<ID=MQRankSum,Number=1,Type=Float,Description="Z-score From Wilcoxon rank sum test of Alt vs. Ref read mapping qualities">
+##INFO=<ID=NEGATIVE_TRAIN_SITE,Number=0,Type=Flag,Description="This variant was used to build the negative training set of bad variants">
+##INFO=<ID=POSITIVE_TRAIN_SITE,Number=0,Type=Flag,Description="This variant was used to build the positive training set of good variants">
+##INFO=<ID=QD,Number=1,Type=Float,Description="Variant Confidence/Quality by Depth">
+##INFO=<ID=RAW_MQandDP,Number=2,Type=Integer,Description="Raw data (sum of squared MQ and total depth) for improved RMS Mapping Quality calculation. Incompatible with deprecated RAW_MQ formulation.">
+##INFO=<ID=ReadPosRankSum,Number=1,Type=Float,Description="Z-score from Wilcoxon rank sum test of Alt vs. Ref read position bias">
+##INFO=<ID=SOR,Number=1,Type=Float,Description="Symmetric Odds Ratio of 2x2 contingency table to detect strand bias">
+##INFO=<ID=VQSLOD,Number=1,Type=Float,Description="Log odds of being a true variant versus being false under the trained gaussian mixture model">
+##INFO=<ID=culprit,Number=1,Type=String,Description="The annotation which was the worst performing in the Gaussian mixture model, likely the reason why the variant was filtered out">
+##contig=<ID=chr1,length=248956422>
+##contig=<ID=chr2,length=242193529>
+##contig=<ID=chr3,length=198295559>
+##contig=<ID=chr4,length=190214555>
+##contig=<ID=chr5,length=181538259>
+##contig=<ID=chr6,length=170805979>
+##contig=<ID=chr7,length=159345973>
+##contig=<ID=chr8,length=145138636>
+##contig=<ID=chr9,length=138394717>
+##contig=<ID=chr10,length=133797422>
+##contig=<ID=chr11,length=135086622>
+##contig=<ID=chr12,length=133275309>
+##contig=<ID=chr13,length=114364328>
+##contig=<ID=chr14,length=107043718>
+##contig=<ID=chr15,length=101991189>
+##contig=<ID=chr16,length=90338345>
+##contig=<ID=chr17,length=83257441>
+##contig=<ID=chr18,length=80373285>
+##contig=<ID=chr19,length=58617616>
+##contig=<ID=chr20,length=64444167>
+##contig=<ID=chr21,length=46709983>
+##contig=<ID=chr22,length=50818468>
+##contig=<ID=chrX,length=156040895>
+##contig=<ID=chrY,length=57227415>
+##contig=<ID=chrM,length=16569>
+##contig=<ID=chr1_KI270706v1_random,length=175055>
+##contig=<ID=chr1_KI270707v1_random,length=32032>
+##contig=<ID=chr1_KI270708v1_random,length=127682>
+##contig=<ID=chr1_KI270709v1_random,length=66860>
+##contig=<ID=chr1_KI270710v1_random,length=40176>
+##contig=<ID=chr1_KI270711v1_random,length=42210>
+##contig=<ID=chr1_KI270712v1_random,length=176043>
+##contig=<ID=chr1_KI270713v1_random,length=40745>
+##contig=<ID=chr1_KI270714v1_random,length=41717>
+##contig=<ID=chr2_KI270715v1_random,length=161471>
+##contig=<ID=chr2_KI270716v1_random,length=153799>
+##contig=<ID=chr3_GL000221v1_random,length=155397>
+##contig=<ID=chr4_GL000008v2_random,length=209709>
+##contig=<ID=chr5_GL000208v1_random,length=92689>
+##contig=<ID=chr9_KI270717v1_random,length=40062>
+##contig=<ID=chr9_KI270718v1_random,length=38054>
+##contig=<ID=chr9_KI270719v1_random,length=176845>
+##contig=<ID=chr9_KI270720v1_random,length=39050>
+##contig=<ID=chr11_KI270721v1_random,length=100316>
+##contig=<ID=chr14_GL000009v2_random,length=201709>
+##contig=<ID=chr14_GL000225v1_random,length=211173>
+##contig=<ID=chr14_KI270722v1_random,length=194050>
+##contig=<ID=chr14_GL000194v1_random,length=191469>
+##contig=<ID=chr14_KI270723v1_random,length=38115>
+##contig=<ID=chr14_KI270724v1_random,length=39555>
+##contig=<ID=chr14_KI270725v1_random,length=172810>
+##contig=<ID=chr14_KI270726v1_random,length=43739>
+##contig=<ID=chr15_KI270727v1_random,length=448248>
+##contig=<ID=chr16_KI270728v1_random,length=1872759>
+##contig=<ID=chr17_GL000205v2_random,length=185591>
+##contig=<ID=chr17_KI270729v1_random,length=280839>
+##contig=<ID=chr17_KI270730v1_random,length=112551>
+##contig=<ID=chr22_KI270731v1_random,length=150754>
+##contig=<ID=chr22_KI270732v1_random,length=41543>
+##contig=<ID=chr22_KI270733v1_random,length=179772>
+##contig=<ID=chr22_KI270734v1_random,length=165050>
+##contig=<ID=chr22_KI270735v1_random,length=42811>
+##contig=<ID=chr22_KI270736v1_random,length=181920>
+##contig=<ID=chr22_KI270737v1_random,length=103838>
+##contig=<ID=chr22_KI270738v1_random,length=99375>
+##contig=<ID=chr22_KI270739v1_random,length=73985>
+##contig=<ID=chrY_KI270740v1_random,length=37240>
+##contig=<ID=chrUn_KI270302v1,length=2274>
+##contig=<ID=chrUn_KI270304v1,length=2165>
+##contig=<ID=chrUn_KI270303v1,length=1942>
+##contig=<ID=chrUn_KI270305v1,length=1472>
+##contig=<ID=chrUn_KI270322v1,length=21476>
+##contig=<ID=chrUn_KI270320v1,length=4416>
+##contig=<ID=chrUn_KI270310v1,length=1201>
+##contig=<ID=chrUn_KI270316v1,length=1444>
+##contig=<ID=chrUn_KI270315v1,length=2276>
+##contig=<ID=chrUn_KI270312v1,length=998>
+##contig=<ID=chrUn_KI270311v1,length=12399>
+##contig=<ID=chrUn_KI270317v1,length=37690>
+##contig=<ID=chrUn_KI270412v1,length=1179>
+##contig=<ID=chrUn_KI270411v1,length=2646>
+##contig=<ID=chrUn_KI270414v1,length=2489>
+##contig=<ID=chrUn_KI270419v1,length=1029>
+##contig=<ID=chrUn_KI270418v1,length=2145>
+##contig=<ID=chrUn_KI270420v1,length=2321>
+##contig=<ID=chrUn_KI270424v1,length=2140>
+##contig=<ID=chrUn_KI270417v1,length=2043>
+##contig=<ID=chrUn_KI270422v1,length=1445>
+##contig=<ID=chrUn_KI270423v1,length=981>
+##contig=<ID=chrUn_KI270425v1,length=1884>
+##contig=<ID=chrUn_KI270429v1,length=1361>
+##contig=<ID=chrUn_KI270442v1,length=392061>
+##contig=<ID=chrUn_KI270466v1,length=1233>
+##contig=<ID=chrUn_KI270465v1,length=1774>
+##contig=<ID=chrUn_KI270467v1,length=3920>
+##contig=<ID=chrUn_KI270435v1,length=92983>
+##contig=<ID=chrUn_KI270438v1,length=112505>
+##contig=<ID=chrUn_KI270468v1,length=4055>
+##contig=<ID=chrUn_KI270510v1,length=2415>
+##contig=<ID=chrUn_KI270509v1,length=2318>
+##contig=<ID=chrUn_KI270518v1,length=2186>
+##contig=<ID=chrUn_KI270508v1,length=1951>
+##contig=<ID=chrUn_KI270516v1,length=1300>
+##contig=<ID=chrUn_KI270512v1,length=22689>
+##contig=<ID=chrUn_KI270519v1,length=138126>
+##contig=<ID=chrUn_KI270522v1,length=5674>
+##contig=<ID=chrUn_KI270511v1,length=8127>
+##contig=<ID=chrUn_KI270515v1,length=6361>
+##contig=<ID=chrUn_KI270507v1,length=5353>
+##contig=<ID=chrUn_KI270517v1,length=3253>
+##contig=<ID=chrUn_KI270529v1,length=1899>
+##contig=<ID=chrUn_KI270528v1,length=2983>
+##contig=<ID=chrUn_KI270530v1,length=2168>
+##contig=<ID=chrUn_KI270539v1,length=993>
+##contig=<ID=chrUn_KI270538v1,length=91309>
+##contig=<ID=chrUn_KI270544v1,length=1202>
+##contig=<ID=chrUn_KI270548v1,length=1599>
+##contig=<ID=chrUn_KI270583v1,length=1400>
+##contig=<ID=chrUn_KI270587v1,length=2969>
+##contig=<ID=chrUn_KI270580v1,length=1553>
+##contig=<ID=chrUn_KI270581v1,length=7046>
+##contig=<ID=chrUn_KI270579v1,length=31033>
+##contig=<ID=chrUn_KI270589v1,length=44474>
+##contig=<ID=chrUn_KI270590v1,length=4685>
+##contig=<ID=chrUn_KI270584v1,length=4513>
+##contig=<ID=chrUn_KI270582v1,length=6504>
+##contig=<ID=chrUn_KI270588v1,length=6158>
+##contig=<ID=chrUn_KI270593v1,length=3041>
+##contig=<ID=chrUn_KI270591v1,length=5796>
+##contig=<ID=chrUn_KI270330v1,length=1652>
+##contig=<ID=chrUn_KI270329v1,length=1040>
+##contig=<ID=chrUn_KI270334v1,length=1368>
+##contig=<ID=chrUn_KI270333v1,length=2699>
+##contig=<ID=chrUn_KI270335v1,length=1048>
+##contig=<ID=chrUn_KI270338v1,length=1428>
+##contig=<ID=chrUn_KI270340v1,length=1428>
+##contig=<ID=chrUn_KI270336v1,length=1026>
+##contig=<ID=chrUn_KI270337v1,length=1121>
+##contig=<ID=chrUn_KI270363v1,length=1803>
+##contig=<ID=chrUn_KI270364v1,length=2855>
+##contig=<ID=chrUn_KI270362v1,length=3530>
+##contig=<ID=chrUn_KI270366v1,length=8320>
+##contig=<ID=chrUn_KI270378v1,length=1048>
+##contig=<ID=chrUn_KI270379v1,length=1045>
+##contig=<ID=chrUn_KI270389v1,length=1298>
+##contig=<ID=chrUn_KI270390v1,length=2387>
+##contig=<ID=chrUn_KI270387v1,length=1537>
+##contig=<ID=chrUn_KI270395v1,length=1143>
+##contig=<ID=chrUn_KI270396v1,length=1880>
+##contig=<ID=chrUn_KI270388v1,length=1216>
+##contig=<ID=chrUn_KI270394v1,length=970>
+##contig=<ID=chrUn_KI270386v1,length=1788>
+##contig=<ID=chrUn_KI270391v1,length=1484>
+##contig=<ID=chrUn_KI270383v1,length=1750>
+##contig=<ID=chrUn_KI270393v1,length=1308>
+##contig=<ID=chrUn_KI270384v1,length=1658>
+##contig=<ID=chrUn_KI270392v1,length=971>
+##contig=<ID=chrUn_KI270381v1,length=1930>
+##contig=<ID=chrUn_KI270385v1,length=990>
+##contig=<ID=chrUn_KI270382v1,length=4215>
+##contig=<ID=chrUn_KI270376v1,length=1136>
+##contig=<ID=chrUn_KI270374v1,length=2656>
+##contig=<ID=chrUn_KI270372v1,length=1650>
+##contig=<ID=chrUn_KI270373v1,length=1451>
+##contig=<ID=chrUn_KI270375v1,length=2378>
+##contig=<ID=chrUn_KI270371v1,length=2805>
+##contig=<ID=chrUn_KI270448v1,length=7992>
+##contig=<ID=chrUn_KI270521v1,length=7642>
+##contig=<ID=chrUn_GL000195v1,length=182896>
+##contig=<ID=chrUn_GL000219v1,length=179198>
+##contig=<ID=chrUn_GL000220v1,length=161802>
+##contig=<ID=chrUn_GL000224v1,length=179693>
+##contig=<ID=chrUn_KI270741v1,length=157432>
+##contig=<ID=chrUn_GL000226v1,length=15008>
+##contig=<ID=chrUn_GL000213v1,length=164239>
+##contig=<ID=chrUn_KI270743v1,length=210658>
+##contig=<ID=chrUn_KI270744v1,length=168472>
+##contig=<ID=chrUn_KI270745v1,length=41891>
+##contig=<ID=chrUn_KI270746v1,length=66486>
+##contig=<ID=chrUn_KI270747v1,length=198735>
+##contig=<ID=chrUn_KI270748v1,length=93321>
+##contig=<ID=chrUn_KI270749v1,length=158759>
+##contig=<ID=chrUn_KI270750v1,length=148850>
+##contig=<ID=chrUn_KI270751v1,length=150742>
+##contig=<ID=chrUn_KI270752v1,length=27745>
+##contig=<ID=chrUn_KI270753v1,length=62944>
+##contig=<ID=chrUn_KI270754v1,length=40191>
+##contig=<ID=chrUn_KI270755v1,length=36723>
+##contig=<ID=chrUn_KI270756v1,length=79590>
+##contig=<ID=chrUn_KI270757v1,length=71251>
+##contig=<ID=chrUn_GL000214v1,length=137718>
+##contig=<ID=chrUn_KI270742v1,length=186739>
+##contig=<ID=chrUn_GL000216v2,length=176608>
+##contig=<ID=chrUn_GL000218v1,length=161147>
+##contig=<ID=chrEBV,length=171823>
+##reference=file:///mnt/ssd/MegaBOLT_scheduler/reference/hg38.fa
+##source=HaplotypeCaller
+##SnpEffVersion="5.0 (build 2020-10-04 16:02), by Pablo Cingolani"
+##SnpEffCmd="SnpEff  GRCh38.99 /home/bdolin/Desktop/gd/NB6TK328.vcf.gz "
+##INFO=<ID=ANN,Number=.,Type=String,Description="Functional annotations: 'Allele | Annotation | Annotation_Impact | Gene_Name | Gene_ID | Feature_Type | Feature_ID | Transcript_BioType | Rank | HGVS.c | HGVS.p | cDNA.pos / cDNA.length | CDS.pos / CDS.length | AA.pos / AA.length | Distance | ERRORS / WARNINGS / INFO' ">
+##INFO=<ID=LOF,Number=.,Type=String,Description="Predicted loss of function effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected'">
+##INFO=<ID=NMD,Number=.,Type=String,Description="Predicted nonsense mediated decay effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected'">
+##SnpSiftVersion="SnpSift 5.0 (build 2020-10-04 16:02), by Pablo Cingolani"
+##SnpSiftCmd="SnpSift Annotate clinvar_20201003.vcf.gz /home/bdolin/Desktop/gd/NB6TK328_snpEff.vcf.gz"
+##INFO=<ID=DBVARID,Number=.,Type=String,Description="nsv accessions from dbVar for the variant">
+##INFO=<ID=ALLELEID,Number=1,Type=Integer,Description="the ClinVar Allele ID">
+##INFO=<ID=CLNSIG,Number=.,Type=String,Description="Clinical significance for this single variant">
+##INFO=<ID=CLNVCSO,Number=1,Type=String,Description="Sequence Ontology id for variant type">
+##INFO=<ID=CLNREVSTAT,Number=.,Type=String,Description="ClinVar review status for the Variation ID">
+##INFO=<ID=RS,Number=.,Type=String,Description="dbSNP ID (i.e. rs number)">
+##INFO=<ID=CLNDNINCL,Number=.,Type=String,Description="For included Variant : ClinVar's preferred disease name for the concept specified by disease identifiers in CLNDISDB">
+##INFO=<ID=ORIGIN,Number=.,Type=String,Description="Allele origin. One or more of the following values may be added: 0 - unknown; 1 - germline; 2 - somatic; 4 - inherited; 8 - paternal; 16 - maternal; 32 - de-novo; 64 - biparental; 128 - uniparental; 256 - not-tested; 512 - tested-inconclusive; 1073741824 - other">
+##INFO=<ID=MC,Number=.,Type=String,Description="comma separated list of molecular consequence in the form of Sequence Ontology ID|molecular_consequence">
+##INFO=<ID=CLNDN,Number=.,Type=String,Description="ClinVar's preferred disease name for the concept specified by disease identifiers in CLNDISDB">
+##INFO=<ID=CLNVC,Number=1,Type=String,Description="Variant type">
+##INFO=<ID=CLNVI,Number=.,Type=String,Description="the variant's clinical sources reported as tag-value pairs of database and variant identifier">
+##INFO=<ID=AF_EXAC,Number=1,Type=Float,Description="allele frequencies from ExAC">
+##INFO=<ID=AF_ESP,Number=1,Type=Float,Description="allele frequencies from GO-ESP">
+##INFO=<ID=CLNSIGINCL,Number=.,Type=String,Description="Clinical significance for a haplotype or genotype that includes this variant. Reported as pairs of VariationID:clinical significance.">
+##INFO=<ID=CLNDISDB,Number=.,Type=String,Description="Tag-value pairs of disease database name and identifier, e.g. OMIM:NNNNNN">
+##INFO=<ID=GENEINFO,Number=1,Type=String,Description="Gene(s) for the variant reported as gene symbol:gene id. The gene symbol and id are delimited by a colon (:) and each pair is delimited by a vertical bar (|)">
+##INFO=<ID=CLNDISDBINCL,Number=.,Type=String,Description="For included Variant: Tag-value pairs of disease database name and identifier, e.g. OMIM:NNNNNN">
+##INFO=<ID=AF_TGP,Number=1,Type=Float,Description="allele frequencies from TGP">
+##INFO=<ID=CLNSIGCONF,Number=.,Type=String,Description="Conflicting clinical significance for this single variant">
+##INFO=<ID=CLNHGVS,Number=.,Type=String,Description="Top-level (primary assembly, alt, or patch) HGVS expression.">
+##INFO=<ID=SSR,Number=1,Type=Integer,Description="Variant Suspect Reason Codes. One or more of the following values may be added: 0 - unspecified, 1 - Paralog, 2 - byEST, 4 - oldAlign, 8 - Para_EST, 16 - 1kg_failed, 1024 - other">
+##SnpSiftCmd="SnpSift Annotate clinvar_20201003_papu.vcf.gz /home/bdolin/Desktop/gd/NB6TK328_snpEff_cv1.vcf.gz"
+##SnpSiftCmd="SnpSift Filter '((ANN[*].IMPACT='HIGH') | (ANN[*].IMPACT='MODERATE') | (CLNSIG='Pathogenic') | (CLNSIG='Likely pathogenic') | (CLNSIG='Pathogenic/Likely pathogenic'))' /home/bdolin/Desktop/gd/NB6TK328_snpEff_clinvar.vcf.gz"
+##FILTER=<ID=SnpSift,Description="SnpSift 5.0 (build 2020-10-04 16:02), by Pablo Cingolani, Expression used: ((ANN[*].IMPACT='HIGH') | (ANN[*].IMPACT='MODERATE') | (CLNSIG='Pathogenic') | (CLNSIG='Likely pathogenic') | (CLNSIG='Pathogenic/Likely pathogenic'))">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	NB6TK328
+chr5	112841059	rs459552;21030	T	A	1845.77	PASS	AC=2;AF=1.00;AN=2;DB;DP=51;ExcessHet=3.0103;FS=0.000;MLEAC=2;MLEAF=1.00;POSITIVE_TRAIN_SITE;QD=35.06;SOR=0.773;VQSLOD=6.66;culprit=QD;ANN=A|missense_variant|MODERATE|APC|ENSG00000134982|transcript|ENST00000508376.6|protein_coding|17/17|c.5465T>A|p.Val1822Asp|5622/10619|5465/8532|1822/2843||,A|missense_variant|MODERATE|APC|ENSG00000134982|transcript|ENST00000257430.9|protein_coding|16/16|c.5465T>A|p.Val1822Asp|5524/10704|5465/8532|1822/2843||,A|3_prime_UTR_variant|MODIFIER|APC|ENSG00000134982|transcript|ENST00000508624.5|nonsense_mediated_decay|17/17|n.*4787T>A|||||30904|,A|downstream_gene_variant|MODIFIER|APC|ENSG00000134982|transcript|ENST00000502371.2|nonsense_mediated_decay||n.*3663T>A|||||1188|,A|downstream_gene_variant|MODIFIER|APC|ENSG00000134982|transcript|ENST00000507379.5|protein_coding||c.*2005T>A|||||2005|WARNING_TRANSCRIPT_INCOMPLETE,A|downstream_gene_variant|MODIFIER|APC|ENSG00000134982|transcript|ENST00000512211.6|protein_coding||c.*1551T>A|||||1551|WARNING_TRANSCRIPT_INCOMPLETE,A|downstream_gene_variant|MODIFIER|APC|ENSG00000134982|transcript|ENST00000504915.2|protein_coding||c.*3337T>A|||||3337|WARNING_TRANSCRIPT_INCOMPLETE,A|intron_variant|MODIFIER|AC008575.1|ENSG00000258864|transcript|ENST00000520401.1|nonsense_mediated_decay|3/7|n.228+12087T>A||||||,A|non_coding_transcript_exon_variant|MODIFIER|APC|ENSG00000134982|transcript|ENST00000508624.5|nonsense_mediated_decay|17/17|n.*4787T>A||||||;AF_ESP=0.82626;AF_EXAC=0.79811;AF_TGP=0.86542;ALLELEID=33882;CLNDISDB=MONDO:MONDO:0015356,MedGen:C0027672,Orphanet:ORPHA140162,SNOMED_CT:699346009|MONDO:MONDO:0021056,MedGen:C2713442,OMIM:175100|MedGen:CN169374|MedGen:CN239210|MedGen:CN280943|MedGen:CN517202;CLNDN=Hereditary_cancer-predisposing_syndrome|Familial_adenomatous_polyposis_1|not_specified|APC-Associated_Polyposis_Disorders|COLORECTAL_CANCER|not_provided;CLNHGVS=NC_000005.10:g.112841059T>A;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNSIG=Benign;CLNVC=single_nucleotide_variant;CLNVCSO=SO:0001483;CLNVI=ARUP_Laboratories,_Molecular_Genetics_and_Genomics,ARUP_Laboratories:3393|Illumina_Clinical_Services_Laboratory,Illumina:37492|Mayo_Clinic_Genetic_Testing_Laboratories,Mayo_Clinic:118|UniProtKB_(protein):P25054#VAR_008993;GENEINFO=APC:324;MC=SO:0001583|missense_variant;ORIGIN=1;RS=459552	GT:AD:DP:GQ:PL	1/1:0,50:50:99:1874,150,0
+chr11	47348490	rs3729989;42786	T	C	398.77	PASS	AC=1;AF=0.500;AN=2;BaseQRankSum=-3.135e+00;DB;DP=30;ExcessHet=3.0103;FS=3.325;MLEAC=1;MLEAF=0.500;MQRankSum=0.00;POSITIVE_TRAIN_SITE;QD=13.29;ReadPosRankSum=-1.090e+00;SOR=0.269;VQSLOD=4.00;culprit=ReadPosRankSum;ANN=C|missense_variant|MODERATE|MYBPC3|ENSG00000134571|transcript|ENST00000256993.8|protein_coding|6/33|c.706A>G|p.Ser236Gly|761/4217|706/3825|236/1274||,C|missense_variant|MODERATE|MYBPC3|ENSG00000134571|transcript|ENST00000399249.6|protein_coding|6/34|c.706A>G|p.Ser236Gly|761/4217|706/3825|236/1274||,C|missense_variant|MODERATE|MYBPC3|ENSG00000134571|transcript|ENST00000545968.6|protein_coding|6/35|c.706A>G|p.Ser236Gly|761/4217|706/3825|236/1274||,C|non_coding_transcript_exon_variant|MODIFIER|MYBPC3|ENSG00000134571|transcript|ENST00000544791.1|nonsense_mediated_decay|6/27|n.706A>G||||||;AF_ESP=0.10344;AF_EXAC=0.10790;AF_TGP=0.06709;ALLELEID=51956;CLNDISDB=Human_Phenotype_Ontology:HP:0001638,MONDO:MONDO:0004994,MedGen:C0878544,Orphanet:ORPHA167848,SNOMED_CT:85898001|Human_Phenotype_Ontology:HP:0001639,MONDO:MONDO:0005045,MeSH:D002312,MedGen:C0007194,Orphanet:ORPHA217569|MONDO:MONDO:0014163,MedGen:C3715165,OMIM:615396|MedGen:C1861862,OMIM:115197|MedGen:CN169374|MedGen:CN230736|MedGen:CN517202;CLNDN=Cardiomyopathy|Hypertrophic_cardiomyopathy|Left_ventricular_noncompaction_10|Familial_hypertrophic_cardiomyopathy_4|not_specified|Cardiovascular_phenotype|not_provided;CLNHGVS=NC_000011.10:g.47348490T>C;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNSIG=Benign/Likely_benign;CLNVC=single_nucleotide_variant;CLNVCSO=SO:0001483;CLNVI=ARUP_Laboratories,_Molecular_Genetics_and_Genomics,ARUP_Laboratories:49007|CHEO_Genetics_Diagnostic_Laboratory,Children's_Hospital_of_Eastern_Ontario:326807|HGMD:CM043536|Illumina_Clinical_Services_Laboratory,Illumina:7759|Molecular_Diagnostic_Laboratory_for_Inherited_Cardiovascular_Disease,Montreal_Heart_Institute:171|UniProtKB_(protein):Q14896#VAR_020086;GENEINFO=MYBPC3:4607;MC=SO:0001583|missense_variant;ORIGIN=1;RS=3729989	GT:AD:DP:GQ:PL	0/1:13,17:30:99:427,0,429
+chr11	64804546	rs2959656;134640	T	C	753.77	PASS	AC=2;AF=1.00;AN=2;DB;DP=32;ExcessHet=3.0103;FS=0.000;MLEAC=2;MLEAF=1.00;POSITIVE_TRAIN_SITE;QD=24.32;SOR=1.112;VQSLOD=5.33;culprit=QD;ANN=C|missense_variant|MODERATE|MEN1|ENSG00000133895|transcript|ENST00000377321.5|protein_coding|10/10|c.1516A>G|p.Thr506Ala|1584/2614|1516/1728|506/575||,C|missense_variant|MODERATE|MEN1|ENSG00000133895|transcript|ENST00000312049.10|protein_coding|10/10|c.1621A>G|p.Thr541Ala|1731/2761|1621/1833|541/610||,C|missense_variant|MODERATE|MEN1|ENSG00000133895|transcript|ENST00000377313.6|protein_coding|9/9|c.1636A>G|p.Thr546Ala|1659/2691|1636/1848|546/615||,C|missense_variant|MODERATE|MEN1|ENSG00000133895|transcript|ENST00000377316.6|protein_coding|8/8|c.1456A>G|p.Thr486Ala|1832/2868|1456/1668|486/555||,C|missense_variant|MODERATE|MEN1|ENSG00000133895|transcript|ENST00000315422.9|protein_coding|10/10|c.1621A>G|p.Thr541Ala|1928/2960|1621/1833|541/610||,C|missense_variant|MODERATE|MEN1|ENSG00000133895|transcript|ENST00000377326.7|protein_coding|9/9|c.1621A>G|p.Thr541Ala|2120/3150|1621/1833|541/610||,C|missense_variant|MODERATE|MEN1|ENSG00000133895|transcript|ENST00000394374.6|protein_coding|10/10|c.1636A>G|p.Thr546Ala|2133/3155|1636/1848|546/615||,C|missense_variant|MODERATE|MEN1|ENSG00000133895|transcript|ENST00000337652.5|protein_coding|10/10|c.1636A>G|p.Thr546Ala|2140/3162|1636/1848|546/615||,C|missense_variant|MODERATE|MEN1|ENSG00000133895|transcript|ENST00000394376.5|protein_coding|11/11|c.1636A>G|p.Thr546Ala|2012/3034|1636/1848|546/615||,C|missense_variant|MODERATE|MEN1|ENSG00000133895|transcript|ENST00000450708.6|protein_coding|10/10|c.1621A>G|p.Thr541Ala|1689/2701|1621/1833|541/610||,C|missense_variant|MODERATE|MEN1|ENSG00000133895|transcript|ENST00000440873.6|protein_coding|10/10|c.1621A>G|p.Thr541Ala|1700/2661|1621/1833|541/610||,C|missense_variant|MODERATE|MEN1|ENSG00000133895|transcript|ENST00000672304.1|protein_coding|11/11|c.1747A>G|p.Thr583Ala|1796/2800|1747/1959|583/652||,C|upstream_gene_variant|MODIFIER|MAP4K2|ENSG00000168067|transcript|ENST00000294066.7|protein_coding||c.-1397A>G|||||1332|,C|upstream_gene_variant|MODIFIER|MAP4K2|ENSG00000168067|transcript|ENST00000377350.7|protein_coding||c.-1397A>G|||||1305|,C|upstream_gene_variant|MODIFIER|MAP4K2|ENSG00000168067|transcript|ENST00000439069.5|protein_coding||c.-1397A>G|||||1371|WARNING_TRANSCRIPT_NO_STOP_CODON,C|upstream_gene_variant|MODIFIER|MAP4K2|ENSG00000168067|transcript|ENST00000482314.5|processed_transcript||n.-1536A>G|||||1536|,C|upstream_gene_variant|MODIFIER|MAP4K2|ENSG00000168067|transcript|ENST00000435926.5|nonsense_mediated_decay||n.-1397A>G|||||1384|,C|upstream_gene_variant|MODIFIER|MAP4K2|ENSG00000168067|transcript|ENST00000433890.5|nonsense_mediated_decay||n.-1397A>G|||||1397|,C|upstream_gene_variant|MODIFIER|MAP4K2|ENSG00000168067|transcript|ENST00000489952.5|retained_intron||n.-4887A>G|||||4887|,C|upstream_gene_variant|MODIFIER|MAP4K2|ENSG00000168067|transcript|ENST00000467689.1|retained_intron||n.-4912A>G|||||4912|,C|upstream_gene_variant|MODIFIER|MAP4K2|ENSG00000168067|transcript|ENST00000493428.5|retained_intron||n.-2733A>G|||||2733|,C|upstream_gene_variant|MODIFIER|MAP4K2|ENSG00000168067|transcript|ENST00000468062.5|processed_transcript||n.-1417A>G|||||1417|,C|upstream_gene_variant|MODIFIER|MAP4K2|ENSG00000168067|transcript|ENST00000444560.1|nonsense_mediated_decay||n.-1397A>G|||||1319|,C|downstream_gene_variant|MODIFIER|MEN1|ENSG00000133895|transcript|ENST00000413626.1|protein_coding||c.*3006A>G|||||3006|WARNING_TRANSCRIPT_NO_STOP_CODON,C|downstream_gene_variant|MODIFIER|MEN1|ENSG00000133895|transcript|ENST00000672079.1|nonsense_mediated_decay||n.*717A>G|||||250|,C|downstream_gene_variant|MODIFIER|MEN1|ENSG00000133895|transcript|ENST00000671965.1|retained_intron||n.*2080A>G|||||2080|,C|non_coding_transcript_exon_variant|MODIFIER|MEN1|ENSG00000133895|transcript|ENST00000478548.2|retained_intron|9/9|n.2122A>G||||||,C|non_coding_transcript_exon_variant|MODIFIER|MEN1|ENSG00000133895|transcript|ENST00000671939.1|retained_intron|9/9|n.1898A>G||||||;AF_ESP=0.90843;AF_EXAC=0.93778;AF_TGP=0.83447;ALLELEID=138379;CLNDISDB=MONDO:MONDO:0007540,MeSH:D018761,MedGen:C0025267,OMIM:131100,Orphanet:ORPHA652,SNOMED_CT:30664006|MedGen:CN169374;CLNDN=Multiple_endocrine_neoplasia,_type_1|not_specified;CLNHGVS=NC_000011.10:g.64804546T>C;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNSIG=Benign;CLNVC=single_nucleotide_variant;CLNVCSO=SO:0001483;CLNVI=HGMD:CM085535;GENEINFO=MEN1:4221;MC=SO:0001583|missense_variant,SO:0002073|no_sequence_alteration;ORIGIN=1;RS=2959656	GT:AD:DP:GQ:PL	1/1:0,31:32:90:782,90,0
+chr13	32355250	rs169547;133738	T	C	1144.77	PASS	AC=2;AF=1.00;AN=2;DB;DP=35;ExcessHet=3.0103;FS=0.000;MLEAC=2;MLEAF=1.00;POSITIVE_TRAIN_SITE;QD=34.69;SOR=1.179;VQSLOD=7.52;culprit=QD;ANN=C|missense_variant|MODERATE|BRCA2|ENSG00000139618|transcript|ENST00000544455.5|protein_coding|14/28|c.7397T>C|p.Val2466Ala|7624/10984|7397/10257|2466/3418||,C|missense_variant|MODERATE|BRCA2|ENSG00000139618|transcript|ENST00000380152.7|protein_coding|14/27|c.7397T>C|p.Val2466Ala|7630/11986|7397/10257|2466/3418||,C|upstream_gene_variant|MODIFIER|BRCA2|ENSG00000139618|transcript|ENST00000665585.1|nonsense_mediated_decay||n.-1180T>C|||||1178|,C|non_coding_transcript_exon_variant|MODIFIER|BRCA2|ENSG00000139618|transcript|ENST00000614259.1|processed_transcript|13/16|n.7397T>C||||||;AF_ESP=0.97770;AF_EXAC=0.99372;AF_TGP=0.97584;ALLELEID=137477;CLNDISDB=MONDO:MONDO:0003582,MeSH:D061325,MedGen:C0677776,OMIM:PS604370,Orphanet:ORPHA145|MONDO:MONDO:0012933,MedGen:C2675520,OMIM:612555|MedGen:C1527349|MedGen:CN169374;CLNDN=Hereditary_breast_and_ovarian_cancer_syndrome|Breast-ovarian_cancer,_familial_2|Ductal_breast_carcinoma|not_specified;CLNHGVS=NC_000013.11:g.32355250T>C;CLNREVSTAT=criteria_provided,_multiple_submitters,_no_conflicts;CLNSIG=Benign;CLNVC=single_nucleotide_variant;CLNVCSO=SO:0001483;CLNVI=ARUP_Laboratories,_Molecular_Genetics_and_Genomics,ARUP_Laboratories:17715|HGMD:CM960194;GENEINFO=BRCA2:675;MC=SO:0001583|missense_variant,SO:0002073|no_sequence_alteration;ORIGIN=1;RS=169547	GT:AD:DP:GQ:PL	1/1:0,33:33:99:1173,99,0
+chr19	38499670	rs193922803;133183	C	T	241.77	PASS	AC=1;AF=0.500;AN=2;BaseQRankSum=2.58;DB;DP=27;ExcessHet=3.0103;FS=1.596;MLEAC=1;MLEAF=0.500;MQRankSum=0.00;QD=8.95;ReadPosRankSum=-1.290e-01;SOR=1.115;VQSLOD=2.15;culprit=QD;ANN=T|missense_variant|MODERATE|RYR1|ENSG00000196218|transcript|ENST00000355481.8|protein_coding|44/105|c.7063C>T|p.Arg2355Trp|7194/15377|7063/15102|2355/5033||,T|missense_variant|MODERATE|RYR1|ENSG00000196218|transcript|ENST00000359596.8|protein_coding|44/106|c.7063C>T|p.Arg2355Trp|7202/15400|7063/15117|2355/5038||,T|non_coding_transcript_exon_variant|MODIFIER|RYR1|ENSG00000196218|transcript|ENST00000594335.5|nonsense_mediated_decay|5/49|n.514C>T||||||;AF_EXAC=0.00003;ALLELEID=136930;CLNDISDB=.|.|.|.|.|.|.|Human_Phenotype_Ontology:HP:0003789,Human_Phenotype_Ontology:HP:0003804,MedGen:C1850674,OMIM:255320,Orphanet:ORPHA98905|MONDO:MONDO:0007294,MedGen:C0751951,OMIM:117000,Orphanet:ORPHA597,SNOMED_CT:43152001|MONDO:MONDO:0007783,MedGen:C2930980,OMIM:145600|MONDO:MONDO:0009711,MedGen:C0546264,OMIM:255310,Orphanet:ORPHA2020,SNOMED_CT:240084007|MedGen:CN239331|MedGen:CN517202;CLNDN=desflurane_response_-_Toxicity/ADR|enflurane_response_-_Toxicity/ADR|halothane_response_-_Toxicity/ADR|isoflurane_response_-_Toxicity/ADR|methoxyflurane_response_-_Toxicity/ADR|sevoflurane_response_-_Toxicity/ADR|succinylcholine_response_-_Toxicity/ADR|Minicore_myopathy|Central_core_myopathy|Malignant_hyperthermia,_susceptibility_to,_1|Congenital_myopathy_with_fiber_type_disproportion|RYR1-Related_Disorders|not_provided;CLNHGVS=NC_000019.10:g.38499670C>T;CLNREVSTAT=reviewed_by_expert_panel;CLNSIG=drug_response;CLNVC=single_nucleotide_variant;CLNVCSO=SO:0001483;CLNVI=PharmGKB:1445400156PA164749136|PharmGKB:1445400156PA449461|PharmGKB:1445400156PA449845|PharmGKB:1445400156PA450106|PharmGKB:1445400156PA450434|PharmGKB:1445400156PA451341|PharmGKB:1445400156PA451522;GENEINFO=RYR1:6261;MC=SO:0001583|missense_variant;ORIGIN=9;RS=193922803	GT:AD:DP:GQ:PL	0/1:18,9:27:99:270,0,493
