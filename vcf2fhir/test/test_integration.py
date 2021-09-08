@@ -417,6 +417,58 @@ class TestTranslation(unittest.TestCase):
             expected_output_filename=expected_output_filename,
             dict={18: [11, 12], 19: [12, 13]})
 
+    def test_structural_germline(self):
+        self.maxDiff = None
+        o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(
+            os.path.dirname(__file__), 'vcf_structural_variants.vcf'),
+            'GRCh37',
+            genomic_source_class='germline',)
+        output_filename = os.path.join(os.path.dirname(
+            __file__), self.TEST_RESULT_DIR, 'fhir_structural_germline.json')
+        expected_output_filename = os.path.join(
+            os.path.dirname(__file__),
+            'expected_fhir_germline_structural.json')
+        o_vcf_2_fhir.convert(output_filename)
+        _compare_actual_and_expected_fhir_json(
+            self,
+            output_filename=output_filename,
+            expected_output_filename=expected_output_filename,
+            dict={45: [34, 36], 44: [32, 34]})
+
+    def test_structural_somatic(self):
+        self.maxDiff = None
+        o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(
+            os.path.dirname(__file__), 'vcf_structural_variants.vcf'),
+            'GRCh37',
+            genomic_source_class='somatic',)
+        output_filename = os.path.join(os.path.dirname(
+            __file__), self.TEST_RESULT_DIR, 'fhir_structural_somatic.json')
+        expected_output_filename = os.path.join(
+            os.path.dirname(__file__), 'expected_fhir_somatic_structural.json')
+        o_vcf_2_fhir.convert(output_filename)
+        _compare_actual_and_expected_fhir_json(
+            self,
+            output_filename=output_filename,
+            expected_output_filename=expected_output_filename,
+            dict={49: [38, 40], 48: [36, 38]})
+
+    def test_structural_mixed(self):
+        self.maxDiff = None
+        o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(
+            os.path.dirname(__file__), 'vcf_structural_variants.vcf'),
+            'GRCh37',
+            genomic_source_class='mixed',)
+        output_filename = os.path.join(os.path.dirname(
+            __file__), self.TEST_RESULT_DIR, 'fhir_structural_mixed.json')
+        expected_output_filename = os.path.join(
+            os.path.dirname(__file__), 'expected_fhir_mixed_structural.json')
+        o_vcf_2_fhir.convert(output_filename)
+        _compare_actual_and_expected_fhir_json(
+            self,
+            output_filename=output_filename,
+            expected_output_filename=expected_output_filename,
+            dict={49: [38, 40], 48: [36, 38]})
+
     def test_tabix(self):
         self.maxDiff = None
         region_studied_filename = os.path.join(
