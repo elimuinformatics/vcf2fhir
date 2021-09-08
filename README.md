@@ -52,12 +52,11 @@ You can find the detailed documantation of the package on the official website [
 
 ### Scope
 
-Software converts simple variants (SNVs, Indels), along with zygosity and phase relationships, for autosomes, sex chromosomes, and mitochondrial DNA.
+Software converts simple (SNV, MNV, Indel) and structural (CNV, DEL, DUP, INV, INS) variants from VCF to FHIR format. Clinical annotations, where supplied, are incorporated into the FHIR representation.
 
 * Not supported
-    * **Structural variants**: Software does not support conversion of structural variants (where INFO.SVTYPE is present). 
     * **Alt contigs**: Software does not support conversion of variants aligned to Alt contigs. We recommend caution in using this software against VCFs generated with an alternate-locus aware variant caller, as variants mapped to Alt contigs will not be converted.
-    * **Query liftover**: Software assumes that regions (conversion region, studied region, noncallable region) and VCF are based on the same genomic build. 
+    * **Query liftover**: Software assumes that regions (e.g. conversion region, studied region) and VCF are based on the same genomic build.
     * **Chromosome synonyms (e.g. '1' vs. 'chr1')**: Software assumes that chromosome representation is consistent between regions (e.g. in BED files) and VCF. For instance, if VCF uses 'chr1', then BED file must also use 'chr1' 
 
 
