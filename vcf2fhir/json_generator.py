@@ -2,15 +2,29 @@ import logging
 from .gene_ref_seq import _get_ref_seq_by_chrom
 from .fhir_helper import _Fhir_Helper
 from .common import *
+import vcf
 
 invalid_record_logger = logging.getLogger("vcf2fhir.invalidrecord")
 general_logger = logging.getLogger("vcf2fhir.general")
 
 
 def _valid_record(record, genomic_source_class):
+    if len(record.samples) < 1:
+        invalid_record_logger.debug(
+            ("Reason: Atleast one sample is required for VCF " +
+             "to FHIR conversion, Record: %s"),
+            record)
+        return False
     if not (validate_chrom_identifier(record.CHROM)):
         invalid_record_logger.debug(
             ("Reason: VCF CHROM is not recognized, " +
+             "Record: %s, considered sample: %s"),
+            record,
+            record.samples[0].data)
+        return False
+    if not hasattr(record.samples[0].data, "GT"):
+        invalid_record_logger.debug(
+            ("Reason: FORMAT.GT is not present." +
              "Record: %s, considered sample: %s"),
             record,
             record.samples[0].data)
@@ -44,6 +58,16 @@ def _valid_record(record, genomic_source_class):
                 record,
                 record.samples[0].data)
             return False
+        if(record.INFO['SVTYPE'] in list(SVs - {'DUP', 'CNV'}) and
+           '.' in record.samples[0]["GT"] and
+           genomic_source_class == Genomic_Source_Class.GERMLINE.value):
+            invalid_record_logger.debug(
+                ("Reason: FORMAT.GT should not contain '.' when " +
+                 "INFO.SVTYPE in [INV, DEL, INS] and Genomic Source " +
+                 "Class is Germline, Record: %s, considered sample: %s"),
+                record,
+                record.samples[0].data)
+            return False
     else:
         # The following if condition checks if RECORD.ALT is a
         # '.' or simple character string or comma-separated character string,
@@ -57,6 +81,15 @@ def _valid_record(record, genomic_source_class):
                 record,
                 record.samples[0].data)
             return False
+        if('.' in record.samples[0]["GT"] and
+           genomic_source_class == Genomic_Source_Class.GERMLINE.value):
+            invalid_record_logger.debug(
+                ("Reason: FORMAT.GT should not contain '.' for " +
+                 "simple variants when Genomic Source " +
+                 "Class is Germline, Record: %s, considered sample: %s"),
+                record,
+                record.samples[0].data)
+            return False
     if(record.FILTER is not None and len(record.FILTER) != 0):
         invalid_record_logger.debug(
             ("Reason: VCF FILTER does not equal " +
@@ -64,17 +97,9 @@ def _valid_record(record, genomic_source_class):
             record,
             record.samples[0].data)
         return False
-    # The following if condition checks if FORMAT.GT contains '.' when
-    # genomic source class is 'germline' for simple variants and Structural
-    # variants with SVTYPE in ['INV', 'DEL', 'INS'].
-    if((len(record.samples) == 0 or record.samples[0].gt_type is None) or
-        record.samples[0]['GT'] in ['0/0', '0|0', '0'] or
-        ((((not record.is_sv or (record.is_sv and
-            record.INFO['SVTYPE'] in list(SVs - {'DUP', 'CNV'})))) and
-            '.' in record.samples[0]['GT'] and
-            genomic_source_class == Genomic_Source_Class.GERMLINE.value))):
+    if record.samples[0]["GT"] in ['0/0', '0|0', '0']:
         invalid_record_logger.debug(
-            ("Reason: VCF FORMAT.GT is null ('./.', '.|.', '.', etc), " +
+            ("Reason: VCF FORMAT.GT is in ['0/0','0|0','0'], " +
              "Record: %s, considered sample: %s"),
             record,
             record.samples[0].data)
