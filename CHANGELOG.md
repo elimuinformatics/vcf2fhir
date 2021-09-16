@@ -1,3 +1,11 @@
+# v0.1.0 (2021-09-22)
+
+This is our first minor version release with support for structural variant conversion and incorporation of clinical annotations. For more details follow [Readme](README.md). We would love to hear your feedback! If you find any issue please open an [Issue](https://github.com/elimuinformatics/vcf2fhir/issues/new/choose).
+
+## Added
+* Support for Structural Variants ([#86](https://github.com/elimuinformatics/vcf2fhir/pull/86)).
+* Support for Clinical Annotations ([#89](https://github.com/elimuinformatics/vcf2fhir/pull/89)).
+
 # v0.0.17 (2021-06-30)
 
 ## Added
