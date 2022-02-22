@@ -76,12 +76,15 @@ class TestVcf2FhirInputs(unittest.TestCase):
 
     def test_invalid_vcf_filename(self):
         self.assertRaises(FileNotFoundError,
-                          vcf2fhir.Converter, *['Hello', 'GRCh38'])
+                          vcf2fhir.Converter, *['Hello', 'GRCh38', None,
+                                                False, None, None, None,
+                                                None, None, 0.99, 'somatic'])
 
     def test_required_ref_build(self):
         with self.assertRaises(Exception) as context:
             vcf2fhir.Converter(os.path.join(
-                os.path.dirname(__file__), 'vcf_example1.vcf'))
+                os.path.dirname(__file__), 'vcf_example1.vcf'),
+                genomic_source_class='somatic')
         self.assertEqual(
             'You must provide build number ("GRCh37" or "GRCh38")', str(
                 context.exception))
@@ -89,19 +92,22 @@ class TestVcf2FhirInputs(unittest.TestCase):
     def test_invalid_ref_build(self):
         with self.assertRaises(Exception) as context:
             vcf2fhir.Converter(os.path.join(
-                os.path.dirname(__file__), 'vcf_example1.vcf'), 'b38')
+                os.path.dirname(__file__), 'vcf_example1.vcf'), 'b38',
+                genomic_source_class='somatic')
         self.assertEqual(
             'You must provide build number ("GRCh37" or "GRCh38")', str(
                 context.exception))
 
     def test_valid_ref_build_37(self):
         o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(
-            os.path.dirname(__file__), 'vcf_example1.vcf'), 'GRCh37')
+            os.path.dirname(__file__), 'vcf_example1.vcf'), 'GRCh37',
+            genomic_source_class='somatic')
         self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
     def test_valid_ref_build_38(self):
         o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(
-            os.path.dirname(__file__), 'vcf_example1.vcf'), 'GRCh38')
+            os.path.dirname(__file__), 'vcf_example1.vcf'), 'GRCh38',
+            genomic_source_class='somatic')
         self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
     def test_conv_region_only(self):
@@ -113,7 +119,8 @@ class TestVcf2FhirInputs(unittest.TestCase):
                 'vcf_example3.vcf'),
             'GRCh37',
             'abc',
-            conv_region_filename=conv_region_filename)
+            conv_region_filename=conv_region_filename,
+            genomic_source_class='somatic')
         self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
     def test_conv_region_dict(self):
@@ -128,7 +135,8 @@ class TestVcf2FhirInputs(unittest.TestCase):
                 'vcf_example3.vcf'),
             'GRCh37',
             'abc',
-            conv_region_dict=conv_region_dict)
+            conv_region_dict=conv_region_dict,
+            genomic_source_class='somatic')
         self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
     def test_conv_region_region_studied(self):
@@ -143,7 +151,8 @@ class TestVcf2FhirInputs(unittest.TestCase):
             'GRCh37',
             'abc',
             conv_region_filename=conv_region_filename,
-            region_studied_filename=region_studied_filename)
+            region_studied_filename=region_studied_filename,
+            genomic_source_class='somatic')
         self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
     def test_conv_region_nocall(self):
@@ -159,7 +168,8 @@ class TestVcf2FhirInputs(unittest.TestCase):
                 'GRCh37',
                 'abc',
                 conv_region_filename=conv_region_filename,
-                nocall_filename=nocall_filename)
+                nocall_filename=nocall_filename,
+                genomic_source_class='somatic')
         self.assertEqual(
             ('Please also provide region_studied_filename ' +
              'when nocall_filename is provided'), str(
@@ -174,7 +184,8 @@ class TestVcf2FhirInputs(unittest.TestCase):
                 'vcf_example3.vcf'),
             'GRCh37',
             'abc',
-            region_studied_filename=region_studied_filename)
+            region_studied_filename=region_studied_filename,
+            genomic_source_class='somatic')
         self.assertEqual(type(o_vcf_2_fhir), vcf2fhir.Converter)
 
     def test_no_conv_region_nocall(self):
@@ -187,7 +198,8 @@ class TestVcf2FhirInputs(unittest.TestCase):
                     'vcf_example3.vcf'),
                 'GRCh37',
                 'abc',
-                nocall_filename=nocall_filename)
+                nocall_filename=nocall_filename,
+                genomic_source_class='somatic')
         self.assertEqual(
             ('Please also provide region_studied_filename ' +
              'when nocall_filename is provided'), str(
@@ -210,7 +222,8 @@ class TestTranslation(unittest.TestCase):
     def test_wo_patient_id(self):
         self.maxDiff = None
         o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(
-            os.path.dirname(__file__), 'vcf_example1.vcf'), 'GRCh37')
+            os.path.dirname(__file__), 'vcf_example1.vcf'), 'GRCh37',
+            genomic_source_class='somatic')
         output_filename = os.path.join(os.path.dirname(
             __file__), self.TEST_RESULT_DIR, 'fhir_wo_patient_example1.json')
         expected_output_filename = os.path.join(
@@ -225,7 +238,8 @@ class TestTranslation(unittest.TestCase):
     def test_with_patient_id(self):
         self.maxDiff = None
         o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(
-            __file__), 'vcf_example1.vcf'), 'GRCh37', 'HG00628')
+            __file__), 'vcf_example1.vcf'), 'GRCh37', 'HG00628',
+            genomic_source_class='somatic')
         output_filename = os.path.join(os.path.dirname(
             __file__), self.TEST_RESULT_DIR, 'fhir_with_patient_example1.json')
         expected_output_filename = os.path.join(os.path.dirname(
@@ -241,7 +255,8 @@ class TestTranslation(unittest.TestCase):
     # particular variant
     def test_anotherfile(self):
         o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(os.path.dirname(
-            __file__), 'vcf_example2.vcf'), 'GRCh37', 'HG00628')
+            __file__), 'vcf_example2.vcf'), 'GRCh37', 'HG00628',
+            genomic_source_class='somatic')
         o_vcf_2_fhir.convert(output_filename=os.path.join(
             os.path.dirname(__file__), self.TEST_RESULT_DIR, 'fhir2.json'))
 
@@ -265,7 +280,8 @@ class TestTranslation(unittest.TestCase):
             'HG00628',
             conv_region_filename=conv_region_filename,
             region_studied_filename=region_studied_filename,
-            nocall_filename=nocall_filename)
+            nocall_filename=nocall_filename,
+            genomic_source_class='somatic')
         o_vcf_2_fhir.convert(output_filename)
         _compare_actual_and_expected_fhir_json(
             self,
@@ -296,7 +312,8 @@ class TestTranslation(unittest.TestCase):
             'HG00628',
             conv_region_dict=conv_region_dict,
             region_studied_filename=region_studied_filename,
-            nocall_filename=nocall_filename)
+            nocall_filename=nocall_filename,
+            genomic_source_class='somatic')
         o_vcf_2_fhir.convert(output_filename)
         _compare_actual_and_expected_fhir_json(
             self,
@@ -326,7 +343,8 @@ class TestTranslation(unittest.TestCase):
             'HG00628',
             conv_region_filename=conv_region_filename,
             region_studied_filename=region_studied_filename,
-            nocall_filename=nocall_filename)
+            nocall_filename=nocall_filename,
+            genomic_source_class='somatic')
         o_vcf_2_fhir.convert(output_filename)
         _compare_actual_and_expected_fhir_json(
             self,
@@ -345,7 +363,8 @@ class TestTranslation(unittest.TestCase):
                 'vcf_example4.vcf'),
             'GRCh38',
             'HG00628',
-            region_studied_filename=region_studied_filename)
+            region_studied_filename=region_studied_filename,
+            genomic_source_class='somatic')
         o_vcf_2_fhir.convert(output_filename)
 
     def test_empty_fhir_json(self):
@@ -359,7 +378,8 @@ class TestTranslation(unittest.TestCase):
                 'vcf_example4.vcf'),
             'GRCh38',
             'HG00628',
-            conv_region_filename=conv_region_filename)
+            conv_region_filename=conv_region_filename,
+            genomic_source_class='somatic')
         o_vcf_2_fhir.convert(output_filename)
 
     def test_no_region_examined(self):
@@ -379,7 +399,8 @@ class TestTranslation(unittest.TestCase):
             'GRCh37',
             has_tabix=True,
             conv_region_filename=conv_region_filename,
-            region_studied_filename=region_studied_filename)
+            region_studied_filename=region_studied_filename,
+            genomic_source_class='somatic')
         o_vcf_2_fhir.convert(output_filename)
         _compare_actual_and_expected_fhir_json(
             self,
@@ -422,7 +443,7 @@ class TestTranslation(unittest.TestCase):
         o_vcf_2_fhir = vcf2fhir.Converter(os.path.join(
             os.path.dirname(__file__), 'vcf_structural_variants.vcf'),
             'GRCh37',
-            genomic_source_class='germline',)
+            genomic_source_class='germline')
         output_filename = os.path.join(os.path.dirname(
             __file__), self.TEST_RESULT_DIR, 'fhir_structural_germline.json')
         expected_output_filename = os.path.join(
@@ -490,7 +511,8 @@ class TestTranslation(unittest.TestCase):
             has_tabix=True,
             conv_region_filename=conv_region_filename,
             region_studied_filename=region_studied_filename,
-            nocall_filename=nocall_filename)
+            nocall_filename=nocall_filename,
+            genomic_source_class='somatic')
         o_vcf_2_fhir.convert(output_filename)
         _compare_actual_and_expected_fhir_json(
             self,
@@ -560,7 +582,8 @@ class TestLogger(unittest.TestCase):
             'HG00628',
             conv_region_filename=conv_region_filename,
             region_studied_filename=region_studied_filename,
-            nocall_filename=nocall_filename)
+            nocall_filename=nocall_filename,
+            genomic_source_class='somatic')
         o_vcf_2_fhir.convert(output_filename)
         self.assertEqual(os.path.exists(self.log_general_filename), True)
         self.assertEqual(os.path.exists(
