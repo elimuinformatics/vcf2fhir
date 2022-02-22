@@ -12,6 +12,7 @@ import fhirclient.models.range as valRange
 import fhirclient.models.medicationstatement as medication
 from uuid import uuid4
 from .common import *
+import copy
 
 CG_ORDER = ["system", "code"]
 CODE_ORD = ["system", "code", "display"]
@@ -222,12 +223,8 @@ class _Fhir_Helper:
         patient_reference = reference.FHIRReference(
             {"reference": "Patient/" + self.patientID})
         alleles = get_allelic_state(record, ratio_ad_dp)
-        dvuid = "dv-" + uuid4().hex[:13]
-        self.fhir_report.update({str(record.POS): dvuid})
-        self.result_ids.append(dvuid)
         observation_dv = observation.Observation()
         observation_dv.resource_type = "Observation"
-        observation_dv.id = dvuid
         observation_dv.meta = meta.Meta(
             {
                 "profile": [
@@ -395,18 +392,6 @@ class _Fhir_Helper:
         )
         ref_allele_component.valueString = record.REF
 
-        # The following if condition checks if RECORD.ALT is a
-        # simple character string, for simple variants and structural
-        # variants with INFO.SYTYPE in ['INS'].
-        if(len(record.ALT) == 1 and record.ALT[0] is not None and
-           record.ALT[0].type in ['SNV', 'MNV'] and
-           not (record.is_sv and record.INFO['SVTYPE'] not in ['INS'])):
-            alt_allele_component = observation.ObservationComponent()
-            alt_allele_component.code = get_codeable_concept(
-                "http://loinc.org", "69551-0", "Genomic Alt allele [ID]"
-            )
-            alt_allele_component.valueString = record.ALT[0].sequence
-
         genomic_coord_system_component = observation.ObservationComponent()
         genomic_coord_system_component.code = get_codeable_concept(
             "http://loinc.org", "92822-6", "Genomic coord system"
@@ -452,18 +437,45 @@ class _Fhir_Helper:
                     annotation_record['amino_acid_change']
                 )
 
-        # The following block of code adds a variant component to the list
-        # of components based on the VARIANT_COMPONENTS_ORDER list if it is
-        # declared. The declaration of the variable is ensured using the
-        # locals() dictionary.
-        for variant_component in VARIANT_COMPONENTS_ORDER:
-            if variant_component in locals():
-                observation_dv.component.append(locals()[variant_component])
-
-        self.report.contained.append(observation_dv)
-        self.add_diagnostic_implication(
-            record, ref_seq,
-            observation_dv.id, annotation_record)
+        for alt in record.ALT:
+            if(alt is not None and
+               alt.type in ['SNV', 'MNV'] and
+               not (record.is_sv and record.INFO['SVTYPE'] not in ['INS'])):
+                alt_allele_component = observation.ObservationComponent()
+                alt_allele_component.code = get_codeable_concept(
+                    "http://loinc.org", "69551-0", "Genomic Alt allele [ID]"
+                )
+                alt_allele_component.valueString = f"{alt}"
+                observation_dv.component = []
+                for variant_component in VARIANT_COMPONENTS_ORDER:
+                    if variant_component in locals():
+                        observation_dv.component.append(
+                            locals()[variant_component])
+                dvuid = "dv-" + uuid4().hex[:13]
+                self.fhir_report.update({str(record.POS): dvuid})
+                self.result_ids.append(dvuid)
+                observation_dv.id = dvuid
+                self.report.contained.append(copy.deepcopy(observation_dv))
+                self.add_diagnostic_implication(
+                    record, ref_seq,
+                    observation_dv.id, annotation_record)
+                del alt_allele_component
+            else:
+                if "alt_allele_component" in locals():
+                    del alt_allele_component
+                observation_dv.component = []
+                for variant_component in VARIANT_COMPONENTS_ORDER:
+                    if variant_component in locals():
+                        observation_dv.component.append(
+                            locals()[variant_component])
+                dvuid = "dv-" + uuid4().hex[:13]
+                self.fhir_report.update({str(record.POS): dvuid})
+                self.result_ids.append(dvuid)
+                observation_dv.id = dvuid
+                self.report.contained.append(copy.deepcopy(observation_dv))
+                self.add_diagnostic_implication(
+                    record, ref_seq,
+                    observation_dv.id, annotation_record)
 
     def add_phased_relationship_obv(self):
         patient_reference = reference.FHIRReference(
