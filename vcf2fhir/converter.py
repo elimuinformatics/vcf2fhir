@@ -89,7 +89,7 @@ class Converter(object):
     greater than ratio_ad_dp then allelic state is
     homoplasmic; else heteroplasmic.
 
-    **genomic_source_class** (optional)(default value = somatic): An \
+    **genomic_source_class** (required): An \
     assertion as to whether variants in the VCF file are in the \
     germline (i.e. inherited), somatic (e.g. arose spontaneously \
     as cancer mutations), or mixed (i.e. may be a combination of \
@@ -107,7 +107,7 @@ class Converter(object):
             has_tabix=False, conv_region_filename=None, conv_region_dict=None,
             annotation_filename=None, region_studied_filename=None,
             nocall_filename=None, ratio_ad_dp=0.99,
-            genomic_source_class='somatic'):
+            genomic_source_class=None):
 
         super(Converter, self).__init__()
         if not (vcf_filename):
@@ -119,6 +119,14 @@ class Converter(object):
             raise Exception(
                 ("Please also provide region_studied_filename " +
                  "when nocall_filename is provided"))
+        if not genomic_source_class:
+            raise Exception(
+                'You must provide Genomic Source Class("somatic" or "mixed")')
+        if(not isinstance(genomic_source_class, str) or
+           genomic_source_class.title() not in Genomic_Source_Class.set_()):
+            raise Exception(
+                ("Please provide a valid Genomic Source Class " +
+                 "('germline' or 'somatic' or 'mixed')"))
         self.vcf_filename = vcf_filename
         try:
             self._vcf_reader = vcf.Reader(filename=vcf_filename)
@@ -194,11 +202,6 @@ class Converter(object):
 
         if not validate_ratio_ad_dp(ratio_ad_dp):
             raise Exception("Please provide a valid 'ratio_ad_dp'")
-
-        if genomic_source_class.title() not in Genomic_Source_Class.set_():
-            raise Exception(
-                ("Please provide a valid Genomic Source Class " +
-                 "('germline' or 'somatic' or 'mixed')"))
 
         self.ratio_ad_dp = ratio_ad_dp
         self.has_tabix = has_tabix
