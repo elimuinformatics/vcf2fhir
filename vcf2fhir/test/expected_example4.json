@@ -2289,9 +2289,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "exact-start-end",
-                                "display": "Variant exact start and end"
+                                "system": "http://loinc.org",
+                                "code": "81254-5",
+                                "display": "Variant exact start-end"
                             }
                         ]
                     },
@@ -2508,9 +2508,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "exact-start-end",
-                                "display": "Variant exact start and end"
+                                "system": "http://loinc.org",
+                                "code": "81254-5",
+                                "display": "Variant exact start-end"
                             }
                         ]
                     },
@@ -2727,9 +2727,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "exact-start-end",
-                                "display": "Variant exact start and end"
+                                "system": "http://loinc.org",
+                                "code": "81254-5",
+                                "display": "Variant exact start-end"
                             }
                         ]
                     },
@@ -2946,9 +2946,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "exact-start-end",
-                                "display": "Variant exact start and end"
+                                "system": "http://loinc.org",
+                                "code": "81254-5",
+                                "display": "Variant exact start-end"
                             }
                         ]
                     },
@@ -3165,9 +3165,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "exact-start-end",
-                                "display": "Variant exact start and end"
+                                "system": "http://loinc.org",
+                                "code": "81254-5",
+                                "display": "Variant exact start-end"
                             }
                         ]
                     },
@@ -3384,9 +3384,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "exact-start-end",
-                                "display": "Variant exact start and end"
+                                "system": "http://loinc.org",
+                                "code": "81254-5",
+                                "display": "Variant exact start-end"
                             }
                         ]
                     },

@@ -162,9 +162,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -392,9 +392,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -622,9 +622,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -852,9 +852,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -1082,9 +1082,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -1312,9 +1312,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -1558,9 +1558,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -1804,9 +1804,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -2050,9 +2050,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -2296,9 +2296,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -2526,9 +2526,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -2756,9 +2756,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -3002,9 +3002,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -3244,9 +3244,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -3474,9 +3474,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -3704,9 +3704,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -3946,9 +3946,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -4192,9 +4192,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -4422,9 +4422,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -4664,9 +4664,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -4894,9 +4894,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -5124,9 +5124,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -5354,9 +5354,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -5600,9 +5600,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -5846,9 +5846,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -6092,9 +6092,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -6338,9 +6338,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -6584,9 +6584,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -6830,9 +6830,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -7076,9 +7076,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },
@@ -7322,9 +7322,9 @@
                     "code": {
                         "coding": [
                             {
-                                "system": "http://hl7.org/fhir/uv/genomics-reporting/CodeSystem/TbdCodes",
-                                "code": "inner-start-end",
-                                "display": "Variant inner start and end"
+                                "system": "http://loinc.org",
+                                "code": "81302-2",
+                                "display": "Variant inner start-end"
                             }
                         ]
                     },

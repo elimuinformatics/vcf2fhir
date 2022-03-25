@@ -196,7 +196,7 @@ class _Fhir_Helper:
         if annotation_record['phenotype'] is not None:
             associated_phenotype_component = observation.ObservationComponent()
             associated_phenotype_component.code = get_codeable_concept(
-                "http://loinc.org", "81259-4", "Associated phenotype"
+                "http://loinc.org", "81259-4", "predicted phenotype"
             )
             associated_phenotype_component\
                 .valueCodeableConcept = get_codeable_concept(
@@ -282,14 +282,13 @@ class _Fhir_Helper:
             # only the INFO.END value.
             if hasattr(record.INFO, 'CIPOS') and hasattr(record.INFO, 'CIEND'):
                 inner_start = record.POS + record.INFO['CIPOS'][1]
-                inner_end = record.INFO['END'] + abs(record.INFO['CIEND'][0])
+                inner_end = record.INFO['END'] - abs(record.INFO['CIEND'][0])
                 outer_start = record.POS - abs(record.INFO['CIPOS'][0])
                 outer_end = record.INFO['END'] + record.INFO['CIEND'][1]
                 outer_start_end_component = observation.ObservationComponent()
                 outer_start_end_component.code = get_codeable_concept(
-                    ("http://hl7.org/fhir/uv/genomics-reporting" +
-                     "/CodeSystem/TbdCodes"),
-                    "outer-start-end", "Variant outer start and end"
+                    "http://loinc.org", "81301-4",
+                    "Variant outer start-end"
                 )
                 outer_start_end_component\
                     .valueRange = valRange.Range(
@@ -308,9 +307,8 @@ class _Fhir_Helper:
 
             inner_start_end_component = observation.ObservationComponent()
             inner_start_end_component.code = get_codeable_concept(
-                ("http://hl7.org/fhir/uv/ge" +
-                 "nomics-reporting/CodeSystem/TbdCodes"), "inner-start-end",
-                "Variant inner start and end"
+                "http://loinc.org", "81302-2",
+                "Variant inner start-end"
             )
             inner_start_end_component\
                 .valueRange = valRange.Range(
@@ -341,9 +339,8 @@ class _Fhir_Helper:
 
             exact_start_end_component = observation.ObservationComponent()
             exact_start_end_component.code = get_codeable_concept(
-                ("http://hl7.org/fhir/uv/genomics-reporting/Code" +
-                 "System/TbdCodes"), "exact-start-end",
-                "Variant exact start and end"
+                "http://loinc.org", "81254-5",
+                "Variant exact start-end"
             )
             exact_start_end_component.valueRange = valRange.Range(
                 {"low": {"value": int(record.POS)}})
