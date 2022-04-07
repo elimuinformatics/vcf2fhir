@@ -123,7 +123,7 @@ The scope of RegionStudied observations is described in section [Conversion Regi
 |\[1..1\] valueCodeableConcept|<ul><li>"**system**": "http://loinc.org"</li><li>"**code**": " LA9633-4"</li><li>"**display**": "present"</li></ul>|
 |\[1..1\] component:dna-chg-type (LOINC 48019-4)|<ul><li>**Simple variants**</li><ul><li>Not populated</li></ul><li>**Structural variants**</li><ul><li>**CNV**: SO:0001019 \| copy_number_variation \| http://sequenceontology.org</li><li>**DUP**: SO:1000035 \| duplication \| http://sequenceontology.org</li><li>**DEL**: SO:0000159 \| deletion \| http://sequenceontology.org</li><li>**INV**: SO:1000036 \| inversion \| http://sequenceontology.org</li><li>**INS**: SO:0000667 \| insertion \| http://sequenceontology.org</li></ul>|
 |\[1..1\] component:genomic-ref-seq (LOINC 48013-7)|<ul><li>NCBI chromosome-level ('NC_') RefSeq, as determined from genome build and VCF #CHROM.</li></ul>|
-|\[1..1\] component: genomic-source-class (LOINC 48002-0)|<ul><li>See next table</li></ul>|
+|\[0..1\] component: genomic-source-class (LOINC 48002-0)|<ul><li>See next table</li></ul>|
 |\[0..1\] component: allelic-state (LOINC 53034-5)|<ul><li>See next table</li></ul>|
 |\[0..1\] component: sample-allelic-frequency (LOINC 81258-6)|<ul><li>See next table</li></ul>|
 |\[0..1\] component: copy-number (LOINC 82155-3)|<ul><li>See next table</li></ul>|
