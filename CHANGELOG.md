@@ -1,3 +1,16 @@
+# v0.1.1 (2022-05-26)
+
+## Added
+* Updated code to handle records with multiple alts ([#97](https://github.com/elimuinformatics/vcf2fhir/pull/97)).
+
+## Changed
+* Genomic Source Class to a required parameter ([#97](https://github.com/elimuinformatics/vcf2fhir/pull/97)).
+* GitHub Action workflow to install dependencies from requirements.txt ([#103](https://github.com/elimuinformatics/vcf2fhir/pull/103)).
+
+## Fixed
+* Variant Inner-End calculation ([#98](https://github.com/elimuinformatics/vcf2fhir/pull/98)).
+* Installation error due to PyVCF by switching to PyVCF3 ([#103](https://github.com/elimuinformatics/vcf2fhir/pull/103)).
+
 # v0.1.0 (2021-09-22)
 
 This is our first minor version release with support for structural variant conversion and incorporation of clinical annotations. For more details follow [Readme](README.md). We would love to hear your feedback! If you find any issue please open an [Issue](https://github.com/elimuinformatics/vcf2fhir/issues/new/choose).
