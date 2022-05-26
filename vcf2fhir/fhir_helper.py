@@ -82,7 +82,10 @@ class _Fhir_Helper:
         if(sample_data.GT is not None and
            len(sample_data.GT.split('|')) >= 2 and
            'PS' in sample_data._fields):
-            self.phased_rec_map.setdefault(sample_data.PS, []).append(record)
+            sample_data_ps = sample_data.PS
+            if isinstance(sample_data.PS, list):
+                sample_data_ps = sample_data_ps[0]
+            self.phased_rec_map.setdefault(sample_data_ps, []).append(record)
 
     def initalize_report(self):
         patient_reference = reference.FHIRReference(
@@ -266,12 +269,15 @@ class _Fhir_Helper:
                     "http://loinc.org", "82155-3",
                     "Genomic Structural Variant copy Number"
                 )
+                copy_number = record.samples[0]["CN"]
+                if isinstance(record.samples[0]["CN"], list):
+                    copy_number = copy_number[0]
                 copy_number_component\
                     .valueQuantity = quantity.Quantity(
                         {
                             "system": "http://unitsofmeasure.org",
                             "code": '1',
-                            "value": record.samples[0]["CN"]
+                            "value": copy_number
                         }
                     )
 
