@@ -1,0 +1,7 @@
+Cython>=0.29.21
+fhirclient==3.2.0
+pysam
+pandas
+pytz>=2019.3
+PyVCF3>=1.0.3
+pyranges>=0.0.96
