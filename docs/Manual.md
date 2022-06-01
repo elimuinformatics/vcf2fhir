@@ -48,7 +48,9 @@ Variants are converted from VCF into FHIR format. Conversion can be limited to a
 
 ### Exclude VCF rows
 
-Software excludes the following VCF rows from conversion. Note that different exclusion criteria apply to the conversion of simple vs. structural variants.
+Software excludes the following VCF rows from conversion. 
+Note that different exclusion criteria apply to the conversion of simple vs. structural variants.
+Note also that correct parsing of VCF INFO and FORMAT subfields requires the presence of corresponding meta-information lines in the VCF header.
 
 <p align="center">
 <img src="image5.png" alt="Exclusions"/>
